@@ -6,7 +6,7 @@ app.locals.c=0;
 
 app.use(cors())
 
-app.use('/', express.static('../frontend/build/web'));
+app.use(express.static('../frontend/build/web'));
 
 app.get('/hola', function (req, res) {
   res.send('hello world '+app.locals.c)
@@ -14,4 +14,4 @@ app.get('/hola', function (req, res) {
   console.log('koko')
 })
 
-app.listen(3000)
+app.listen(80)

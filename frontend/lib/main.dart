@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter/foundation.dart' as Foundation;
 
 void main() {
   runApp(MyApp());
@@ -69,7 +70,11 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _llamaRest() {
-       rest('http://localhost:3000/hola').then( 
+       String url='/hola';
+       if(Foundation.kDebugMode) {
+         url='http://localhost'+url;
+        }
+       rest(url).then( 
         (value) { 
           setState(() {
             _respuesta=value;
