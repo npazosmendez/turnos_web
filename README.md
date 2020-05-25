@@ -14,7 +14,7 @@ Para buildear el frontend:
 ```
 
 Para levantar el frontend en Chrome en modo dev:
-```
+```shell
 cd frontend
 flutter run -d chome
 ```
