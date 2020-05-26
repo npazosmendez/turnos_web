@@ -10,7 +10,7 @@ Esto también sirve los estáticos que buildea Flutter.
 
 Para buildear el frontend:
 ```shell
-?
+flutter build web
 ```
 
 Para levantar el frontend en Chrome en modo dev:
