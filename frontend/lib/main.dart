@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart' as Foundation;
+import 'screens/propietarios_home.dart';
+import 'screens/clientes_home.dart';
 
 void main() {
   runApp(MyApp());
@@ -12,6 +14,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Turnos y más turnos',
+      initialRoute: '/',
+      routes: {
+        '/': (context) => MyHomePage(title: 'quieromiturno.com'),
+        '/propietarios': (context) => PropietariosHome(),
+        '/clientes': (context) => ClientesHome(),
+      },
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -28,7 +36,6 @@ class MyApp extends StatelessWidget {
         // closer together (more dense) than on mobile platforms.
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MyHomePage(title: 'quieromiturno.com'),
     );
   }
 }
@@ -91,6 +98,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
+
     return Scaffold(
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
@@ -117,6 +125,24 @@ class _MyHomePageState extends State<MyHomePage> {
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            RaisedButton(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(18.0)),
+              onPressed: () {
+                Navigator.pushNamed(context, '/propietarios');
+              },
+              child: Text("Propietarios".toUpperCase(),
+                style: TextStyle(fontSize: 14)),
+            ),
+            RaisedButton(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(18.0)),
+              onPressed: () {
+                Navigator.pushNamed(context, '/clientes');
+              },
+              child: Text("Clientes".toUpperCase(),
+                style: TextStyle(fontSize: 14)),
+            ),
             Text(
               'Resultado de la llamada REST:',
             ),
