@@ -1,26 +1,36 @@
 const Sequelize = require('sequelize');
-const sequelize = new Sequelize("sqlite::memory:", {
+const db = new Sequelize("sqlite::memory:", {
     logging: false,
 });
 
-
-const Propietario = sequelize.define('propietario', {
-    nombre: Sequelize.TEXT,
-    edad: Sequelize.INTEGER,
-    dni: Sequelize.INTEGER
+const Usuario = db.define('usuarios', {
+    email: Sequelize.TEXT,
+    password: Sequelize.TEXT
 });
 
+const Concepto = db.define('conceptos', {
+    nombre: Sequelize.TEXT,
+    descripcion: Sequelize.TEXT,
+    latitud: Sequelize.FLOAT,
+    longitud: Sequelize.FLOAT,
+});
 
-sequelize.sync({ force: true })
+const Turno = db.define('turnos', {
+    numero: Sequelize.INTEGER,
+});
+
+Usuario.hasMany(Turno);
+Concepto.hasMany(Turno);
+
+db.sync({ force: true })
     .then(() => {
         // Se crean las tablas
         console.log(`Base de datos y tablas creadas.`);
-    }).then(() =>
-        // Poblamos las tablas
-        Propietario.bulkCreate([
-            { nombre: "Alberto", edad: 61, dni: 13900587 },
-            { nombre: "Elver", edad: 21, dni: 38383838 },
-        ])
-    );
+    }).then(() => {
+        Usuario.bulkCreate([
+            { email: "elver@gmail.com", password: "12345"},
+            { email: "robertrush@gmail.com", password: "12345"},
+        ]);
+    });
 
-exports.Propietario = Propietario
+exports.Usuario = Usuario

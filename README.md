@@ -18,3 +18,7 @@ Para levantar el frontend en Chrome en modo dev:
 cd frontend
 flutter run -d chrome
 ```
+
+# Decisiones
+- Tenemos "Usuarios", pueden ser tanto propietarios como clientes
+- Por ahora no hay sign-up. Los usuarios están hardcodeados.

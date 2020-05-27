@@ -7,8 +7,6 @@ var morgan = require('morgan')
 var model = require('./model');
 var auth = require('./auth');
 
-app.locals.c = 0;
-
 // Middlewares
 // ~~~~~~~~~~~
 app.use(cors()); // Habilita CORS
@@ -17,33 +15,13 @@ app.use(bodyParser.json()); // Parsea el body si el content type es json
 app.use(express.static('../frontend/build/web')); // Sirve estáticos
 app.use(auth.basicAuth)
 
+// APIS
+// ~~~~~~~~~~~~~~~
 
-// API REST
-// ~~~~~~~~
-app.get('/propietarios/:dni', function (req, res) {
-  model.Propietario.findAll(
-    {
-      where: {
-        dni: req.params.dni
-      }
-    }).then(propietarios => res.json(propietarios));
-});
-
-app.post('/propietarios', function (req, res) {
-  console.log(req.body.nombre)
-  model.Propietario.create({
-      nombre: req.body.nombre,
-      edad: req.body.edad,
-      dni: req.body.dni
-    }).then((propietario) => {res.json(propietario)});
-});
-
-app.get('/hola', function (req, res) {
-  res.send('hello world ' + app.locals.c)
-  app.locals.c++
-  console.log('koko')
+app.get('/login', function (req, res) {
+  // Login is done in middleware
+  res.send('Login exitoso');
 })
-
 
 // Corre el server
 // ~~~~~~~~~~~~~~~

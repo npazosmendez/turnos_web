@@ -1,23 +1,47 @@
+const model = require('./model')
 
 var bypass = true;
 
+function decodeAuthHeader(authHeader) {
+    if (authHeader.indexOf('Basic ') === -1) {
+        throw new Error('Solo se soporta Basic authorization');
+    }
+    const credentials =  authHeader.split(' ')[1];
+    const [email, password] = credentials.split(':');
+    if (!email || !password) {
+        throw new Error('Auth header con formato incorrecto');
+    }
+    return [email, password];
+}
+
 async function basicAuth(req, res, next) {
     if(bypass) {
-        req.username = "dummy_username"
+        req.usuario = null;
     } else {
-
-        if (!req.headers.authorization || req.headers.authorization.indexOf('Basic ') === -1) {
-            return res.status(401).json({ message: 'Missing Authorization Header' });
+        if (!req.headers.authorization) {
+            console.log("Header 'Authorization' no presente.")
+            return res.status(401).json({ message: "Header 'Authorization' no presente." });
         }
-    
-        const base64Credentials =  req.headers.authorization.split(' ')[1];
-        const credentials = Buffer.from(base64Credentials, 'base64').toString('ascii');
-        const [username, password] = credentials.split(':');
-        // TODO: validar
-    
-        req.username = username
+        
+        let email, password;
+        try {
+            [email, password] = decodeAuthHeader(req.headers.authorization);
+        } catch (err) {
+            return res.status(401).json({ message: err.message });
+        }
+        
+        var result = await model.Usuario.findAll({
+            where: {
+                email: email,
+                password: password,
+            }
+        });
+        if(result.length == 0 ) {
+            console.log("Falló la autenticación de " + email + " " + password)
+            return res.status(401).json({ message: 'Usuario o password incorrectas.' });
+        }
+        req.usuario = result[0];
     }
-    console.log("Authenticated:", req.username)
     next();
 }
 
