@@ -18,10 +18,53 @@ app.use(auth.basicAuth)
 // APIS
 // ~~~~~~~~~~~~~~~
 
-app.get('/login', function (req, res) {
+app.post('/usuarios/login', function (req, res) {
   // Login is done in middleware
   res.send('Login exitoso');
 })
+
+app.post('/conceptos/', async function (req, res) {
+  console.log(req.body);
+  model.Concepto.create({
+    nombre: req.body.nombre,
+    descripcion: req.body.descripcion,
+    latitud: req.body.latitud,
+    longitud: req.body.longitud,
+  }).then((concepto) => res.send(concepto))
+    .catch((err) => res.status(400).send(err.message));
+});
+
+
+app.get('/conceptos/:id', async function (req, res) {
+  const concepto = await model.Concepto.findOne({
+    where : {
+      id: req.params.id
+    }
+  });
+  if (!concepto) {
+    return res.status(404).send(`Concepto ${req.params.id} no encontrado.`)
+  }
+  res.send(concepto);
+});
+
+app.put('/conceptos/:id', async function (req, res) {
+
+  const concepto = await model.Concepto.findOne({
+    where : {
+      id: req.params.id
+    }
+  });
+  if (!concepto) {
+    return res.status(404).send("No encontré ese concepto, gil.");
+  }
+  concepto.habilitado = req.body.habilitado;
+  concepto.save().then(concepto => {
+    return res.status(200).send(concepto);
+  }).catch((err) => {
+    console.log(err)
+    return res.status(400).send(err.message);
+  });
+});
 
 // Corre el server
 // ~~~~~~~~~~~~~~~

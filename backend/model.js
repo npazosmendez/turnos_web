@@ -9,10 +9,29 @@ const Usuario = db.define('usuarios', {
 });
 
 const Concepto = db.define('conceptos', {
-    nombre: Sequelize.TEXT,
-    descripcion: Sequelize.TEXT,
-    latitud: Sequelize.FLOAT,
-    longitud: Sequelize.FLOAT,
+    habilitado: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+        defaultValue: true
+    },
+    nombre: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        len: [3,50]
+    },
+    descripcion: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        len: [3,50]
+    },
+    latitud: {
+        type: Sequelize.FLOAT,
+        allowNull: false
+    },
+    longitud: {
+        type: Sequelize.FLOAT,
+        allowNull: false
+    },
 });
 
 const Turno = db.define('turnos', {
@@ -34,3 +53,5 @@ db.sync({ force: true })
     });
 
 exports.Usuario = Usuario
+exports.Concepto = Concepto
+exports.Turno = Turno
