@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 var morgan = require('morgan')
 
 var model = require('./model');
+var auth = require('./auth');
 
 app.locals.c = 0;
 
@@ -14,6 +15,7 @@ app.use(cors()); // Habilita CORS
 app.use(morgan('dev')); // Loggea requests
 app.use(bodyParser.json()); // Parsea el body si el content type es json
 app.use(express.static('../frontend/build/web')); // Sirve estáticos
+app.use(auth.basicAuth)
 
 
 // API REST

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class LoginPage extends StatefulWidget {
 
@@ -13,6 +14,14 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   // final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final emailInputController = TextEditingController();
+
+  Future<bool> login(String username, String password) async {
+    final response = await http.get(
+      "http://localhost:30000/hola", // TODO: tomar de config
+      headers: {"Authorization": "Basic $username:$password"},
+    );
+    return response.statusCode == 200;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +55,8 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     RaisedButton(
                         onPressed: (){
+                          // TODO: probar user y pass contra el backend.
+                          // Si da 200, ejecutar el callback. Si no, mostrar un mensaje de falla.
                           widget.onSignedIn(emailInputController.text);
                         },
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0))),

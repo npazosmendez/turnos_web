@@ -59,16 +59,16 @@ class MyHomePage extends StatefulWidget {
 }
 
 Future<String> rest(String url) async {
-  final response=await http.get(url);
+  final response=await http.get(url, headers: {"Authorization": "Basic foousername:barpassword"});
   if (response.statusCode==200){
-    return response.body.toString(); 
+    return response.body.toString();
   } else {
-    throw Exception('Failed to load');
+    return "ERROR (${response.statusCode})";
   }
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-    
+
   String _respuesta;
 
   void initState() {
@@ -77,17 +77,17 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _llamaRest() {
-       String url='/hola';
-       if(Foundation.kDebugMode) {
-         url='http://localhost'+url;
-        }
-       rest(url).then( 
-        (value) { 
-          setState(() {
-            _respuesta=value;
-          });
-        }
-      );
+      String url='/hola';
+      if(Foundation.kDebugMode) {
+        url='http://localhost'+url;
+      }
+      rest(url).then(
+      (value) {
+        setState(() {
+          _respuesta=value;
+        });
+      }
+    );
   }
 
   @override
