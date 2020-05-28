@@ -1,10 +1,10 @@
 # turnos_web
 
-Para correr el backend (80 es el puerto por defecto):
+Para correr el backend:
 
 ```shell
 cd backend
-node app.js <puerto>
+PORT=8080 node app.js
 ```
 Esto también sirve los estáticos que buildea Flutter.
 
