@@ -3,9 +3,12 @@ const cors = require('cors')
 const app = express()
 const bodyParser = require('body-parser');
 var morgan = require('morgan')
+var https = require('https')
+var fs = require('fs')
 
 var model = require('./model');
 var auth = require('./auth');
+var config = require('./config');
 
 // Middlewares
 // ~~~~~~~~~~~
@@ -68,7 +71,15 @@ app.put('/conceptos/:id', async function (req, res) {
 
 // Corre el server
 // ~~~~~~~~~~~~~~~
-var puerto = process.argv[2] || 80
-app.listen(puerto, function () {
-  console.log('Escuchando en puerto ' + puerto)
+let server;
+if (config.https) {
+  server = https.createServer({
+    key: fs.readFileSync(config.ssl_private),
+    cert: fs.readFileSync(config.ssl_cert)
+  }, app)
+} else {
+  server = app;
+}
+server.listen(config.port, function () {
+  console.log('Escuchando en puerto ' + config.port)
 })
