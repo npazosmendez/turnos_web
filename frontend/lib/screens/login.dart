@@ -13,14 +13,27 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   // final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  bool authFailed = false;
   final emailInputController = TextEditingController();
+  final passwordInputController = TextEditingController();
 
   Future<bool> login(String username, String password) async {
-    final response = await http.get(
-      "http://localhost:30000/hola", // TODO: tomar de config
-      headers: {"Authorization": "Basic $username:$password"},
-    );
-    return response.statusCode == 200;
+    try {
+      final response = await http.post(
+        "http://localhost:3000/usuarios/login", // TODO: tomar de config
+        headers: {"Authorization": "Basic $username:$password"},
+      );
+      return response.statusCode == 200;
+    } catch (ex) {
+      // TODO: log and handle
+      return false;
+    }
+  }
+
+  void setAuthFailed() {
+    setState(() {
+      this.authFailed = true;
+    });
   }
 
   @override
@@ -48,16 +61,22 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                     TextField(
+                      controller: passwordInputController,
                       decoration: InputDecoration(
                         hintText: 'Password'
                       ),
                       obscureText: true,
                     ),
+                    Text(
+                      this.authFailed ? "Falló la autenticación" : "",
+                      style: TextStyle( color: Colors.red)),
                     RaisedButton(
-                        onPressed: (){
-                          // TODO: probar user y pass contra el backend.
-                          // Si da 200, ejecutar el callback. Si no, mostrar un mensaje de falla.
-                          widget.onSignedIn(emailInputController.text);
+                        onPressed: () async {
+                          if (await this.login(emailInputController.text, passwordInputController.text)) {
+                            widget.onSignedIn(emailInputController.text);
+                          } else {
+                            setAuthFailed();
+                          }
                         },
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0))),
                         child: Text('Login',style: TextStyle(
