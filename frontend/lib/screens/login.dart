@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 class LoginPage extends StatefulWidget {
 
   const LoginPage({this.title, this.onSignedIn});
-  final Function(String email) onSignedIn;
+  final Function(String email, String password) onSignedIn;
   final String title;
 
   @override
@@ -73,7 +73,7 @@ class _LoginPageState extends State<LoginPage> {
                     RaisedButton(
                         onPressed: () async {
                           if (await this.login(emailInputController.text, passwordInputController.text)) {
-                            widget.onSignedIn(emailInputController.text);
+                            widget.onSignedIn(emailInputController.text, passwordInputController.text);
                           } else {
                             setAuthFailed();
                           }

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
+
 import 'login.dart';
-import 'package:http/http.dart' as http;
-import 'dart:io';
-import 'dart:convert';
+import '../utils/apiclient.dart';
 
 class PropietariosHome extends StatefulWidget {
   @override
@@ -11,14 +10,21 @@ class PropietariosHome extends StatefulWidget {
 
 class _PropietariosHomeState extends State<PropietariosHome> {
 
-  String email = null; // Para saltearse autenticación, asignar un valor acá
+  String usuario, password;
+  ApiClient apiClient;
 
-  void _signedIn(String email) => setState(() { this.email = email;});
+  void _signedIn(String usuario, String password) => setState(
+    () {
+      this.usuario = usuario;
+      this.password = password;
+      this.apiClient = ApiClient(usuario, password);
+    }
+  );
 
   @override
   Widget build(BuildContext context) {
-    if(email == null) {
-      // TODO: esto "redirecciona" al login si el estado no tiene un email guardado.
+    if(usuario == null) {
+      // TODO: esto "redirecciona" al login si el estado no tiene un usuario guardado.
       // Probablemente haya una lógica parecida del lado del cliente. No me queda claro
       // cómo reutilizar este código, creo que heredar States es hacer lío.
       return LoginPage(title: "Propietarios", onSignedIn: _signedIn);
@@ -36,7 +42,7 @@ class _PropietariosHomeState extends State<PropietariosHome> {
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
-                content: FormNuevoConcepto(), // TODO
+                content: FormNuevoConcepto(this.apiClient), // TODO
               );
         }, // TODO
           );
@@ -51,7 +57,7 @@ class _PropietariosHomeState extends State<PropietariosHome> {
             Padding(
               padding: EdgeInsets.all(16.0),
               child: Text(
-                "Bienvenido, ${this.email}.",
+                "Bienvenido, ${this.usuario}.",
               style: TextStyle(
                 fontSize: 20.0
                 ),
@@ -73,7 +79,7 @@ class _PropietariosHomeState extends State<PropietariosHome> {
                     numeric: true,
                 ),
               ],
-              source: ConceptosDataSource(this.email),
+              source: ConceptosDataSource(this.usuario),
             ),
           ],
         ),
@@ -86,10 +92,10 @@ class _PropietariosHomeState extends State<PropietariosHome> {
 
 class ConceptosDataSource extends DataTableSource {
 
-  final String email;
+  final String usuario;
 
-  // TODO: usar this.email para traer los conceptos del tipo
-  ConceptosDataSource(this.email);
+  // TODO: usar this.usuario para traer los conceptos del tipo
+  ConceptosDataSource(this.usuario);
 
   @override
   int get rowCount => 2;
@@ -134,6 +140,10 @@ class ConceptosDataSource extends DataTableSource {
 
 // Define a custom Form widget.
 class FormNuevoConcepto extends StatefulWidget {
+  final ApiClient apiClient;
+
+  FormNuevoConcepto(this.apiClient);
+
   @override
   _FormNuevoConceptoState createState() => _FormNuevoConceptoState();
 }
@@ -170,23 +180,19 @@ class _FormNuevoConceptoState extends State<FormNuevoConcepto> {
         RaisedButton(
           child: Text("Submit"),
           onPressed: () async {
-            var client = new http.Client();
-            var url = "http://localhost:3000/conceptos/";
-            var request = new http.Request('POST', Uri.parse(url));
-            var body = json.encode({
-                "nombre": controllerNombre.text,
-                "descripcion": controllerDescripcion.text,
-                "latitud": 0,
-                "longitud": 0,
-            });
-            request.headers[HttpHeaders.authorizationHeader] = 'Basic usuario:password'; // TODO
-            request.headers[HttpHeaders.contentTypeHeader] = 'application/json';
-            request.body = body;
-            client.send(request)
-              .then(
-                (response) => response.stream.bytesToString().then(
-                  (value) => print(value.toString()))
-              ).catchError((error) => print(error.toString()));
+            try {
+              var response = await this.widget.apiClient.postJson(
+                "http://localhost:3000/conceptos/",
+                {
+                  "nombre": controllerNombre.text,
+                  "descripcion": controllerDescripcion.text,
+                  "latitud": 0,
+                  "longitud": 0,
+                }
+              );
+            } catch (ex) {
+              // TODO: handle
+            }
             Navigator.of(context).pop();
           },
         ),
