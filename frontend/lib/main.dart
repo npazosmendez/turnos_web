@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart' as Foundation;
 import 'screens/propietarios_home.dart';
 import 'screens/clientes_home.dart';
+import 'config.dart';
 
 void main() {
   runApp(MyApp());
