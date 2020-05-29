@@ -15,10 +15,8 @@ class _PropietariosHomeState extends State<PropietariosHome> {
   model.Usuario usuario;
   ApiClient apiClient;
   List<model.Concepto> conceptos = [];
-  /* TODO: flutter llama a build muchas veces, y la app usa la API en el build.
+  /* TODO: flutter me está llamando build muchas veces, no estoy seguro por qué.
   Este bool es para no llamar a la API para obtener la info cada vez que se buildea.
-  Estaría bueno, en vez de esto, tener un timestamp de cuándo se actualizó y actualizarlo
-  cada cierto periodo.
   */
   bool calledApi = false;
 
