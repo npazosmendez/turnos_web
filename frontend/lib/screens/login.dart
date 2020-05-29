@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import '../model.dart' as model;
+import 'dart:convert';
 
 class LoginPage extends StatefulWidget {
 
   const LoginPage({this.title, this.onSignedIn});
-  final Function(String email, String password) onSignedIn;
+  final Function(model.Usuario usuario) onSignedIn;
   final String title;
 
   @override
@@ -14,8 +16,8 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   // final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   bool authFailed = false;
-  final emailInputController = TextEditingController();
-  final passwordInputController = TextEditingController();
+  final emailInputController = TextEditingController(text: "elver@gmail.com");
+  final passwordInputController = TextEditingController(text: "12345");
 
   Future<bool> login(String username, String password) async {
     try {
@@ -23,7 +25,12 @@ class _LoginPageState extends State<LoginPage> {
         "http://localhost:3000/usuarios/login", // TODO: tomar de config
         headers: {"Authorization": "Basic $username:$password"},
       );
-      return response.statusCode == 200;
+      if(response.statusCode == 200) {
+        this.widget.onSignedIn(model.Usuario.fromJson(json.decode(response.body)));
+        return true;
+      } else {
+        return false;
+      }
     } catch (ex) {
       // TODO: log and handle
       return false;
@@ -72,9 +79,7 @@ class _LoginPageState extends State<LoginPage> {
                       style: TextStyle( color: Colors.red)),
                     RaisedButton(
                         onPressed: () async {
-                          if (await this.login(emailInputController.text, passwordInputController.text)) {
-                            widget.onSignedIn(emailInputController.text, passwordInputController.text);
-                          } else {
+                          if (! await this.login(emailInputController.text, passwordInputController.text)) {
                             setAuthFailed();
                           }
                         },

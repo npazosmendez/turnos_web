@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'dart:convert';
 
 import 'login.dart';
 import '../utils/apiclient.dart';
+import '../model.dart' as model;
 
 class PropietariosHome extends StatefulWidget {
   @override
@@ -10,14 +12,35 @@ class PropietariosHome extends StatefulWidget {
 
 class _PropietariosHomeState extends State<PropietariosHome> {
 
-  String usuario, password;
+  model.Usuario usuario;
   ApiClient apiClient;
+  List<model.Concepto> conceptos = [];
+  /* TODO: flutter llama a build muchas veces, y la app usa la API en el build.
+  Este bool es para no llamar a la API para obtener la info cada vez que se buildea.
+  Estaría bueno, en vez de esto, tener un timestamp de cuándo se actualizó y actualizarlo
+  cada cierto periodo.
+  */
+  bool calledApi = false;
 
-  void _signedIn(String usuario, String password) => setState(
+  loadConceptos() async {
+    var apiClient = ApiClient(usuario.email, usuario.password);
+    var response = await apiClient.get(
+      "http://localhost:3000/conceptos?usuarioId=${usuario.id}", // TODO: tomar por config
+    );
+    var body = await response.stream.bytesToString();
+    Iterable conceptosJson = json.decode(body);
+    List<model.Concepto> conceptos = [];
+    for (var json in conceptosJson) {
+      conceptos.add(model.Concepto.fromJson(json));
+    }
+    this.calledApi = true;
+    setState( () => this.conceptos = conceptos);
+  }
+
+  void _signedIn(model.Usuario usuario) => setState(
     () {
       this.usuario = usuario;
-      this.password = password;
-      this.apiClient = ApiClient(usuario, password);
+      this.apiClient = ApiClient(usuario.email, usuario.password);
     }
   );
 
@@ -34,6 +57,8 @@ class _PropietariosHomeState extends State<PropietariosHome> {
   }
 
   Widget _build(BuildContext context) {
+    if(!this.calledApi) loadConceptos();
+
     return new Scaffold(
       appBar: AppBar(title: Text("Mis Conceptos"),),
       floatingActionButton: FloatingActionButton(
@@ -57,7 +82,7 @@ class _PropietariosHomeState extends State<PropietariosHome> {
             Padding(
               padding: EdgeInsets.all(16.0),
               child: Text(
-                "Bienvenido, ${this.usuario}.",
+                "Bienvenido, ${this.usuario.email}.",
               style: TextStyle(
                 fontSize: 20.0
                 ),
@@ -71,15 +96,14 @@ class _PropietariosHomeState extends State<PropietariosHome> {
                     label: const Text('Nombre'),
                 ),
                 new DataColumn(
-                    label: const Text('En espera'),
-                    numeric: true,
+                    label: const Text('Descripción'),
                 ),
                 new DataColumn(
                     label: const Text('Estado'),
                     numeric: true,
                 ),
               ],
-              source: ConceptosDataSource(this.usuario),
+              source: ConceptosDataSource(this.conceptos),
             ),
           ],
         ),
@@ -92,13 +116,12 @@ class _PropietariosHomeState extends State<PropietariosHome> {
 
 class ConceptosDataSource extends DataTableSource {
 
-  final String usuario;
+  final List<model.Concepto> conceptos;
 
-  // TODO: usar this.usuario para traer los conceptos del tipo
-  ConceptosDataSource(this.usuario);
+  ConceptosDataSource(this.conceptos);
 
   @override
-  int get rowCount => 2;
+  int get rowCount => this.conceptos.length;
 
   @override
   bool get isRowCountApproximate => false;
@@ -109,32 +132,19 @@ class ConceptosDataSource extends DataTableSource {
   @override
   DataRow getRow(int index) {
     assert(index >= 0);
-    switch (index) {
-      case 0:
-        return new DataRow.byIndex(
-            index: index,
-            selected: false,
-            onSelectChanged: (bool value) { },
-            cells: <DataCell>[
-              new DataCell(new Text('Carnicería')),
-              new DataCell(new Text("10")),
-              new DataCell(Icon(Icons.check, color: Colors.green)),
-            ]
-        );
-        break;
-      default:
-        return new DataRow.byIndex(
-            index: index,
-            selected: false,
-            onSelectChanged: (bool value) { },
-            cells: <DataCell>[
-              new DataCell(new Text('Verdulería')),
-              new DataCell(new Text("-")),
-              new DataCell(Icon(Icons.close, color: Colors.red)),
-            ]
-        );
-        break;
-    }
+    var concepto = this.conceptos[index];
+    return new DataRow.byIndex(
+        index: index,
+        selected: false,
+        onSelectChanged: (bool value) { },
+        cells: <DataCell>[
+          new DataCell(new Text(concepto.nombre)),
+          new DataCell(new Text(concepto.descripcion)),
+          new DataCell(concepto.habilitado
+            ? Icon(Icons.check, color: Colors.green)
+            : Icon(Icons.close, color: Colors.red)),
+        ]
+    );
   }
 }
 

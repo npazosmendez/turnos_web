@@ -38,8 +38,21 @@ const Turno = db.define('turnos', {
     numero: Sequelize.INTEGER,
 });
 
-Usuario.hasMany(Turno);
-Concepto.hasMany(Turno);
+Usuario.hasMany(Turno, {
+    foreignKey: {
+        allowNull: false
+    }
+});
+Usuario.hasMany(Concepto, {
+    foreignKey: {
+        allowNull: false
+    }
+});
+Concepto.hasMany(Turno, {
+    foreignKey: {
+        allowNull: false
+    }
+});
 
 db.sync({ force: true })
     .then(() => {
@@ -49,6 +62,15 @@ db.sync({ force: true })
         Usuario.bulkCreate([
             { email: "elver@gmail.com", password: "12345"},
             { email: "robertrush@gmail.com", password: "12345"},
+        ]);
+        Concepto.bulkCreate([
+            { habilitado: false, nombre: "Carnicería", descripcion: "La carnicería de elver", latitud: 10, longitud: 20, usuarioId: 1},
+            { habilitado: true, nombre: "Verdulería", descripcion: "La verdulería de elver", latitud: 10, longitud: 20, usuarioId: 1},
+            { habilitado: true, nombre: "Zapatería", descripcion: "La zapatería de elver", latitud: 10, longitud: 20, usuarioId: 1},
+            { habilitado: false, nombre: "Mercería", descripcion: "La verdulería de robertrush", latitud: 16, longitud: 26, usuarioId: 2},
+        ]);
+        Turno.bulkCreate([
+            { numero: 1, usuarioId: 1, conceptoId: 3}, // Elver para la mercería
         ]);
     });
 

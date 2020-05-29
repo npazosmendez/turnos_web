@@ -22,8 +22,7 @@ app.use(auth.basicAuth)
 // ~~~~~~~~~~~~~~~
 
 app.post('/usuarios/login', function (req, res) {
-  // Login is done in middleware
-  res.send('Login exitoso');
+  res.send(req.usuario)
 })
 
 app.post('/conceptos/', async function (req, res) {
@@ -37,16 +36,11 @@ app.post('/conceptos/', async function (req, res) {
     .catch((err) => res.status(400).send(err.message));
 });
 
-
-app.get('/conceptos/:id', async function (req, res) {
-  const concepto = await model.Concepto.findOne({
-    where : {
-      id: req.params.id
-    }
+app.get('/conceptos', async function (req, res) {
+  const concepto = await model.Concepto.findAll({
+    // TODO: validar la query. Puede resultar en excepciones de la bbdd
+    where : req.query
   });
-  if (!concepto) {
-    return res.status(404).send(`Concepto ${req.params.id} no encontrado.`)
-  }
   res.send(concepto);
 });
 
