@@ -16,25 +16,27 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   // final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   bool authFailed = false;
+  int authResponseStatus = -1;
   final emailInputController = TextEditingController(text: "elver@gmail.com");
   final passwordInputController = TextEditingController(text: "12345");
 
-  Future<bool> login(String username, String password) async {
+  void login() async {
+    var username = emailInputController.text;
+    var password = passwordInputController.text;
     try {
       final response = await http.post(
         "http://localhost:3000/usuarios/login", // TODO: tomar de config
         headers: {"Authorization": "Basic $username:$password"},
       );
-      if(response.statusCode == 200) {
+      if((authResponseStatus = response.statusCode) == 200) {
         this.widget.onSignedIn(model.Usuario.fromJson(json.decode(response.body)));
-        return true;
-      } else {
-        return false;
+        return;
       }
     } catch (ex) {
-      // TODO: log and handle
-      return false;
+      // TODO: probablemente un error de conexión o que el backend no responde.
+      // No termino de entender las excepciones del paquete http.
     }
+    setAuthFailed();
   }
 
   void setAuthFailed() {
@@ -46,9 +48,6 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
       body: Container(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
@@ -61,32 +60,39 @@ class _LoginPageState extends State<LoginPage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
+                    Text(
+                        "Accedé a tu cuenta",
+                        style: TextStyle(color: Colors.blue, fontSize: 30, fontWeight: FontWeight.bold),
+                    ),
                     TextField(
                       controller: emailInputController,
                       decoration: InputDecoration(
-                        hintText: 'Username'
+                        hintText: 'email',
+                        icon: Icon(Icons.email),
                       ),
                     ),
                     TextField(
                       controller: passwordInputController,
                       decoration: InputDecoration(
-                        hintText: 'Password'
+                        icon: Icon(Icons.lock),
+                        hintText: 'constraseña'
                       ),
                       obscureText: true,
                     ),
                     Text(
-                      this.authFailed ? "Falló la autenticación" : "",
+                      this.authFailed ? "Falló la autenticación (${this.authResponseStatus})" : "",
                       style: TextStyle( color: Colors.red)),
                     RaisedButton(
-                        onPressed: () async {
-                          if (! await this.login(emailInputController.text, passwordInputController.text)) {
-                            setAuthFailed();
-                          }
-                        },
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0))),
-                        child: Text('Login',style: TextStyle(
-                            fontSize: 20.0
-                        ),),),
+                      hoverElevation: 5,
+                      onPressed: this.login,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                      child: Text(
+                        'Entrar',
+                        style: TextStyle(
+                          fontSize: 20.0,
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
