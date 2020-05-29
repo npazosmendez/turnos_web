@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import '../model.dart' as model;
+import '../utils/apiclient.dart';
 import 'dart:convert';
 
 class LoginPage extends StatefulWidget {
@@ -21,18 +22,18 @@ class _LoginPageState extends State<LoginPage> {
   final passwordInputController = TextEditingController(text: "12345");
 
   void login() async {
-    var username = emailInputController.text;
+    var email = emailInputController.text;
     var password = passwordInputController.text;
     try {
-      final response = await http.post(
-        "http://localhost:3000/usuarios/login", // TODO: tomar de config
-        headers: {"Authorization": "Basic $username:$password"},
-      );
+      var apiClient = ApiClient(email, password);
+      final response = await apiClient.get("/usuarios/login");
       if((authResponseStatus = response.statusCode) == 200) {
-        this.widget.onSignedIn(model.Usuario.fromJson(json.decode(response.body)));
+        var body = await response.stream.bytesToString();
+        this.widget.onSignedIn(model.Usuario.fromJson(json.decode(body)));
         return;
       }
     } catch (ex) {
+      print(ex);
       // TODO: probablemente un error de conexión o que el backend no responde.
       // No termino de entender las excepciones del paquete http.
     }
@@ -40,6 +41,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void setAuthFailed() {
+    print(1123);
     setState(() {
       this.authFailed = true;
     });

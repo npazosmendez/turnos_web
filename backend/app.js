@@ -21,7 +21,7 @@ app.use(auth.basicAuth)
 // APIS
 // ~~~~~~~~~~~~~~~
 
-app.post('/usuarios/login', function (req, res) {
+app.get('/usuarios/login', function (req, res) {
   res.send(req.usuario)
 })
 

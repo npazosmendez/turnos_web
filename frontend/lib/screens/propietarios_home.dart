@@ -27,7 +27,7 @@ class _PropietariosHomeState extends State<PropietariosHome> {
   loadConceptos() async {
     var apiClient = ApiClient(widget.usuario.email, widget.usuario.password);
     var response = await apiClient.get(
-      "http://localhost:3000/conceptos?usuarioId=${widget.usuario.id}", // TODO: tomar por config
+      "/conceptos?usuarioId=${widget.usuario.id}", // TODO: tomar por config
     );
     var body = await response.stream.bytesToString();
     Iterable conceptosJson = json.decode(body);
@@ -176,7 +176,7 @@ class _FormNuevoConceptoState extends State<FormNuevoConcepto> {
           onPressed: () async {
             try {
               var response = await this.widget.apiClient.postJson(
-                "http://localhost:3000/conceptos/",
+                "/conceptos/",
                 {
                   "nombre": controllerNombre.text,
                   "descripcion": controllerDescripcion.text,
