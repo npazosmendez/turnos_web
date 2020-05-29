@@ -1,8 +1,10 @@
 import 'package:http/http.dart' as http;
 import 'dart:io';
 import 'dart:convert';
+import 'package:flutter/foundation.dart' as Foundation;
 
 class ApiClient {
+  // TODO: tomar el path en vez de la url completa. Usar Foundation para saber si estamos en modo dev y anteponer localhost de ser necesario.
   
   final http.Client _client = http.Client();
   final String usuario, password;

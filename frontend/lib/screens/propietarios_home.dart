@@ -6,24 +6,28 @@ import '../utils/apiclient.dart';
 import '../model.dart' as model;
 
 class PropietariosHome extends StatefulWidget {
+  final model.Usuario usuario;
+  final ApiClient apiClient;
+
+  PropietariosHome(this.usuario) : this.apiClient = ApiClient(usuario.email, usuario.password);
+
   @override
   State<StatefulWidget> createState() => _PropietariosHomeState();
 }
 
 class _PropietariosHomeState extends State<PropietariosHome> {
 
-  model.Usuario usuario;
-  ApiClient apiClient;
   List<model.Concepto> conceptos = [];
   /* TODO: flutter me está llamando build muchas veces, no estoy seguro por qué.
   Este bool es para no llamar a la API para obtener la info cada vez que se buildea.
   */
   bool calledApi = false;
 
+
   loadConceptos() async {
-    var apiClient = ApiClient(usuario.email, usuario.password);
+    var apiClient = ApiClient(widget.usuario.email, widget.usuario.password);
     var response = await apiClient.get(
-      "http://localhost:3000/conceptos?usuarioId=${usuario.id}", // TODO: tomar por config
+      "http://localhost:3000/conceptos?usuarioId=${widget.usuario.id}", // TODO: tomar por config
     );
     var body = await response.stream.bytesToString();
     Iterable conceptosJson = json.decode(body);
@@ -35,26 +39,8 @@ class _PropietariosHomeState extends State<PropietariosHome> {
     setState( () => this.conceptos = conceptos);
   }
 
-  void _signedIn(model.Usuario usuario) => setState(
-    () {
-      this.usuario = usuario;
-      this.apiClient = ApiClient(usuario.email, usuario.password);
-    }
-  );
-
   @override
   Widget build(BuildContext context) {
-    if(usuario == null) {
-      // TODO: esto "redirecciona" al login si el estado no tiene un usuario guardado.
-      // Probablemente haya una lógica parecida del lado del cliente. No me queda claro
-      // cómo reutilizar este código, creo que heredar States es hacer lío.
-      return LoginPage(title: "Propietarios", onSignedIn: _signedIn);
-    }else{
-      return _build(context);
-    }
-  }
-
-  Widget _build(BuildContext context) {
     if(!this.calledApi) loadConceptos();
 
     return new Scaffold(
@@ -65,7 +51,7 @@ class _PropietariosHomeState extends State<PropietariosHome> {
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
-                content: FormNuevoConcepto(this.apiClient), // TODO
+                content: FormNuevoConcepto(this.widget.apiClient), // TODO
               );
         }, // TODO
           );
@@ -80,7 +66,7 @@ class _PropietariosHomeState extends State<PropietariosHome> {
             Padding(
               padding: EdgeInsets.all(16.0),
               child: Text(
-                "Bienvenido, ${this.usuario.email}.",
+                "Bienvenido, ${this.widget.usuario.email}.",
               style: TextStyle(
                 fontSize: 20.0
                 ),
