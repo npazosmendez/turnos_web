@@ -51,7 +51,7 @@ class _PropietariosHomeState extends State<PropietariosHome> {
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
-                content: FormNuevoConcepto(this.widget.apiClient), // TODO
+                content: FormNuevoConcepto(this.widget.apiClient, this.widget.usuario), // TODO
               );
         }, // TODO
           );
@@ -135,8 +135,9 @@ class ConceptosDataSource extends DataTableSource {
 // Define a custom Form widget.
 class FormNuevoConcepto extends StatefulWidget {
   final ApiClient apiClient;
+  final model.Usuario usuario;
 
-  FormNuevoConcepto(this.apiClient);
+  FormNuevoConcepto(this.apiClient, this.usuario);
 
   @override
   _FormNuevoConceptoState createState() => _FormNuevoConceptoState();
@@ -178,6 +179,7 @@ class _FormNuevoConceptoState extends State<FormNuevoConcepto> {
               var response = await this.widget.apiClient.postJson(
                 "/conceptos/",
                 {
+                  "usuarioId": widget.usuario.id,
                   "nombre": controllerNombre.text,
                   "descripcion": controllerDescripcion.text,
                   "latitud": 0,
