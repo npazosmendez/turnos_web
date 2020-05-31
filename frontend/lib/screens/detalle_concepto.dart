@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/components/ConceptoList.dart';
+import 'package:http/http.dart' as http;
+import 'dart:html' as html;
+import 'dart:convert';
 
 import '../utils/apiclient.dart';
 import '../model.dart' as model;
-import 'package:http/http.dart' as http;
-import 'dart:html' as html;
-import '../utils/apiclient.dart';
 import 'dart:typed_data';
 
 class SelectedImage {
@@ -14,11 +13,32 @@ class SelectedImage {
   const SelectedImage(this.name, this.data);
 }
 
-class DetalleConcepto extends StatelessWidget {
+class DetalleConcepto extends StatefulWidget {
   final model.Usuario usuario;
-  final model.Concepto concepto;
+  final ApiClient apiClient;
+  final int idConcepto;
 
-  const DetalleConcepto(this.usuario, this.concepto);
+  DetalleConcepto(this.usuario, this.idConcepto) : this.apiClient = ApiClient(usuario.email, usuario.password);
+
+  @override
+  _DetalleConceptoState createState() => _DetalleConceptoState();
+}
+
+class _DetalleConceptoState extends State<DetalleConcepto> {
+
+  Future<model.Concepto> futureConcepto;
+
+  @override
+  void initState() {
+    super.initState();
+    futureConcepto = fetchConcepto();
+  }
+
+  Future<model.Concepto> fetchConcepto() async {
+    var response = await widget.apiClient.get("/conceptos", queryParameters: {"id": widget.idConcepto.toString()});
+    Iterable conceptosJson = json.decode(response.body);
+    return model.Concepto.fromJson(conceptosJson.first);
+  }
 
   void getImage(Function(SelectedImage img) callback) async {
     var uploadInput = html.FileUploadInputElement();
@@ -48,7 +68,7 @@ class DetalleConcepto extends StatelessWidget {
     uploadInput.click();
   }
 
-  void _subirImagen() async {
+  void _subirImagen(model.Concepto concepto) async {
     // TODO: error handling
     getImage((SelectedImage img) async {
       var multipartFile = http.MultipartFile.fromBytes(
@@ -56,10 +76,14 @@ class DetalleConcepto extends StatelessWidget {
         img.data,
         filename: img.name);
 
-      var apiClient = ApiClient(this.usuario.email, this.usuario.password);
+      var apiClient = ApiClient(widget.usuario.email, widget.usuario.password);
       try {
-        var response = await apiClient.postMultipartFile("/conceptos/1/asociar_imagen", multipartFile);
-        if (response.statusCode != 200) {
+        var response = await apiClient.postMultipartFile("/conceptos/${concepto.id}/asociar_imagen", multipartFile);
+        if (response.statusCode == 200) {
+          setState(() {
+            this.futureConcepto = fetchConcepto();
+          });
+        } else {
           print("Falló la subida del archivo (${response.statusCode}).");
         }
       } catch (err) {
@@ -68,14 +92,14 @@ class DetalleConcepto extends StatelessWidget {
     });
   }
 
-  Widget configuracionConcepto() {
+  Widget configuracionConcepto(model.Concepto concepto) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Padding(
           padding: EdgeInsets.all(16),
           child: Text(
-            this.concepto.nombre,
+            concepto.nombre,
             style: TextStyle(color: Colors.blue, fontSize: 30, fontWeight: FontWeight.bold),
           ),
         ),
@@ -103,16 +127,16 @@ class DetalleConcepto extends StatelessWidget {
     );
   }
 
-  Widget imagenConcepto() {
-    var foto = true;
+  Widget imagenConcepto(model.Concepto concepto) {
+    var foto = concepto.pathImagen != null;
     return Card(
       child: foto
         ? Image.network(
-          'https://dummyimage.com/400x600/000/fff',
+          ApiClient.getUri(concepto.pathImagen).toString(),
           fit: BoxFit.cover,
         )
         : RaisedButton(
-          onPressed: _subirImagen,
+          onPressed: () =>_subirImagen(concepto),
           child: Icon(Icons.add_a_photo, size: 50),
         ),
     );
@@ -120,43 +144,52 @@ class DetalleConcepto extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: AppBar(title: Text("Mis conceptos")),
-      body: Center(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Padding(
-              padding: EdgeInsets.all(16),
-              child: Row(
-                children: [
-                  Flexible(child: configuracionConcepto()),
-                  Container(
-                    width: 200,
-                    height: 200,
-                    child: imagenConcepto(),
+    return FutureBuilder<model.Concepto>(
+      future: this.futureConcepto,
+      builder: (context, snapshot) {
+        if (!snapshot.hasData || snapshot.hasError) {
+            // TODO
+            return Center(child: CircularProgressIndicator());
+        }
+        return new Scaffold(
+          appBar: AppBar(title: Text("Mis conceptos")),
+          body: Center(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.all(16),
+                  child: Row(
+                    children: [
+                      Flexible(child: configuracionConcepto(snapshot.data)),
+                      Container(
+                        width: 200,
+                        height: 200,
+                        child: imagenConcepto(snapshot.data),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+                Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Divider(
+                    thickness: 1,
+                    color: Colors.black54,
+                  ),
+                ),
+                Text(
+                  "<Listado de clientes en fila>",
+                  style: TextStyle(color: Colors.black54, fontSize: 20, fontWeight: FontWeight.normal),
+                ),
+                Text(
+                  "<Listado de clientes en fila>",
+                  style: TextStyle(color: Colors.black54, fontSize: 20, fontWeight: FontWeight.normal),
+                ),
+              ],
             ),
-            Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Divider(
-                thickness: 1,
-                color: Colors.black54,
-              ),
-            ),
-            Text(
-              "<Listado de clientes en fila>",
-              style: TextStyle(color: Colors.black54, fontSize: 20, fontWeight: FontWeight.normal),
-            ),
-            Text(
-              "<Listado de clientes en fila>",
-              style: TextStyle(color: Colors.black54, fontSize: 20, fontWeight: FontWeight.normal),
-            ),
-          ],
-        ),
-      ),
+          ),
+        );
+      }
     );
   }
 }

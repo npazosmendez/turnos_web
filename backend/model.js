@@ -32,6 +32,11 @@ const Concepto = db.define('conceptos', {
         type: Sequelize.FLOAT,
         allowNull: false
     },
+    pathImagen: {
+        type: Sequelize.STRING,
+        allowNull: true,
+        defaultValue: null,
+    },
 });
 
 const Turno = db.define('turnos', {

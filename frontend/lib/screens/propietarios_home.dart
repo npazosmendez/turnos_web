@@ -49,7 +49,7 @@ class PropietariosHome extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (BuildContext context) => DetalleConcepto(this.usuario, concepto))
+                    builder: (BuildContext context) => DetalleConcepto(this.usuario, concepto.id))
                 );
               }
             )

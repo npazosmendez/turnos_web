@@ -10,7 +10,7 @@ class ApiClient {
   
   ApiClient(this.usuario, this.password);
 
-  Uri _getUri(String path, Map<String, dynamic> queryParameters) {
+  static Uri getUri(String path, {Map<String, String> queryParameters}) {
     if (Foundation.kDebugMode) {
       return Uri(
           host: 'localhost',
@@ -25,32 +25,24 @@ class ApiClient {
     );
   }
 
-  String _fullUrl(String url) {
-//   TODO: remove this method and use getUri
-    if (Foundation.kDebugMode) {
-      return "http://localhost:8080" + url;
-    }
-    return url;
-  }
-
   Future<http.Response> get(path, {queryParameters}) {
     Map<String, String> headers = {};
     headers[HttpHeaders.authorizationHeader] = 'Basic ${this.usuario}:${this.password}';
-    final uri = _getUri(path, queryParameters);
-
+    headers[HttpHeaders.cacheControlHeader] = 'no-cache';
+    final uri = getUri(path, queryParameters: queryParameters);
     return _client.get(uri, headers: headers);
   }
 
-  Future<http.StreamedResponse> postJson(String url, Map<String, dynamic> body) {
-    var request = new http.Request('POST', Uri.parse(_fullUrl(url)));
+  Future<http.StreamedResponse> postJson(String path, Map<String, dynamic> body) {
+    var request = new http.Request('POST', getUri(path));
     request.headers[HttpHeaders.authorizationHeader] = 'Basic ${this.usuario}:${this.password}';
     request.headers[HttpHeaders.contentTypeHeader] = 'application/json';
     request.body = json.encode(body);
     return _client.send(request);
   }
 
-  Future<http.StreamedResponse> postMultipartFile(String url, http.MultipartFile file) {
-    var request = new http.MultipartRequest("POST", Uri.parse(_fullUrl(url)));
+  Future<http.StreamedResponse> postMultipartFile(String path, http.MultipartFile file) {
+    var request = new http.MultipartRequest("POST", getUri(path));
     request.headers[HttpHeaders.authorizationHeader] = 'Basic ${this.usuario}:${this.password}';
     request.files.add(file);
     return _client.send(request);

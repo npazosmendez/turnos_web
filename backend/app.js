@@ -19,6 +19,7 @@ app.use(cors()); // Habilita CORS
 app.use(morgan('dev')); // Loggea requests
 app.use(bodyParser.json()); // Parsea el body si el content type es json
 app.use(express.static('../frontend/build/web')); // Sirve estáticos
+app.use(express.static('imagenes_conceptos')); // Sirve estáticos
 app.use(auth.basicAuth)
 
 // APIS
@@ -29,7 +30,6 @@ app.get('/usuarios/login', function (req, res) {
 })
 
 app.post('/conceptos/', async function (req, res) {
-  console.log(req.body);
   model.Concepto.create({
     nombre: req.body.nombre,
     descripcion: req.body.descripcion,
@@ -67,11 +67,23 @@ app.put('/conceptos/:id', async function (req, res) {
 });
 
 
-app.post('/conceptos/:id/asociar_imagen', upload.single('imagen_concepto'), function (req, res, next) {
-  // TODO asociar con los modelos en la BBDD
-  console.log(`El usuario ${req.usuario.email} subió la imagen\
-  ${req.file.destination}${req.file.filename} para el concepto ${req.params.id}.`);
-  return res.status(200);
+app.post('/conceptos/:id/asociar_imagen', upload.single('imagen_concepto'), async function (req, res, next) {
+  const concepto = await model.Concepto.findOne({
+    where : {
+      id: req.params.id
+    }
+  });
+  if (!concepto) {
+    return res.status(404).send("No encontré ese concepto, gil.");
+  }
+  // TODO: chequear si ya tiene imagen, eliminar la vieja
+  concepto.pathImagen = req.file.filename;
+  concepto.save().then(concepto => {
+    return res.status(200).send(concepto);
+  }).catch((err) => {
+    console.log(err)
+    return res.status(400).send(err.message);
+  });
 })
 
 // Corre el server
