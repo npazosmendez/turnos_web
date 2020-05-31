@@ -17,10 +17,10 @@ class ApiClient {
     return url;
   }
 
-  Future<http.StreamedResponse> get(String url) {
-    var request = new http.Request('GET', Uri.parse(_fullUrl(url)));
-    request.headers[HttpHeaders.authorizationHeader] = 'Basic ${this.usuario}:${this.password}';
-    return _client.send(request);
+  Future<http.Response> get(String url) {
+    Map<String, String> headers = {};
+    headers[HttpHeaders.authorizationHeader] = 'Basic ${this.usuario}:${this.password}';
+    return _client.get(Uri.parse(_fullUrl(url)), headers: headers);
   }
 
   Future<http.StreamedResponse> postJson(String url, Map<String, dynamic> body) {

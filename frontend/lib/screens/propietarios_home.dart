@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 
-import 'login.dart';
 import '../utils/apiclient.dart';
 import '../model.dart' as model;
 
@@ -17,31 +16,26 @@ class PropietariosHome extends StatefulWidget {
 
 class _PropietariosHomeState extends State<PropietariosHome> {
 
-  List<model.Concepto> conceptos = [];
-  /* TODO: flutter me está llamando build muchas veces, no estoy seguro por qué.
-  Este bool es para no llamar a la API para obtener la info cada vez que se buildea.
-  */
-  bool calledApi = false;
+  Future<List<model.Concepto>> futureConceptos;
 
+  @override
+  void initState() {
+    super.initState();
+    futureConceptos = fetchConceptos();
+  }
 
-  loadConceptos() async {
+  Future<List<model.Concepto>> fetchConceptos() async {
     var apiClient = ApiClient(widget.usuario.email, widget.usuario.password);
-    var response = await apiClient.get(
-      "/conceptos?usuarioId=${widget.usuario.id}", // TODO: tomar por config
+    var response = await apiClient.get("/conceptos?usuarioId=${widget.usuario.id}");
+
+    Iterable conceptosJson = json.decode(response.body);
+    return List<model.Concepto>.from(
+        conceptosJson.map((json) => model.Concepto.fromJson(json))
     );
-    var body = await response.stream.bytesToString();
-    Iterable conceptosJson = json.decode(body);
-    List<model.Concepto> conceptos = [];
-    for (var json in conceptosJson) {
-      conceptos.add(model.Concepto.fromJson(json));
-    }
-    this.calledApi = true;
-    setState( () => this.conceptos = conceptos);
   }
 
   @override
   Widget build(BuildContext context) {
-    if(!this.calledApi) loadConceptos();
 
     return new Scaffold(
       appBar: AppBar(title: Text("Mis Conceptos"),),
@@ -72,23 +66,34 @@ class _PropietariosHomeState extends State<PropietariosHome> {
                 ),
               ),
             ),
-            PaginatedDataTable(
-              showCheckboxColumn: false,
-              header: const Text('Mis Conceptos'),
-              columns: <DataColumn>[
-                new DataColumn(
-                    label: const Text('Nombre'),
-                ),
-                new DataColumn(
-                    label: const Text('Descripción'),
-                ),
-                new DataColumn(
-                    label: const Text('Estado'),
-                    numeric: true,
-                ),
-              ],
-              source: ConceptosDataSource(this.conceptos),
-            ),
+            FutureBuilder<List<model.Concepto>>(
+              future: futureConceptos,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return PaginatedDataTable(
+                    showCheckboxColumn: false,
+                    header: const Text('Mis Conceptos'),
+                    columns: <DataColumn>[
+                      new DataColumn(
+                        label: const Text('Nombre'),
+                      ),
+                      new DataColumn(
+                        label: const Text('Descripción'),
+                      ),
+                      new DataColumn(
+                        label: const Text('Estado'),
+                        numeric: true,
+                      ),
+                    ],
+                    source: ConceptosDataSource(snapshot.data),
+                  );
+                } else if (snapshot.hasError) {
+                  // TODO
+                }
+                // By default, show a loading spinner.
+                return Center(child: CircularProgressIndicator());
+              }
+            )
           ],
         ),
       ),
