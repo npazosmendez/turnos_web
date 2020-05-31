@@ -9,8 +9,9 @@ class ConceptoList extends StatefulWidget {
   final ApiClient apiClient;
   final Widget header;
   final Map<String,String> filtros;
+  final Function(model.Concepto) onSelect;
 
-  ConceptoList({this.usuario, this.header, this.filtros}) : this.apiClient = ApiClient(usuario.email, usuario.password);
+  ConceptoList({this.usuario, this.header, this.filtros, this.onSelect}) : this.apiClient = ApiClient(usuario.email, usuario.password);
 
   @override
   State<StatefulWidget> createState() => _ConceptoListState();
@@ -57,7 +58,7 @@ class _ConceptoListState extends State<ConceptoList> {
                   numeric: true,
                 ),
               ],
-              source: ConceptosDataSource(snapshot.data),
+              source: ConceptosDataSource(snapshot.data, onSelect: widget.onSelect),
             );
           } else if (snapshot.hasError) {
             // TODO
@@ -74,8 +75,9 @@ class _ConceptoListState extends State<ConceptoList> {
 class ConceptosDataSource extends DataTableSource {
 
   final List<model.Concepto> conceptos;
+  final Function(model.Concepto) onSelect;
 
-  ConceptosDataSource(this.conceptos);
+  ConceptosDataSource(this.conceptos, {this.onSelect});
 
   @override
   int get rowCount => this.conceptos.length;
@@ -93,7 +95,7 @@ class ConceptosDataSource extends DataTableSource {
     return new DataRow.byIndex(
         index: index,
         selected: false,
-        onSelectChanged: (bool value) { },
+        onSelectChanged: (bool value) { onSelect(concepto); },
         cells: <DataCell>[
           new DataCell(new Text(concepto.nombre)),
           new DataCell(new Text(concepto.descripcion)),
