@@ -55,8 +55,9 @@ class PropietariosHome extends StatelessWidget {
 // Define a custom Form widget.
 class FormNuevoConcepto extends StatefulWidget {
   final ApiClient apiClient;
+  final model.Usuario usuario;
 
-  FormNuevoConcepto(usuario) : this.apiClient = ApiClient(usuario.email, usuario.password);
+  FormNuevoConcepto(this.usuario) : this.apiClient = ApiClient(usuario.email, usuario.password);
 
   @override
   _FormNuevoConceptoState createState() => _FormNuevoConceptoState();
