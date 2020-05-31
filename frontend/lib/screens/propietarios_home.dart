@@ -3,6 +3,7 @@ import 'package:frontend/components/ConceptoList.dart';
 
 import '../utils/apiclient.dart';
 import '../model.dart' as model;
+import 'detalle_concepto.dart';
 
 class PropietariosHome extends StatelessWidget {
   final model.Usuario usuario;
@@ -41,9 +42,16 @@ class PropietariosHome extends StatelessWidget {
               ),
             ),
             ConceptoList(
-                usuario: usuario,
-                header: const Text('Mis Conceptos'),
-                filtros: {"usuarioId": usuario.id.toString()},
+              usuario: usuario,
+              header: const Text('Mis Conceptos'),
+              filtros: {"usuarioId": usuario.id.toString()},
+              onSelect: (concepto) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => DetalleConcepto(this.usuario, concepto))
+                );
+              }
             )
           ],
         ),
