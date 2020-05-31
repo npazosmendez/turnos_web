@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../model.dart' as model;
 import '../utils/apiclient.dart';
+import 'nuevo_turno.dart';
 
 class ClientesHome extends StatelessWidget {
 
@@ -13,7 +14,14 @@ class ClientesHome extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("Mis Turnos")),
-      body: Text("Bienvenido, cliente ${this.usuario.email}"),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => NuevoTurno(this.usuario)));
+        },
+        child: Icon(Icons.add),
+        tooltip: "Nuevo Turno",
+      ),
+      body: Text("Bienvenide, cliente ${this.usuario.email}"),
       );
   }
 }

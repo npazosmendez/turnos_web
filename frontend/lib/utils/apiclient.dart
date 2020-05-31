@@ -10,17 +10,35 @@ class ApiClient {
   
   ApiClient(this.usuario, this.password);
 
+  Uri _getUri(String path, Map<String, dynamic> queryParameters) {
+    if (Foundation.kDebugMode) {
+      return Uri(
+          host: 'localhost',
+          port: 3000,
+          path: path,
+          queryParameters:queryParameters
+      );
+    }
+    return Uri(
+        path: path,
+        queryParameters:queryParameters
+    );
+  }
+
   String _fullUrl(String url) {
+//   TODO: remove this method and use getUri
     if (Foundation.kDebugMode) {
       return "http://localhost:8080" + url;
     }
     return url;
   }
 
-  Future<http.StreamedResponse> get(String url) {
-    var request = new http.Request('GET', Uri.parse(_fullUrl(url)));
-    request.headers[HttpHeaders.authorizationHeader] = 'Basic ${this.usuario}:${this.password}';
-    return _client.send(request);
+  Future<http.Response> get(path, {queryParameters}) {
+    Map<String, String> headers = {};
+    headers[HttpHeaders.authorizationHeader] = 'Basic ${this.usuario}:${this.password}';
+    final uri = _getUri(path, queryParameters);
+
+    return _client.get(uri, headers: headers);
   }
 
   Future<http.StreamedResponse> postJson(String url, Map<String, dynamic> body) {

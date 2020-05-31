@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import '../model.dart' as model;
 import '../utils/apiclient.dart';
 import 'dart:convert';
@@ -28,8 +27,7 @@ class _LoginPageState extends State<LoginPage> {
       var apiClient = ApiClient(email, password);
       final response = await apiClient.get("/usuarios/login");
       if((authResponseStatus = response.statusCode) == 200) {
-        var body = await response.stream.bytesToString();
-        this.widget.onSignedIn(model.Usuario.fromJson(json.decode(body)));
+        this.widget.onSignedIn(model.Usuario.fromJson(json.decode(response.body)));
         return;
       }
     } catch (ex) {

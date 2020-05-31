@@ -1,48 +1,16 @@
 import 'package:flutter/material.dart';
-import 'dart:convert';
+import 'package:frontend/components/ConceptoList.dart';
 
-import 'login.dart';
 import '../utils/apiclient.dart';
 import '../model.dart' as model;
 
-class PropietariosHome extends StatefulWidget {
+class PropietariosHome extends StatelessWidget {
   final model.Usuario usuario;
-  final ApiClient apiClient;
 
-  PropietariosHome(this.usuario) : this.apiClient = ApiClient(usuario.email, usuario.password);
-
-  @override
-  State<StatefulWidget> createState() => _PropietariosHomeState();
-}
-
-class _PropietariosHomeState extends State<PropietariosHome> {
-
-  List<model.Concepto> conceptos = [];
-  /* TODO: flutter me está llamando build muchas veces, no estoy seguro por qué.
-  Este bool es para no llamar a la API para obtener la info cada vez que se buildea.
-  */
-  bool calledApi = false;
-
-
-  loadConceptos() async {
-    var apiClient = ApiClient(widget.usuario.email, widget.usuario.password);
-    var response = await apiClient.get(
-      "/conceptos?usuarioId=${widget.usuario.id}", // TODO: tomar por config
-    );
-    var body = await response.stream.bytesToString();
-    Iterable conceptosJson = json.decode(body);
-    List<model.Concepto> conceptos = [];
-    for (var json in conceptosJson) {
-      conceptos.add(model.Concepto.fromJson(json));
-    }
-    this.calledApi = true;
-    setState( () => this.conceptos = conceptos);
-  }
+  const PropietariosHome(this.usuario);
 
   @override
   Widget build(BuildContext context) {
-    if(!this.calledApi) loadConceptos();
-
     return new Scaffold(
       appBar: AppBar(title: Text("Mis Conceptos"),),
       floatingActionButton: FloatingActionButton(
@@ -51,9 +19,9 @@ class _PropietariosHomeState extends State<PropietariosHome> {
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
-                content: FormNuevoConcepto(this.widget.apiClient, this.widget.usuario), // TODO
+                content: FormNuevoConcepto(usuario), // TODO
               );
-        }, // TODO
+            }, // TODO
           );
         },
         child: Icon(Icons.add),
@@ -66,68 +34,20 @@ class _PropietariosHomeState extends State<PropietariosHome> {
             Padding(
               padding: EdgeInsets.all(16.0),
               child: Text(
-                "Bienvenido, ${this.widget.usuario.email}.",
-              style: TextStyle(
-                fontSize: 20.0
+                "Bienvenido, ${usuario.email}.",
+                style: TextStyle(
+                    fontSize: 20.0
                 ),
               ),
             ),
-            PaginatedDataTable(
-              showCheckboxColumn: false,
-              header: const Text('Mis Conceptos'),
-              columns: <DataColumn>[
-                new DataColumn(
-                    label: const Text('Nombre'),
-                ),
-                new DataColumn(
-                    label: const Text('Descripción'),
-                ),
-                new DataColumn(
-                    label: const Text('Estado'),
-                    numeric: true,
-                ),
-              ],
-              source: ConceptosDataSource(this.conceptos),
-            ),
+            ConceptoList(
+                usuario: usuario,
+                header: const Text('Mis Conceptos'),
+                filtros: {"usuarioId": usuario.id.toString()},
+            )
           ],
         ),
       ),
-    );
-  }
-
-}
-
-
-class ConceptosDataSource extends DataTableSource {
-
-  final List<model.Concepto> conceptos;
-
-  ConceptosDataSource(this.conceptos);
-
-  @override
-  int get rowCount => this.conceptos.length;
-
-  @override
-  bool get isRowCountApproximate => false;
-
-  @override
-  int get selectedRowCount => 0;
-
-  @override
-  DataRow getRow(int index) {
-    assert(index >= 0);
-    var concepto = this.conceptos[index];
-    return new DataRow.byIndex(
-        index: index,
-        selected: false,
-        onSelectChanged: (bool value) { },
-        cells: <DataCell>[
-          new DataCell(new Text(concepto.nombre)),
-          new DataCell(new Text(concepto.descripcion)),
-          new DataCell(concepto.habilitado
-            ? Icon(Icons.check, color: Colors.green)
-            : Icon(Icons.close, color: Colors.red)),
-        ]
     );
   }
 }
@@ -137,7 +57,7 @@ class FormNuevoConcepto extends StatefulWidget {
   final ApiClient apiClient;
   final model.Usuario usuario;
 
-  FormNuevoConcepto(this.apiClient, this.usuario);
+  FormNuevoConcepto(this.usuario) : this.apiClient = ApiClient(usuario.email, usuario.password);
 
   @override
   _FormNuevoConceptoState createState() => _FormNuevoConceptoState();
