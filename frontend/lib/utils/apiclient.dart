@@ -12,7 +12,7 @@ class ApiClient {
 
   String _fullUrl(String url) {
     if (Foundation.kDebugMode) {
-      return "http://localhost:3000" + url;
+      return "http://localhost:8080" + url;
     }
     return url;
   }
@@ -31,4 +31,10 @@ class ApiClient {
     return _client.send(request);
   }
 
+  Future<http.StreamedResponse> postMultipartFile(String url, http.MultipartFile file) {
+    var request = new http.MultipartRequest("POST", Uri.parse(_fullUrl(url)));
+    request.headers[HttpHeaders.authorizationHeader] = 'Basic ${this.usuario}:${this.password}';
+    request.files.add(file);
+    return _client.send(request);
+  }
 }

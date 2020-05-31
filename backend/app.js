@@ -5,10 +5,13 @@ const bodyParser = require('body-parser');
 var morgan = require('morgan')
 var https = require('https')
 var fs = require('fs')
+var multer = require('multer')
 
 var model = require('./model');
 var auth = require('./auth');
 var config = require('./config');
+
+var upload = multer({ dest: 'imagenes_conceptos/' })
 
 // Middlewares
 // ~~~~~~~~~~~
@@ -62,6 +65,14 @@ app.put('/conceptos/:id', async function (req, res) {
     return res.status(400).send(err.message);
   });
 });
+
+
+app.post('/conceptos/:id/asociar_imagen', upload.single('imagen_concepto'), function (req, res, next) {
+  // TODO asociar con los modelos en la BBDD
+  console.log(`El usuario ${req.usuario.email} subió la imagen\
+  ${req.file.destination}${req.file.filename} para el concepto ${req.params.id}.`);
+  return res.status(200);
+})
 
 // Corre el server
 // ~~~~~~~~~~~~~~~
