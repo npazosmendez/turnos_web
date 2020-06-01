@@ -1,6 +1,6 @@
 import { Usuario } from "./model.js";
 
-var bypass = true;
+var bypass = false;
 
 function decodeAuthHeader(authHeader) {
     if (authHeader.indexOf('Basic ') === -1) {

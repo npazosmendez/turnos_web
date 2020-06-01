@@ -28,7 +28,6 @@ class ApiClient {
   Future<http.Response> get(path, {queryParameters}) {
     Map<String, String> headers = {};
     headers[HttpHeaders.authorizationHeader] = 'Basic ${this.usuario}:${this.password}';
-    headers[HttpHeaders.cacheControlHeader] = 'no-cache';
     final uri = getUri(path, queryParameters: queryParameters);
     return _client.get(uri, headers: headers);
   }

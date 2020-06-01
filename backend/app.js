@@ -23,6 +23,10 @@ app.use(bodyParser.json()); // Parsea el body si el content type es json
 app.use(express.static('../frontend/build/web'));
 app.use(express.static('uploads'));
 app.use(basicAuth);
+app.use((req, res, next) => {
+  res.set('Cache-Control', 'no-store'); // Deshabilita el caché
+  next();
+})
 
 // APIS
 // ~~~~~~~~~~~~~~~
