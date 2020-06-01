@@ -39,7 +39,6 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void setAuthFailed() {
-    print(1123);
     setState(() {
       this.authFailed = true;
     });
