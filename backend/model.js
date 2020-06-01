@@ -1,14 +1,15 @@
-const Sequelize = require('sequelize');
+import Sequelize from 'sequelize';
+
 const db = new Sequelize("sqlite::memory:", {
     logging: false,
 });
 
-const Usuario = db.define('usuarios', {
+export const Usuario = db.define('usuarios', {
     email: Sequelize.TEXT,
     password: Sequelize.TEXT
 });
 
-const Concepto = db.define('conceptos', {
+export const Concepto = db.define('conceptos', {
     habilitado: {
         type: Sequelize.BOOLEAN,
         allowNull: false,
@@ -34,7 +35,7 @@ const Concepto = db.define('conceptos', {
     },
 });
 
-const Turno = db.define('turnos', {
+export const Turno = db.define('turnos', {
     numero: Sequelize.INTEGER,
 });
 
@@ -73,7 +74,3 @@ db.sync({ force: true })
             { numero: 1, usuarioId: 1, conceptoId: 3}, // Elver para la mercería
         ]);
     });
-
-exports.Usuario = Usuario
-exports.Concepto = Concepto
-exports.Turno = Turno
