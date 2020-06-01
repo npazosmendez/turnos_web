@@ -5,7 +5,7 @@ import morgan from 'morgan';
 import https from 'https';
 import fs from 'fs';
 
-import { Concepto } from "./model.js";
+import { Concepto, Turno } from "./model.js";
 import { basicAuth } from "./auth.js";
 import config from './config.js';
 
@@ -62,6 +62,21 @@ app.put('/conceptos/:id', async function (req, res) {
     console.log(err)
     return res.status(400).send(err.message);
   });
+});
+
+app.get('/conceptos/:id/turnos', async function (req, res) {
+  const turnos = await Turno.findAll({
+    where : { conceptoId: req.params.id }
+  });
+  res.send(turnos);
+});
+
+app.post('/conceptos/:id/turnos', async function (req, res) {
+  Turno.create({
+    usuarioId: req.usuario.id,
+    conceptoId: req.params.id
+  }).then((turno) => res.send(turno))
+    .catch((err) => res.status(500).send(err.message));
 });
 
 // Corre el server

@@ -35,9 +35,28 @@ export const Concepto = db.define('conceptos', {
     },
 });
 
-export const Turno = db.define('turnos', {
-    numero: Sequelize.INTEGER,
+export class Turno extends Sequelize.Model {
+    static async proximo_numero(conceptoId) {
+        const maximo = await this.max("numero", { where: { conceptoId: conceptoId }});
+        return isNaN(maximo) ? 1 : maximo + 1;
+    }
+
+    static async create({conceptoId, usuarioId}, options) {
+        return super.create({
+          conceptoId: conceptoId,
+          usuarioId: usuarioId,
+          numero: await this.proximo_numero(conceptoId)
+        }, options);
+    }
+}
+
+Turno.init({
+      numero: Sequelize.INTEGER,
+  }, {
+    sequelize: db, // connection instance
+    modelName: 'turnos'
 });
+
 
 Usuario.hasMany(Turno, {
     foreignKey: {
