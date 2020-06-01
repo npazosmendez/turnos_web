@@ -1,4 +1,4 @@
-const model = require('./model')
+import { Usuario } from "./model.js";
 
 var bypass = false;
 
@@ -14,7 +14,7 @@ function decodeAuthHeader(authHeader) {
     return [email, password];
 }
 
-async function basicAuth(req, res, next) {
+export async function basicAuth(req, res, next) {
     if(bypass) {
         req.usuario = null;
     } else {
@@ -30,7 +30,7 @@ async function basicAuth(req, res, next) {
             return res.status(401).json({ message: err.message });
         }
         
-        var result = await model.Usuario.findAll({
+        var result = await Usuario.findAll({
             where: {
                 email: email,
                 password: password,
@@ -44,5 +44,3 @@ async function basicAuth(req, res, next) {
     }
     next();
 }
-
-exports.basicAuth = basicAuth

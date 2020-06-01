@@ -1,15 +1,16 @@
-const express = require('express')
-const cors = require('cors')
-const app = express()
-const bodyParser = require('body-parser');
-var morgan = require('morgan')
-var https = require('https')
-var fs = require('fs')
-var multer = require('multer')
+import express from 'express';
+import cors from 'cors';
+import bodyParser from 'body-parser';
+import morgan from 'morgan';
+import https from 'https';
+import fs from 'fs';
+import multer from 'multer';
 
-var model = require('./model');
-var auth = require('./auth');
-var config = require('./config');
+import { Concepto, Turno } from "./model.js";
+import { basicAuth } from "./auth.js";
+import config from './config.js';
+
+const app = express()
 
 var upload = multer({ dest: 'imagenes_conceptos/' })
 
@@ -20,7 +21,7 @@ app.use(morgan('dev')); // Loggea requests
 app.use(bodyParser.json()); // Parsea el body si el content type es json
 app.use(express.static('../frontend/build/web')); // Sirve estáticos
 app.use(express.static('imagenes_conceptos')); // Sirve estáticos
-app.use(auth.basicAuth)
+app.use(basicAuth);
 
 // APIS
 // ~~~~~~~~~~~~~~~
@@ -30,7 +31,7 @@ app.get('/usuarios/login', function (req, res) {
 })
 
 app.post('/conceptos/', async function (req, res) {
-  model.Concepto.create({
+  Concepto.create({
     nombre: req.body.nombre,
     descripcion: req.body.descripcion,
     latitud: req.body.latitud,
@@ -40,7 +41,7 @@ app.post('/conceptos/', async function (req, res) {
 });
 
 app.get('/conceptos', async function (req, res) {
-  const concepto = await model.Concepto.findAll({
+  const concepto = await Concepto.findAll({
     // TODO: validar la query. Puede resultar en excepciones de la bbdd
     where : req.query
   });
@@ -49,7 +50,7 @@ app.get('/conceptos', async function (req, res) {
 
 app.put('/conceptos/:id', async function (req, res) {
 
-  const concepto = await model.Concepto.findOne({
+  const concepto = await Concepto.findOne({
     where : {
       id: req.params.id
     }
@@ -66,9 +67,8 @@ app.put('/conceptos/:id', async function (req, res) {
   });
 });
 
-
 app.post('/conceptos/:id/asociar_imagen', upload.single('imagen_concepto'), async function (req, res, next) {
-  const concepto = await model.Concepto.findOne({
+  const concepto = await Concepto.findOne({
     where : {
       id: req.params.id
     }
@@ -85,6 +85,21 @@ app.post('/conceptos/:id/asociar_imagen', upload.single('imagen_concepto'), asyn
     return res.status(400).send(err.message);
   });
 })
+
+app.get('/conceptos/:id/turnos', async function (req, res) {
+  const turnos = await Turno.findAll({
+    where : { conceptoId: req.params.id }
+  });
+  res.send(turnos);
+});
+
+app.post('/conceptos/:id/turnos', async function (req, res) {
+  Turno.create({
+    usuarioId: req.usuario.id,
+    conceptoId: req.params.id
+  }).then((turno) => res.send(turno))
+    .catch((err) => res.status(500).send(err.message));
+});
 
 // Corre el server
 // ~~~~~~~~~~~~~~~

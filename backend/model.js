@@ -1,14 +1,15 @@
-const Sequelize = require('sequelize');
+import Sequelize from 'sequelize';
+
 const db = new Sequelize("sqlite::memory:", {
     logging: false,
 });
 
-const Usuario = db.define('usuarios', {
+export const Usuario = db.define('usuarios', {
     email: Sequelize.TEXT,
     password: Sequelize.TEXT
 });
 
-const Concepto = db.define('conceptos', {
+export const Concepto = db.define('conceptos', {
     habilitado: {
         type: Sequelize.BOOLEAN,
         allowNull: false,
@@ -39,9 +40,28 @@ const Concepto = db.define('conceptos', {
     },
 });
 
-const Turno = db.define('turnos', {
-    numero: Sequelize.INTEGER,
+export class Turno extends Sequelize.Model {
+    static async proximo_numero(conceptoId) {
+        const maximo = await this.max("numero", { where: { conceptoId: conceptoId }});
+        return isNaN(maximo) ? 1 : maximo + 1;
+    }
+
+    static async create({conceptoId, usuarioId}, options) {
+        return super.create({
+          conceptoId: conceptoId,
+          usuarioId: usuarioId,
+          numero: await this.proximo_numero(conceptoId)
+        }, options);
+    }
+}
+
+Turno.init({
+      numero: Sequelize.INTEGER,
+  }, {
+    sequelize: db, // connection instance
+    modelName: 'turnos'
 });
+
 
 Usuario.hasMany(Turno, {
     foreignKey: {
@@ -78,7 +98,3 @@ db.sync({ force: true })
             { numero: 1, usuarioId: 1, conceptoId: 3}, // Elver para la mercería
         ]);
     });
-
-exports.Usuario = Usuario
-exports.Concepto = Concepto
-exports.Turno = Turno
