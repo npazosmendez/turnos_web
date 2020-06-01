@@ -4,6 +4,7 @@ import bodyParser from 'body-parser';
 import morgan from 'morgan';
 import https from 'https';
 import fs from 'fs';
+import path from 'path';
 import multer from 'multer';
 
 import { Concepto, Turno } from "./model.js";
@@ -12,15 +13,14 @@ import config from './config.js';
 
 const app = express()
 
-var upload = multer({ dest: 'imagenes_conceptos/' })
-
 // Middlewares
 // ~~~~~~~~~~~
 app.use(cors()); // Habilita CORS
 app.use(morgan('dev')); // Loggea requests
 app.use(bodyParser.json()); // Parsea el body si el content type es json
-app.use(express.static('../frontend/build/web')); // Sirve estáticos
-app.use(express.static('imagenes_conceptos')); // Sirve estáticos
+// NOTE: ojo que se sirve todo lo de los directorios
+app.use(express.static('../frontend/build/web'));
+app.use(express.static('uploads'));
 app.use(basicAuth);
 
 // APIS
@@ -67,24 +67,27 @@ app.put('/conceptos/:id', async function (req, res) {
   });
 });
 
-app.post('/conceptos/:id/asociar_imagen', upload.single('imagen_concepto'), async function (req, res, next) {
-  const concepto = await Concepto.findOne({
-    where : {
-      id: req.params.id
+app.post(
+  '/conceptos/:id/asociar_imagen',
+  multer({ dest: 'uploads/imagenes_conceptos' }).single('imagen_concepto'),
+  async function (req, res, next) {
+    const concepto = await Concepto.findOne({
+      where : {
+        id: req.params.id
+      }
+    });
+    if (!concepto) {
+      return res.status(404).send("No encontré ese concepto, gil.");
     }
-  });
-  if (!concepto) {
-    return res.status(404).send("No encontré ese concepto, gil.");
+    concepto.pathImagen = path.join("imagenes_conceptos", req.file.filename);
+    concepto.save().then(concepto => {
+      return res.status(200).send(concepto);
+    }).catch((err) => {
+      console.log(err)
+      return res.status(400).send(err.message);
+    });
   }
-  // TODO: chequear si ya tiene imagen, eliminar la vieja
-  concepto.pathImagen = req.file.filename;
-  concepto.save().then(concepto => {
-    return res.status(200).send(concepto);
-  }).catch((err) => {
-    console.log(err)
-    return res.status(400).send(err.message);
-  });
-})
+);
 
 app.get('/conceptos/:id/turnos', async function (req, res) {
   const turnos = await Turno.findAll({
