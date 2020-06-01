@@ -48,45 +48,49 @@ app.get('/conceptos', async function (req, res) {
   res.send(concepto);
 });
 
-app.put('/conceptos/:id', async function (req, res) {
-
-  const concepto = await Concepto.findOne({
+async function obtenerConcepto(req, res, next) {
+  Concepto.findOne({
     where : {
       id: req.params.id
     }
-  });
-  if (!concepto) {
-    return res.status(404).send("No encontré ese concepto, gil.");
-  }
-  concepto.habilitado = req.body.habilitado;
-  concepto.save().then(concepto => {
+  })
+    .then((concepto) => {
+      if (!concepto) {
+        return res.status(404).send("No encontré ese concepto, gil.");
+      } else {
+        req.concepto = concepto;
+        next();
+      }
+    })
+    .catch(next);
+}
+
+// No se me ocurrió un nombre bello en español
+async function saveAndSendConcepto(req, res, next) {
+  req.concepto.save().then(concepto => {
     return res.status(200).send(concepto);
-  }).catch((err) => {
-    console.log(err)
-    return res.status(400).send(err.message);
-  });
-});
+  }).catch(next);
+}
+
+app.put(
+  '/conceptos/:id',
+  obtenerConcepto,
+  async function (req, res, next) {
+    req.concepto.habilitado = req.body.habilitado;
+    next();
+  },
+  saveAndSendConcepto
+);
 
 app.post(
   '/conceptos/:id/asociar_imagen',
+  obtenerConcepto,
   multer({ dest: 'uploads/imagenes_conceptos' }).single('imagen_concepto'),
   async function (req, res, next) {
-    const concepto = await Concepto.findOne({
-      where : {
-        id: req.params.id
-      }
-    });
-    if (!concepto) {
-      return res.status(404).send("No encontré ese concepto, gil.");
-    }
-    concepto.pathImagen = path.join("imagenes_conceptos", req.file.filename);
-    concepto.save().then(concepto => {
-      return res.status(200).send(concepto);
-    }).catch((err) => {
-      console.log(err)
-      return res.status(400).send(err.message);
-    });
-  }
+    req.concepto.pathImagen = path.join("imagenes_conceptos", req.file.filename);
+    next();
+  },
+  saveAndSendConcepto
 );
 
 app.get('/conceptos/:id/turnos', async function (req, res) {
@@ -102,6 +106,16 @@ app.post('/conceptos/:id/turnos', async function (req, res) {
     conceptoId: req.params.id
   }).then((turno) => res.send(turno))
     .catch((err) => res.status(500).send(err.message));
+});
+
+// Error handling global
+/* NOTE: los errores de promises no manejados no llegan acá.
+Puede eso puede hacerse dentro del middleware:
+  promise.catch(next)
+*/
+app.use(function (err, req, res, next) {
+  console.error("ERROR: " + ex);
+  res.status(500).send(err.message);
 });
 
 // Corre el server
