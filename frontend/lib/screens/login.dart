@@ -1,20 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/screens/home.dart';
+import 'package:frontend/utils/UsuarioService.dart';
 import '../model.dart' as model;
-import '../utils/apiclient.dart';
-import 'dart:convert';
 
 class LoginPage extends StatefulWidget {
-
-  const LoginPage({this.title, this.onSignedIn});
-  final Function(model.Usuario usuario) onSignedIn;
-  final String title;
-
+  static const String routeName = '/login';
   @override
   State<StatefulWidget> createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
-  // final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   bool authFailed = false;
   int authResponseStatus = -1;
   final emailInputController = TextEditingController(text: "elver@gmail.com");
@@ -24,12 +19,9 @@ class _LoginPageState extends State<LoginPage> {
     var email = emailInputController.text;
     var password = passwordInputController.text;
     try {
-      var apiClient = ApiClient(email, password);
-      final response = await apiClient.get("/usuarios/login");
-      if((authResponseStatus = response.statusCode) == 200) {
-        this.widget.onSignedIn(model.Usuario.fromJson(json.decode(response.body)));
-        return;
-      }
+      model.Usuario usuario = await UsuarioService.login(email, password);
+      Navigator.pushNamed(context, HomePage.routeName, arguments: usuario);
+      return;
     } catch (ex) {
       print(ex);
       // TODO: probablemente un error de conexión o que el backend no responde.

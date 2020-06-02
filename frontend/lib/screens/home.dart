@@ -1,31 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/screens/login.dart';
 
 import 'propietarios_home.dart';
 import 'clientes_home.dart';
-import 'login.dart';
 import '../model.dart' as model;
 
-class HomePage extends StatefulWidget {
-  @override
-  _HomePageState createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-
-  model.Usuario usuario;
-
-  void onSignedIn(model.Usuario usuario) {
-    setState( () {
-      this.usuario = usuario;
-    });
-  }
+class HomePage extends StatelessWidget {
+  static const String routeName = '/home';
 
   @override
   Widget build(BuildContext context) {
-
-    if (this.usuario == null) {
-      // Requerir autenticación
-      return LoginPage(title: "Login", onSignedIn: onSignedIn);
+    final model.Usuario usuario = ModalRoute.of(context).settings.arguments;
+    if (usuario == null) {
+      return LoginPage();
     }
 
     return Scaffold(
@@ -38,21 +25,21 @@ class _HomePageState extends State<HomePage> {
           children: <Widget>[
             RaisedButton(
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(18.0)),
+                  borderRadius: BorderRadius.circular(18.0)),
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => PropietariosHome(this.usuario)));
+                Navigator.pushNamed(context, PropietariosHome.routeName, arguments: usuario);
               },
               child: Text("Propietarios".toUpperCase(),
-                style: TextStyle(fontSize: 14)),
+                  style: TextStyle(fontSize: 14)),
             ),
             RaisedButton(
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(18.0)),
+                  borderRadius: BorderRadius.circular(18.0)),
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => ClientesHome(this.usuario)));
+                Navigator.pushNamed(context, ClientesHome.routeName, arguments: usuario);
               },
               child: Text("Clientes".toUpperCase(),
-                style: TextStyle(fontSize: 14)),
+                  style: TextStyle(fontSize: 14)),
             ),
           ],
         ),
@@ -60,3 +47,4 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
+

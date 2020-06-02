@@ -7,12 +7,12 @@ import '../model.dart' as model;
 import 'detalle_concepto.dart';
 
 class PropietariosHome extends StatelessWidget {
-  final model.Usuario usuario;
-
-  const PropietariosHome(this.usuario);
+  static const String routeName = '/propietarios';
 
   @override
   Widget build(BuildContext context) {
+    final model.Usuario usuario = ModalRoute.of(context).settings.arguments;
+
     return new Scaffold(
       appBar: AppBar(title: Text("Mis Conceptos"),),
       floatingActionButton: FloatingActionButton(
@@ -49,7 +49,7 @@ class PropietariosHome extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (BuildContext context) => DetalleConcepto(this.usuario, concepto.id))
+                    builder: (BuildContext context) => DetalleConcepto(usuario, concepto.id))
                 );
               }
             )
