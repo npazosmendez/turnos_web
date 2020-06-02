@@ -1,6 +1,7 @@
+import 'dart:convert';
+
 import 'package:http/http.dart' as http;
 import 'dart:io';
-import 'dart:convert';
 import 'package:flutter/foundation.dart' as Foundation;
 
 class ApiClient {
@@ -32,12 +33,11 @@ class ApiClient {
     return _client.get(uri, headers: headers);
   }
 
-  Future<http.StreamedResponse> postJson(String path, Map<String, dynamic> body) {
-    var request = new http.Request('POST', getUri(path));
-    request.headers[HttpHeaders.authorizationHeader] = 'Basic ${this.usuario}:${this.password}';
-    request.headers[HttpHeaders.contentTypeHeader] = 'application/json';
-    request.body = json.encode(body);
-    return _client.send(request);
+  Future<http.Response> postJson(String path, Map<String, dynamic> body) {
+    Map<String, String> headers = {};
+    headers[HttpHeaders.authorizationHeader] = 'Basic ${this.usuario}:${this.password}';
+    headers[HttpHeaders.contentTypeHeader] = 'application/json';
+    return _client.post(getUri(path), headers: headers, body: jsonEncode(body));
   }
 
   Future<http.StreamedResponse> postMultipartFile(String path, http.MultipartFile file) {

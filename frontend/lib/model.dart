@@ -22,6 +22,7 @@ class Concepto {
   final double latitud;
   final double longitud;
   final String pathImagen;
+  final int usuarioId;
 
   Concepto(
     this.id,
@@ -30,7 +31,8 @@ class Concepto {
     this.descripcion,
     this.latitud,
     this.longitud,
-    this.pathImagen);
+    this.pathImagen,
+    this.usuarioId);
 
   factory Concepto.fromJson(Map<String, dynamic> json) {
     return Concepto(
@@ -41,6 +43,7 @@ class Concepto {
       json['latitud'] as double,
       json['longitud'] as double,
       json['pathImagen'] as String,
+      json['usuarioId'] as int
       );
   }
 }

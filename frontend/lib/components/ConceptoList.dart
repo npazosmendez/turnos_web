@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/components/ConceptoCard.dart';
-import 'dart:convert';
+import 'package:frontend/utils/ConceptoService.dart';
 
 import '../utils/apiclient.dart';
 import '../model.dart' as model;
@@ -25,16 +25,7 @@ class _ConceptoListState extends State<ConceptoList> {
   @override
   void initState() {
     super.initState();
-    futureConceptos = fetchConceptos();
-  }
-
-  Future<List<model.Concepto>> fetchConceptos() async {
-    var response = await widget.apiClient.get("/conceptos", queryParameters: widget.filtros);
-
-    Iterable conceptosJson = json.decode(response.body);
-    return List<model.Concepto>.from(
-        conceptosJson.map((json) => model.Concepto.fromJson(json))
-    );
+    futureConceptos = ConceptoService(widget.apiClient).query(widget.filtros);
   }
 
   @override

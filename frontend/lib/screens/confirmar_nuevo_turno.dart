@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/components/ConceptoCard.dart';
-import 'package:frontend/components/ConceptoList.dart';
 
-import '../utils/apiclient.dart';
 import '../model.dart' as model;
 
 class ConfirmarNuevoTurno extends StatelessWidget {

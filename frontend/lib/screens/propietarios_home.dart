@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/components/ConceptoList.dart';
+import 'package:frontend/utils/ConceptoService.dart';
 
 import '../utils/apiclient.dart';
 import '../model.dart' as model;
@@ -103,15 +104,9 @@ class _FormNuevoConceptoState extends State<FormNuevoConcepto> {
           child: Text("Submit"),
           onPressed: () async {
             try {
-              var response = await this.widget.apiClient.postJson(
-                "/conceptos/",
-                {
-                  "usuarioId": widget.usuario.id,
-                  "nombre": controllerNombre.text,
-                  "descripcion": controllerDescripcion.text,
-                  "latitud": 0,
-                  "longitud": 0,
-                }
+              ConceptoService(widget.apiClient).create(
+                controllerNombre.text,
+                controllerDescripcion.text
               );
             } catch (ex) {
               // TODO: handle

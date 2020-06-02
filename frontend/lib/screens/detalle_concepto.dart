@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:frontend/utils/ConceptoService.dart';
 
 import '../utils/apiclient.dart';
 import '../utils/file_picker.dart';
@@ -28,30 +27,18 @@ class _DetalleConceptoState extends State<DetalleConcepto> {
   }
 
   Future<model.Concepto> fetchConcepto() async {
-    var response = await widget.apiClient.get("/conceptos", queryParameters: {"id": widget.idConcepto.toString()});
-    Iterable conceptosJson = json.decode(response.body);
-    return model.Concepto.fromJson(conceptosJson.first);
+    return ConceptoService(widget.apiClient).get(widget.idConcepto);
   }
 
   void subirImagen(model.Concepto concepto) async {
     // TODO: error handling
     PickedFile img = await PickedFile.promptUser("image/*");
 
-    var multipartFile = http.MultipartFile.fromBytes(
-      "imagen_concepto",
-      img.data,
-      filename: img.name);
-
-    var apiClient = ApiClient(widget.usuario.email, widget.usuario.password);
     try {
-      var response = await apiClient.postMultipartFile("/conceptos/${concepto.id}/asociar_imagen", multipartFile);
-      if (response.statusCode == 200) {
-        setState(() {
-          this.futureConcepto = fetchConcepto();
-        });
-      } else {
-        print("ERROR subiendo archivo. El servidor respondió (${response.statusCode}).");
-      }
+      await ConceptoService(widget.apiClient).subirImagen(concepto, img);
+      setState(() {
+        this.futureConcepto = fetchConcepto();
+      });
     } catch (err) {
       print("ERROR subiendo archivo: $err");
     }
