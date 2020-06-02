@@ -68,6 +68,7 @@ app.post('/conceptos/', async function (req, res) {
     descripcion: req.body.descripcion,
     latitud: req.body.latitud,
     longitud: req.body.longitud,
+    usuarioId: req.usuario.id
   }).then((concepto) => res.send(concepto))
     .catch((err) => res.status(400).send(err.message));
 });
