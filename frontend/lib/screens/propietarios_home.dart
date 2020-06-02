@@ -43,9 +43,8 @@ class PropietariosHome extends StatelessWidget {
             ),
             ConceptoList(
               usuario: usuario,
-              header: const Text('Mis Conceptos'),
               filtros: {"usuarioId": usuario.id.toString()},
-              onSelect: (concepto) {
+              onTap: (concepto) {
                 Navigator.push(
                   context,
                   MaterialPageRoute(

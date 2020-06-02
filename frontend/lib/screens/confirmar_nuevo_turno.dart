@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/components/ConceptoCard.dart';
 import 'package:frontend/components/ConceptoList.dart';
 
 import '../utils/apiclient.dart';
@@ -10,26 +11,40 @@ class ConfirmarNuevoTurno extends StatelessWidget {
 
   const ConfirmarNuevoTurno(this.usuario, this.concepto);
 
+  confirmarTurno() {
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: AppBar(title: Text("Confirmar Turno"),),
       body: Center(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            ConceptoCard(concepto),
             Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Text(
-                "Estas segure que queres un turno para el concepto ${concepto.nombre}?",
-                style: TextStyle(
-                    fontSize: 20.0
+                padding: EdgeInsets.fromLTRB(5, 0, 5, 20),
+                child: Container(
+                constraints: BoxConstraints(
+                    maxWidth: 400
                 ),
-              ),
-            ),
-          ],
-        ),
-      ),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: RaisedButton(
+                    onPressed: confirmarTurno,
+                    color: Colors.blue,
+                    textColor: Colors.white,
+                    child: const Text('CONFIRMAR'),
+                  ),
+                )
+              )
+            )
+          ]
+        )
+      )
     );
   }
 }

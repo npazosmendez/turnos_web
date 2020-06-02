@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/components/ConceptoCard.dart';
 import 'dart:convert';
 
 import '../utils/apiclient.dart';
@@ -9,9 +10,9 @@ class ConceptoList extends StatefulWidget {
   final ApiClient apiClient;
   final Widget header;
   final Map<String,String> filtros;
-  final Function(model.Concepto) onSelect;
+  final Function(model.Concepto) onTap;
 
-  ConceptoList({this.usuario, this.header, this.filtros, this.onSelect}) : this.apiClient = ApiClient(usuario.email, usuario.password);
+  ConceptoList({this.usuario, this.header, this.filtros, this.onTap}) : this.apiClient = ApiClient(usuario.email, usuario.password);
 
   @override
   State<StatefulWidget> createState() => _ConceptoListState();
@@ -38,27 +39,15 @@ class _ConceptoListState extends State<ConceptoList> {
 
   @override
   Widget build(BuildContext context) {
-
     return FutureBuilder<List<model.Concepto>>(
         future: futureConceptos,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            return PaginatedDataTable(
-              showCheckboxColumn: false,
-              header: widget.header,
-              columns: <DataColumn>[
-                new DataColumn(
-                  label: const Text('Nombre'),
-                ),
-                new DataColumn(
-                  label: const Text('Descripción'),
-                ),
-                new DataColumn(
-                  label: const Text('Estado'),
-                  numeric: true,
-                ),
-              ],
-              source: ConceptosDataSource(snapshot.data, onSelect: widget.onSelect),
+            return new Expanded(
+              child: ListView(
+                padding: EdgeInsets.all(5),
+                children: snapshot.data.map((c) => Center(child:ConceptoCard(c, onTap: widget.onTap))).toList()
+              )
             );
           } else if (snapshot.hasError) {
             // TODO
@@ -66,43 +55,6 @@ class _ConceptoListState extends State<ConceptoList> {
           // By default, show a loading spinner.
           return Center(child: CircularProgressIndicator());
         }
-    );
-  }
-
-}
-
-
-class ConceptosDataSource extends DataTableSource {
-
-  final List<model.Concepto> conceptos;
-  final Function(model.Concepto) onSelect;
-
-  ConceptosDataSource(this.conceptos, {this.onSelect});
-
-  @override
-  int get rowCount => this.conceptos.length;
-
-  @override
-  bool get isRowCountApproximate => false;
-
-  @override
-  int get selectedRowCount => 0;
-
-  @override
-  DataRow getRow(int index) {
-    assert(index >= 0);
-    var concepto = this.conceptos[index];
-    return new DataRow.byIndex(
-        index: index,
-        selected: false,
-        onSelectChanged: (bool value) { onSelect(concepto); },
-        cells: <DataCell>[
-          new DataCell(new Text(concepto.nombre)),
-          new DataCell(new Text(concepto.descripcion)),
-          new DataCell(concepto.habilitado
-              ? Icon(Icons.check, color: Colors.green)
-              : Icon(Icons.close, color: Colors.red)),
-        ]
     );
   }
 }

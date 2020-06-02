@@ -37,10 +37,18 @@ class NuevoTurno extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
+            Center(
+              child: Padding(
+                padding: EdgeInsets.all(15),
+                child: Text(
+                  'Seleccione el concepto para el turno',
+                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                )
+              )
+            ),
             ConceptoList(
                 usuario: usuario,
-                header: const Text('Seleccione el concepto para el turno'),
-                onSelect: (concepto) => {
+                onTap: (concepto) => {
                   Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => ConfirmarNuevoTurno(this.usuario, concepto)))
                 }
             )
