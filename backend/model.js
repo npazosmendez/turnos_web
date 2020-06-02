@@ -68,16 +68,21 @@ Usuario.hasMany(Turno, {
         allowNull: false
     }
 });
+Turno.belongsTo(Usuario);
+
 Usuario.hasMany(Concepto, {
     foreignKey: {
         allowNull: false
     }
 });
+Concepto.belongsTo(Usuario);
+
 Concepto.hasMany(Turno, {
     foreignKey: {
         allowNull: false
     }
 });
+Turno.belongsTo(Concepto);
 
 db.sync({ force: true })
     .then(() => {

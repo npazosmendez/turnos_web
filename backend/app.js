@@ -7,7 +7,7 @@ import fs from 'fs';
 import path from 'path';
 import multer from 'multer';
 
-import { Concepto, Turno } from "./model.js";
+import { Concepto, Turno, Usuario } from "./model.js";
 import { basicAuth } from "./auth.js";
 import config from './config.js';
 import nodeMailer from 'nodemailer';
@@ -126,17 +126,25 @@ app.post(
   saveAndSendConcepto
 );
 
-app.get('/conceptos/:id/turnos', async function (req, res) {
+app.get('/turnos/', async function (req, res) {
+  let  filtros = {}
+  if (req.query.conceptoId) {
+    filtros.conceptoId = req.query.conceptoId;
+  }
+  if (req.query.usuarioId) {
+    filtros.usuarioId = req.query.usuarioId;
+  }
   const turnos = await Turno.findAll({
-    where : { conceptoId: req.params.id }
+    where : filtros,
+    include: [{ model: Concepto }, { model: Usuario }]
   });
   res.send(turnos);
 });
 
-app.post('/conceptos/:id/turnos', async function (req, res) {
+app.post('/turnos', async function (req, res) {
   Turno.create({
     usuarioId: req.usuario.id,
-    conceptoId: parseInt(req.params.id)
+    conceptoId: parseInt(req.body.conceptoId)
   }).then((turno) => res.send(turno))
     .catch((err) => res.status(500).send(err.message));
 });
