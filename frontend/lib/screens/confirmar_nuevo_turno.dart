@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/components/ConceptoCard.dart';
+import 'package:frontend/utils/ConceptoService.dart';
+import 'package:frontend/utils/apiclient.dart';
 
 import '../model.dart' as model;
+import 'clientes_home.dart';
 
 class ConfirmarNuevoTurno extends StatelessWidget {
   final model.Usuario usuario;
   final model.Concepto concepto;
+  final ApiClient apiClient;
 
-  const ConfirmarNuevoTurno(this.usuario, this.concepto);
-
-  confirmarTurno() {
-
-  }
+  ConfirmarNuevoTurno(this.usuario, this.concepto): this.apiClient = ApiClient(usuario.email, usuario.password);
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +32,10 @@ class ConfirmarNuevoTurno extends StatelessWidget {
                 child: SizedBox(
                   width: double.infinity,
                   child: RaisedButton(
-                    onPressed: confirmarTurno,
+                    onPressed: () async {
+                      await ConceptoService(apiClient).nuevoTurno(concepto);
+                      Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => ClientesHome(this.usuario)));
+                    },
                     color: Colors.blue,
                     textColor: Colors.white,
                     child: const Text('CONFIRMAR'),

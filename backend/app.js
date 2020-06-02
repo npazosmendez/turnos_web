@@ -136,7 +136,7 @@ app.get('/conceptos/:id/turnos', async function (req, res) {
 app.post('/conceptos/:id/turnos', async function (req, res) {
   Turno.create({
     usuarioId: req.usuario.id,
-    conceptoId: req.params.id
+    conceptoId: parseInt(req.params.id)
   }).then((turno) => res.send(turno))
     .catch((err) => res.status(500).send(err.message));
 });
