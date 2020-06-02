@@ -52,21 +52,38 @@ class Turno {
 
   final int id;
   final int usuarioId;
+  final Usuario usuario;
   final int conceptoId;
+  final Concepto concepto;
   final int numero;
 
   Turno(
       this.id,
       this.usuarioId,
       this.conceptoId,
-      this.numero);
+      this.numero,
+      {this.concepto, this.usuario});
+
+  int get numeroToDisplay {
+    return numero % 100;
+  }
 
   factory Turno.fromJson(Map<String, dynamic> json) {
+    Concepto concepto;
+    if (json.containsKey('concepto')) {
+      concepto = Concepto.fromJson(json['concepto']);
+    }
+    Usuario usuario;
+    if (json.containsKey('usuario')) {
+      usuario = Usuario.fromJson(json['usuario']);
+    }
     return Turno(
         json['id'] as int,
         json['usuarioId'] as int,
         json['conceptoId'] as int,
-        json['numero'] as int
+        json['numero'] as int,
+        concepto: concepto,
+        usuario: usuario
     );
   }
 }

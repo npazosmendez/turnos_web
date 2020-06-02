@@ -8,11 +8,10 @@ import '../model.dart' as model;
 class ConceptoList extends StatefulWidget {
   final model.Usuario usuario;
   final ApiClient apiClient;
-  final Widget header;
   final Map<String,String> filtros;
   final Function(model.Concepto) onTap;
 
-  ConceptoList({this.usuario, this.header, this.filtros, this.onTap}) : this.apiClient = ApiClient(usuario.email, usuario.password);
+  ConceptoList({this.usuario, this.filtros, this.onTap}) : this.apiClient = ApiClient(usuario.email, usuario.password);
 
   @override
   State<StatefulWidget> createState() => _ConceptoListState();

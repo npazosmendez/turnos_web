@@ -36,7 +36,7 @@ class PropietariosHome extends StatelessWidget {
             Padding(
               padding: EdgeInsets.all(16.0),
               child: Text(
-                "Bienvenido, ${usuario.email}.",
+                "Bienvenide, ${usuario.email}!",
                 style: TextStyle(
                     fontSize: 20.0
                 ),

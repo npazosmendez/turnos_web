@@ -50,10 +50,4 @@ class ConceptoService {
     var conceptosJson = json.decode(await response.stream.bytesToString());
     return Concepto.fromJson(conceptosJson);
   }
-
-  Future<Turno> nuevoTurno(Concepto concepto) async {
-    var response = await apiClient.postJson("$baseUrl/${concepto.id}/turnos", {});
-    var turnoJson = json.decode(response.body);
-    return Turno.fromJson(turnoJson);
-  }
 }

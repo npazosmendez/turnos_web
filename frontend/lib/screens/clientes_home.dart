@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/components/TurnoList.dart';
 import '../model.dart' as model;
 import 'nuevo_turno.dart';
 
@@ -18,7 +19,28 @@ class ClientesHome extends StatelessWidget {
         child: Icon(Icons.add),
         tooltip: "Nuevo Turno",
       ),
-      body: Text("Bienvenide, cliente ${usuario.email}"),
-      );
+      body: Center(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Text(
+                "Bienvenide, ${usuario.email}!",
+                style: TextStyle(
+                    fontSize: 20.0
+                ),
+              ),
+            ),
+            TurnoList(
+                usuario: usuario,
+                filtros: {"usuarioId": usuario.id.toString()},
+                onTap: (concepto) {
+                }
+            )
+          ],
+        ),
+      ),
+    );
   }
 }

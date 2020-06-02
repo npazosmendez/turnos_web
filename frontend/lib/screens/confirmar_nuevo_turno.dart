@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/components/ConceptoCard.dart';
-import 'package:frontend/utils/ConceptoService.dart';
+import 'package:frontend/utils/TurnoService.dart';
 import 'package:frontend/utils/apiclient.dart';
 
 import '../model.dart' as model;
@@ -33,7 +33,7 @@ class ConfirmarNuevoTurno extends StatelessWidget {
                   width: double.infinity,
                   child: RaisedButton(
                     onPressed: () async {
-                      await ConceptoService(apiClient).nuevoTurno(concepto);
+                      await TurnoService(apiClient).create(concepto);
                       Navigator.pushNamed(context, ClientesHome.routeName, arguments: usuario);
                     },
                     color: Colors.blue,
