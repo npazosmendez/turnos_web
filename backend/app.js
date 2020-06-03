@@ -119,7 +119,11 @@ app.post(
   '/conceptos/:id/asociar_imagen',
   obtenerConcepto,
   multer({ dest: 'uploads/imagenes_conceptos' }).single('imagen_concepto'),
-  async function (req, res, next) {
+  function (req, res, next) {
+    if(req.concepto.pathImagen) {
+      // TODO: io sincrónico
+      fs.unlinkSync(path.join("uploads", req.concepto.pathImagen));
+    }
     req.concepto.pathImagen = path.join("imagenes_conceptos", req.file.filename);
     next();
   },

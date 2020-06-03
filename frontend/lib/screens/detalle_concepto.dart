@@ -81,18 +81,22 @@ class _DetalleConceptoState extends State<DetalleConcepto> {
   }
 
   Widget imagenConcepto(model.Concepto concepto) {
-    // Si no tiene imagen, mostramos un botón para subir una
     var tieneImagen = concepto.pathImagen != null;
-    return Card(
-      child: tieneImagen
-        ? Image.network(
+    Widget imagen = tieneImagen
+      ? Image.network(
           ApiClient.getUri(concepto.pathImagen).toString(),
           fit: BoxFit.cover,
         )
-        : RaisedButton(
-          onPressed: () => subirImagen(concepto),
-          child: Icon(Icons.add_a_photo, size: 50),
-        ),
+      : Icon(Icons.add_a_photo, size: 50);
+
+    return RaisedButton(
+      padding: EdgeInsets.zero,
+      onPressed: () => subirImagen(concepto),
+      child: Container(
+        width: 200,
+        height: 200,
+        child: Card(child: imagen),
+      ),
     );
   }
 
@@ -119,11 +123,7 @@ class _DetalleConceptoState extends State<DetalleConcepto> {
                   child: Row(
                     children: [
                       Flexible(child: configuracionConcepto(snapshot.data)),
-                      Container(
-                        width: 200,
-                        height: 200,
-                        child: imagenConcepto(snapshot.data),
-                      ),
+                      imagenConcepto(snapshot.data),
                     ],
                   ),
                 ),
