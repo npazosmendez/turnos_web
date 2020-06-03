@@ -1,15 +1,56 @@
+import 'dart:js_util';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:frontend/components/TurnoList.dart';
+import 'package:frontend/utils/apiclient.dart';
 import '../model.dart' as model;
 import 'nuevo_turno.dart';
+import 'dart:html' as html;
+import 'dart:js' as js;
+import 'confirmar_nuevo_turno.dart';
+import '../utils/ConceptoService.dart';
+import '../utils/apiclient.dart';
 
-class ClientesHome extends StatelessWidget {
+class ClientesHome extends StatefulWidget {
   static const String routeName = '/clientes';
 
   @override
-  Widget build(BuildContext context) {
-    final model.Usuario usuario = ModalRoute.of(context).settings.arguments;
+  _ClientesHomeState createState() => _ClientesHomeState();
 
+}
+
+class _ClientesHomeState extends State<ClientesHome> {
+  String _codigoQR;
+  model.Usuario usuario;
+  ApiClient api;
+  
+  model.Concepto concepto;
+
+  @override
+  void initState(){
+    _codigoQR='';
+
+    html.window.onMessage.listen((e) {
+      _codigoQR=e.data;
+      html.window.console.log(_codigoQR);
+      api=ApiClient(usuario.email,usuario.password);
+      ConceptoService(api).get(1).then((value) {
+        concepto=value;
+        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => ConfirmarNuevoTurno(usuario, concepto)));
+      });
+      //
+      //html.window.console.log(usuario.id);
+      //js.context.callMethod("alert", [ _codigoQR ]);
+    });
+
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    //final model.Usuario usuario = ModalRoute.of(context).settings.arguments;
+    usuario = ModalRoute.of(context).settings.arguments;
     return Scaffold(
       appBar: AppBar(title: Text("Bienvenide, ${usuario.email}!")),
       body: Center(
@@ -87,7 +128,9 @@ class ClientesHome extends StatelessWidget {
                         child: IconButton(
                             icon: Icon(Icons.camera_alt),
                             color: Colors.white,
-                          onPressed: () {}
+                          onPressed: () {
+                            js.context.callMethod("scan");                            
+                          }
                         ),
                       ),
                       Center(child: Text("Usar QR"))

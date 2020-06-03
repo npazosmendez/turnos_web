@@ -15,7 +15,7 @@ function decodeAuthHeader(authHeader) {
 }
 
 export async function basicAuth(req, res, next) {
-    if(bypass) {
+    if (bypass) {
         req.usuario = null;
     } else {
         if (!req.headers.authorization) {

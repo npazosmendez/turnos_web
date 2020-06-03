@@ -1,4 +1,5 @@
 import Sequelize from 'sequelize';
+import { v4 as uuidv4 } from 'uuid'; // v4=random uuid
 
 const db = new Sequelize("sqlite::memory:", {
     logging: false,
@@ -50,13 +51,15 @@ export class Turno extends Sequelize.Model {
         return super.create({
           conceptoId: conceptoId,
           usuarioId: usuarioId,
-          numero: await this.proximo_numero(conceptoId)
+          numero: await this.proximo_numero(conceptoId),
+          uuid: uuidv4()
         }, options);
     }
 }
 
 Turno.init({
       numero: Sequelize.INTEGER,
+      uuid: Sequelize.CHAR,
   }, {
     sequelize: db, // connection instance
     modelName: 'turnos'
@@ -100,6 +103,6 @@ db.sync({ force: true })
             { habilitado: false, nombre: "Mercería", descripcion: "La verdulería de robertrush", latitud: 16, longitud: 26, usuarioId: 2},
         ]);
         Turno.bulkCreate([
-            { numero: 1, usuarioId: 1, conceptoId: 3}, // Elver para la mercería
+            { numero: 1, usuarioId: 1, conceptoId: 3, uuid: uuidv4()}, // Elver para la mercería
         ]);
     });
