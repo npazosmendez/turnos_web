@@ -44,6 +44,7 @@ function scan(){
           
           postMessage(code.data,'*');
           scanoff();
+          return;
         } 
       }
       requestAnimationFrame(tick);
