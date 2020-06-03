@@ -1,14 +1,24 @@
+import 'dart:js_util';
+
 import 'package:flutter/material.dart';
 import 'package:frontend/components/TurnoList.dart';
 import '../model.dart' as model;
 import 'nuevo_turno.dart';
+import 'dart:html' as html;
+import 'dart:js' as js;
 
 class ClientesHome extends StatelessWidget {
   static const String routeName = '/clientes';
+  String _codigoQR;
 
   @override
   Widget build(BuildContext context) {
     final model.Usuario usuario = ModalRoute.of(context).settings.arguments;
+
+    html.window.onMessage.listen( (e) {
+      _codigoQR=e.data;
+      js.context.callMethod("alert", [ _codigoQR ]);
+    });
 
     return Scaffold(
       appBar: AppBar(title: Text("Bienvenide, ${usuario.email}!")),
@@ -87,7 +97,9 @@ class ClientesHome extends StatelessWidget {
                         child: IconButton(
                             icon: Icon(Icons.camera_alt),
                             color: Colors.white,
-                          onPressed: () {}
+                          onPressed: () {
+                            js.context.callMethod("scan");                            
+                          }
                         ),
                       ),
                       Center(child: Text("Usar QR"))
