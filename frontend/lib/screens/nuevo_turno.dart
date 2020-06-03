@@ -15,23 +15,7 @@ class NuevoTurno extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: Text("Nuevo Turno"),
-          actions: <Widget>[
-            IconButton(
-              icon: const Icon(Icons.map),
-              tooltip: 'Buscan en mapa',
-              onPressed: () {
-                //TODO: go to Maps screen
-              },
-            ),
-            IconButton(
-              icon: const Icon(Icons.camera_alt),
-              tooltip: 'Usar QR',
-              onPressed: () {
-                //TODO: go to QR scan screen
-              },
-            ),
-          ],
+          title: Text("Nuevo Turno")
       ),
       body: Center(
         child: Column(

@@ -10,8 +10,9 @@ class TurnoList extends StatefulWidget {
   final ApiClient apiClient;
   final Map<String,String> filtros;
   final Function(model.Turno) onTap;
+  final String mjeSinResultado;
 
-  TurnoList({this.usuario, this.filtros, this.onTap}) : this.apiClient = ApiClient(usuario.email, usuario.password);
+  TurnoList({this.usuario, this.filtros, this.onTap, this.mjeSinResultado}) : this.apiClient = ApiClient(usuario.email, usuario.password);
 
   @override
   State<StatefulWidget> createState() => _TurnoListState();
@@ -33,12 +34,25 @@ class _TurnoListState extends State<TurnoList> {
         future: futureTurnos,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            return new Expanded(
-                child: ListView(
-                    padding: EdgeInsets.all(5),
-                    children: snapshot.data.map((t) => Center(child:TurnoCard(t))).toList()
-                )
-            );
+            if (snapshot.data.length > 0) {
+              return new Expanded(
+                  child: ListView(
+                      padding: EdgeInsets.all(5),
+                      children: snapshot.data.map((t) =>
+                          Center(child: TurnoCard(t))).toList()
+                  )
+              );
+            } else {
+              return Center(child:
+                Padding(
+                    padding: EdgeInsets.all(20),
+                    child: Text(
+                      widget.mjeSinResultado,
+                      style: TextStyle(fontSize: 20),
+                    )
+                ),
+              );
+            }
           } else if (snapshot.hasError) {
             // TODO
           }

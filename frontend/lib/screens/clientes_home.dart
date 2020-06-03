@@ -11,14 +11,7 @@ class ClientesHome extends StatelessWidget {
     final model.Usuario usuario = ModalRoute.of(context).settings.arguments;
 
     return Scaffold(
-      appBar: AppBar(title: Text("Mis Turnos")),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => NuevoTurno(usuario)));
-        },
-        child: Icon(Icons.add),
-        tooltip: "Nuevo Turno",
-      ),
+      appBar: AppBar(title: Text("Bienvenide, ${usuario.email}!")),
       body: Center(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -26,15 +19,94 @@ class ClientesHome extends StatelessWidget {
             Padding(
               padding: EdgeInsets.all(16.0),
               child: Text(
-                "Bienvenide, ${usuario.email}!",
-                style: TextStyle(
-                    fontSize: 20.0
+                "Pedir nuevo turno",
+                style: TextStyle( color: Colors.black54, fontSize: 25, fontWeight: FontWeight.bold),
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  width: 100,
+                  height: 100,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Ink(
+                        decoration: const ShapeDecoration(
+                          color: Colors.blueGrey,
+                          shape: CircleBorder(),
+                        ),
+                        child: IconButton(
+                          icon: Icon(Icons.list),
+                          color: Colors.white,
+                          onPressed: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => NuevoTurno(usuario)));
+                          }
+                        ),
+                      ),
+                      Center(child: Text("Listado de Conceptos"))
+                    ],
+                  ),
                 ),
+                SizedBox(
+                  width: 100,
+                  height: 100,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Ink(
+                        decoration: const ShapeDecoration(
+                          color: Colors.blueGrey,
+                          shape: CircleBorder(),
+                        ),
+                        child: IconButton(
+                            icon: Icon(Icons.map),
+                            color: Colors.white,
+                          onPressed: () {}
+                        ),
+                      ),
+                      Center(child: Text("Mapa"))
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  width: 100,
+                  height: 100,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Ink(
+                        decoration: const ShapeDecoration(
+                          color: Colors.blueGrey,
+                          shape: CircleBorder(),
+                        ),
+                        child: IconButton(
+                            icon: Icon(Icons.camera_alt),
+                            color: Colors.white,
+                          onPressed: () {}
+                        ),
+                      ),
+                      Center(child: Text("Usar QR"))
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Text(
+                "Mis turnos",
+                style: TextStyle( color: Colors.black54, fontSize: 25, fontWeight: FontWeight.bold),
               ),
             ),
             TurnoList(
                 usuario: usuario,
                 filtros: {"usuarioId": usuario.id.toString()},
+                mjeSinResultado: "No tenés turnos pendientes",
                 onTap: (concepto) {
                 }
             )
