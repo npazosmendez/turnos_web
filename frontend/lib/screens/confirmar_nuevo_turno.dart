@@ -34,7 +34,7 @@ class ConfirmarNuevoTurno extends StatelessWidget {
                   child: RaisedButton(
                     onPressed: () async {
                       await TurnoService(apiClient).create(concepto);
-                      Navigator.pushNamed(context, ClientesHome.routeName, arguments: usuario);
+                      Navigator.pushReplacementNamed(context, ClientesHome.routeName, arguments: usuario);
                     },
                     color: Colors.blue,
                     textColor: Colors.white,
