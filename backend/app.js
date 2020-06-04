@@ -79,11 +79,20 @@ app.post('/conceptos/', async function (req, res) {
 });
 
 app.get('/conceptos', async function (req, res) {
-  const concepto = await Concepto.findAll({
+  let conceptos = await Concepto.findAll({
     // TODO: validar la query. Puede resultar en excepciones de la bbdd
-    where : req.query
+    where : req.query,
   });
-  res.send(concepto);
+
+  conceptos = conceptos.map(c => c.get({plain: true}));
+  for(var c of conceptos) {
+    // NOTE: acá podemos enriquecer las instancias con info adicional antes de mandarlas.
+    // La forma más linda sería usar getters/setter de sequalize o los llamados "fields virtuales",
+    // pero no los soporta asincrónicos :(
+    c.enFila = await Concepto.enFila(c.id);
+  }
+
+  res.json(conceptos);
 });
 
 async function obtenerConcepto(req, res, next) {

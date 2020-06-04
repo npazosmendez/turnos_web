@@ -12,16 +12,17 @@ export const Usuario = db.define('usuarios', {
 
 export class Concepto extends Sequelize.Model {
 
-    async enFila() {
+    // No me sirve como método de instancia porque se usa para plain objects
+    static async enFila(conceptoId) {
         return Turno.count({
             where : {
-                conceptoId: this.id,
+                conceptoId: conceptoId,
             }
         });
     }
+
     async filaLlena() {
-        // Si el concepto no determinó una espera máxima, es infinito
-        return this.maximaEspera && this.maximaEspera <= await this.enFila();
+        return this.maximaEspera && this.maximaEspera <= await Concepto.enFila(this.id);
     }
 
 }

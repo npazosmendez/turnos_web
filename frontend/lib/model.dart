@@ -24,6 +24,7 @@ class Concepto {
   final String pathImagen;
   final int usuarioId;
   final int maximaEspera;
+  final int enFila;
 
   Concepto(
     this.id,
@@ -35,6 +36,7 @@ class Concepto {
     this.pathImagen,
     this.usuarioId,
     this.maximaEspera,
+    {this.enFila}
   );
 
   factory Concepto.fromJson(Map<String, dynamic> json) {
@@ -48,6 +50,7 @@ class Concepto {
       json['pathImagen'] as String,
       json['usuarioId'] as int,
       json['maximaEspera'] as int,
+      enFila: json['enFila'] as int,
       );
   }
 }

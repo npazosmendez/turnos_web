@@ -41,11 +41,23 @@ class ConceptoCard extends StatelessWidget {
                 )
             ),
             Padding(
-                padding: EdgeInsets.fromLTRB(5, 0, 5, 10),
+                padding: EdgeInsets.fromLTRB(5, 0, 5, 5),
                 child: Text(
                   concepto.descripcion,
                   style: TextStyle(fontSize: 15),
                 )
+            ),
+            Padding(
+                padding: EdgeInsets.fromLTRB(5, 0, 5, 10),
+                child: Row(
+                  children: <Widget> [
+                    Text(
+                      concepto.maximaEspera != null ? "${concepto.enFila}/${concepto.maximaEspera}" : concepto.enFila.toString(),
+                      style: TextStyle(fontSize: 15),
+                    ),
+                    Icon(Icons.person)
+                  ]
+                ),
             ),
           ],
         ),
