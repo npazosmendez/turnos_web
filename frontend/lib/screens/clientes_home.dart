@@ -86,7 +86,7 @@ class _ClientesHomeState extends State<ClientesHome> {
                           }
                         ),
                       ),
-                      Center(child: Text("Listado de Conceptos"))
+                      Center(child: Text("Listado de\nConceptos"))
                     ],
                   ),
                 ),

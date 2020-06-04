@@ -56,12 +56,14 @@ class Turno {
   final int conceptoId;
   final Concepto concepto;
   final int numero;
+  final String uuid;
 
   Turno(
       this.id,
       this.usuarioId,
       this.conceptoId,
       this.numero,
+      this.uuid,
       {this.concepto, this.usuario});
 
   int get numeroToDisplay {
@@ -82,6 +84,7 @@ class Turno {
         json['usuarioId'] as int,
         json['conceptoId'] as int,
         json['numero'] as int,
+        json['uuid'] as String,
         concepto: concepto,
         usuario: usuario
     );
