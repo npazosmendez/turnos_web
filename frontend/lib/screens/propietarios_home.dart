@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/components/ConceptoList.dart';
 import 'package:frontend/utils/ConceptoService.dart';
+import 'package:flutter/services.dart';
 
 import '../utils/apiclient.dart';
 import '../model.dart' as model;
@@ -76,6 +77,7 @@ class _FormNuevoConceptoState extends State<FormNuevoConcepto> {
   // of the TextField.
   final controllerNombre = TextEditingController();
   final controllerDescripcion = TextEditingController();
+  final controllerMaximaEspera = TextEditingController();
 
   @override
   void dispose() {
@@ -91,14 +93,20 @@ class _FormNuevoConceptoState extends State<FormNuevoConcepto> {
         TextField(
           controller: controllerNombre,
           decoration: InputDecoration(
-            hintText: 'Nombre'
+            labelText: 'Nombre'
           ),
         ),
         TextField(
           controller: controllerDescripcion,
           decoration: InputDecoration(
-            hintText: 'Descripción'
+            labelText: 'Descripción'
           ),
+        ),
+        new TextField(
+          controller: controllerMaximaEspera,
+          decoration: new InputDecoration(labelText: "Máxima espera (opcional)"),
+          keyboardType: TextInputType.number,
+          inputFormatters: <TextInputFormatter>[WhitelistingTextInputFormatter.digitsOnly],
         ),
         RaisedButton(
           child: Text("Submit"),
@@ -106,7 +114,8 @@ class _FormNuevoConceptoState extends State<FormNuevoConcepto> {
             try {
               ConceptoService(widget.apiClient).create(
                 controllerNombre.text,
-                controllerDescripcion.text
+                controllerDescripcion.text,
+                int.tryParse(controllerMaximaEspera.text),
               );
             } catch (ex) {
               // TODO: handle

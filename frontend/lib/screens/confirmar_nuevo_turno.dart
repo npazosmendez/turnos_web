@@ -34,8 +34,20 @@ class ConfirmarNuevoTurno extends StatelessWidget {
                   width: double.infinity,
                   child: RaisedButton(
                     onPressed: () async {
-                      await TurnoService(apiClient).create(concepto);
-                      Navigator.popUntil(context,ModalRoute.withName(ClientesHome.routeName));                      
+                      try {
+                        await TurnoService(apiClient).create(concepto);
+                        Navigator.popUntil(context,ModalRoute.withName(ClientesHome.routeName));
+                      } catch (err) {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text("No se pudo sacar el turno"),
+                              content: Text(err),
+                            );
+                          }
+                        );
+                      }
                     },
                     color: Colors.blue,
                     textColor: Colors.white,

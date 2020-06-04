@@ -67,11 +67,7 @@ class _DetalleConceptoState extends State<DetalleConcepto> {
                 style: TextStyle(color: Colors.black54, fontSize: 14, fontWeight: FontWeight.normal),
               ),
               Text(
-                "Espera máxima: 20",
-                style: TextStyle(color: Colors.black54, fontSize: 14, fontWeight: FontWeight.normal),
-              ),
-              Text(
-                "Límite diario: 100",
+                "Espera máxima: ${concepto.maximaEspera != null ? concepto.maximaEspera : "-"}",
                 style: TextStyle(color: Colors.black54, fontSize: 14, fontWeight: FontWeight.normal),
               ),
             ]

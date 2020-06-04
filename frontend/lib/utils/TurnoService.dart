@@ -24,7 +24,10 @@ class TurnoService {
     var response = await apiClient.postJson(baseUrl, {
       "conceptoId": concepto.id
     });
-    var turnoJson = json.decode(response.body);
-    return Turno.fromJson(turnoJson);
+    if(response.statusCode == 200){
+      return Turno.fromJson(json.decode(response.body));
+    } else {
+      return Future<Turno>.error(response.body);
+    }
   }
 }

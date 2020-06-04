@@ -29,14 +29,15 @@ class ConceptoService {
     return Concepto.fromJson(conceptosJson.first);
   }
 
-  Future<Concepto> create(String nombre, String descripcion, {int latitud = 0, int longitud = 0}) async {
+  Future<Concepto> create(String nombre, String descripcion, int maximaEspera, {int latitud = 0, int longitud = 0}) async {
     var response = await apiClient.postJson(baseUrl, {
       "nombre": nombre,
       "descripcion": descripcion,
-      "latitud": latitud.toString(),
-      "longitud": longitud.toString(),
+      "latitud": latitud,
+      "longitud": longitud,
+      "maximaEspera": maximaEspera, // Datazo: los ints son nulleables
     });
-    Map<String, String> conceptosJson = json.decode(response.body);
+    Map<String, dynamic> conceptosJson = json.decode(response.body);
     return Concepto.fromJson(conceptosJson);
   }
 
