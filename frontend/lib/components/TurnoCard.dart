@@ -48,7 +48,7 @@ class TurnoCard extends StatelessWidget {
             ]),
           ),
           QrImage(
-            data: "1",//turno.numeroToDisplay.toString()+'+'+turno.uuid,
+            data: turno.numeroToDisplay.toString()+'+'+turno.uuid,
             version: QrVersions.auto,
             size: 200.0,
             backgroundColor: Colors.white,
