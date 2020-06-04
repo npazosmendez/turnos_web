@@ -33,13 +33,12 @@ class _ClientesHomeState extends State<ClientesHome> {
 
     html.window.onMessage.listen((e) {
       _codigoQR=e.data;
-      html.window.console.log(_codigoQR);
       api=ApiClient(usuario.email,usuario.password);
-      ConceptoService(api).get(1).then((value) {
+      ConceptoService(api).get(int.parse(e.data)).then((value) {
         concepto=value;
         Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => ConfirmarNuevoTurno(usuario, concepto)));
       });
-      //
+      //html.window.console.log(_codigoQR);
       //html.window.console.log(usuario.id);
       //js.context.callMethod("alert", [ _codigoQR ]);
     });

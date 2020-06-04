@@ -4,6 +4,7 @@ import 'package:frontend/utils/ConceptoService.dart';
 import '../utils/apiclient.dart';
 import '../utils/file_picker.dart';
 import '../model.dart' as model;
+import 'package:qr_flutter/qr_flutter.dart';
 
 class DetalleConcepto extends StatefulWidget {
   final model.Usuario usuario;
@@ -85,7 +86,7 @@ class _DetalleConceptoState extends State<DetalleConcepto> {
     Widget imagen = tieneImagen
       ? Image.network(
           ApiClient.getUri(concepto.pathImagen).toString(),
-          fit: BoxFit.cover,
+          fit: BoxFit.contain,
         )
       : Icon(Icons.add_a_photo, size: 50);
 
@@ -124,6 +125,13 @@ class _DetalleConceptoState extends State<DetalleConcepto> {
                     children: [
                       Flexible(child: configuracionConcepto(snapshot.data)),
                       imagenConcepto(snapshot.data),
+                      QrImage(
+                        data: snapshot.data.id.toString(),
+                        version: QrVersions.auto,
+                        size: 200.0,
+                        backgroundColor: Colors.white,
+                        errorCorrectionLevel: QrErrorCorrectLevel.H,
+                      ),
                     ],
                   ),
                 ),

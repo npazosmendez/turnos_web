@@ -25,9 +25,13 @@ class ConceptoCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            Image.network(
-              getImageUrl(),
-              fit: BoxFit.cover
+            Container(
+              height: 100,
+              width: 100,
+              child: Image.network(
+                getImageUrl(),
+                fit: BoxFit.contain, // cover
+              ),
             ),
             Padding(
                 padding: EdgeInsets.fromLTRB(5, 10, 5, 5),
