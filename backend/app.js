@@ -63,6 +63,11 @@ app.get('/usuarios/login', function (req, res) {
 })
 
 app.post('/conceptos/', async function (req, res) {
+  // TODO/NOTE: el create parece devolver el objeto con los fields de los mismos tipos que
+  // se pusieron en .create(...), todavía sin haber sido casteados por el engine.
+  // Es decir, si pongo longitud: "12" el create me devuelve un concepto con longitud de tipo string.
+  // Si hago el find posterior, ya es double. Habría que investigar, por el momento solo tengo cuidado
+  // de mandar los tipos correctos en el post.
   Concepto.create({
     nombre: req.body.nombre,
     descripcion: req.body.descripcion,
@@ -146,6 +151,15 @@ app.get('/turnos/', async function (req, res) {
 });
 
 app.post('/turnos', async function (req, res) {
+  // TODO: error handling (o mejor enchufarlo en el pipeline de obtenerConcepto)
+  var concepto = await Concepto.findOne({
+    where: {
+      id: req.body.conceptoId
+    }
+  });
+  if (await concepto.filaLlena()) {
+    return res.status(400).send("La fila está llena.");
+  }
   Turno.create({
     usuarioId: req.usuario.id,
     conceptoId: parseInt(req.body.conceptoId)

@@ -10,7 +10,23 @@ export const Usuario = db.define('usuarios', {
     password: Sequelize.TEXT
 });
 
-export const Concepto = db.define('conceptos', {
+export class Concepto extends Sequelize.Model {
+
+    async enFila() {
+        return Turno.count({
+            where : {
+                conceptoId: this.id,
+            }
+        });
+    }
+    async filaLlena() {
+        // Si el concepto no determinó una espera máxima, es infinito
+        return this.maximaEspera && this.maximaEspera <= await this.enFila();
+    }
+
+}
+
+Concepto.init({
     habilitado: {
         type: Sequelize.BOOLEAN,
         allowNull: false,
@@ -39,6 +55,14 @@ export const Concepto = db.define('conceptos', {
         allowNull: true,
         defaultValue: null,
     },
+    maximaEspera: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+        defaultValue: null,
+    },
+}, {
+  sequelize: db,
+  modelName: "concepto",
 });
 
 export class Turno extends Sequelize.Model {
@@ -61,8 +85,8 @@ Turno.init({
       numero: Sequelize.INTEGER,
       uuid: Sequelize.CHAR,
   }, {
-    sequelize: db, // connection instance
-    modelName: 'turnos'
+    sequelize: db,
+    modelName: "turno",
 });
 
 
@@ -88,21 +112,54 @@ Concepto.hasMany(Turno, {
 Turno.belongsTo(Concepto);
 
 db.sync({ force: true })
-    .then(() => {
-        // Se crean las tablas
+    .then(async () => {
+        // Se crearon las tablas
         console.log(`Base de datos y tablas creadas.`);
-    }).then(() => {
-        Usuario.bulkCreate([
-            { email: "elver@gmail.com", password: "12345"},
-            { email: "robertrush@gmail.com", password: "12345"},
-        ]);
-        Concepto.bulkCreate([
-            { habilitado: false, nombre: "Carnicería", descripcion: "La carnicería de elver", latitud: 10, longitud: 20, usuarioId: 1},
-            { habilitado: true, nombre: "Verdulería", descripcion: "La verdulería de elver", latitud: 10, longitud: 20, usuarioId: 1},
-            { habilitado: true, nombre: "Zapatería", descripcion: "La zapatería de elver", latitud: 10, longitud: 20, usuarioId: 1},
-            { habilitado: false, nombre: "Mercería", descripcion: "La verdulería de robertrush", latitud: 16, longitud: 26, usuarioId: 2},
-        ]);
-        Turno.bulkCreate([
-            { numero: 1, usuarioId: 1, conceptoId: 3, uuid: uuidv4()}, // Elver para la mercería
-        ]);
-    });
+        try {
+            await Usuario.bulkCreate([
+                { email: "elver@gmail.com", password: "12345"},
+                { email: "robertrush@gmail.com", password: "12345"},
+            ]);
+            await Concepto.bulkCreate([
+                {
+                    habilitado: false,
+                    nombre: "Carnicería",
+                    descripcion: "La carnicería de elver",
+                    latitud: 10,
+                    longitud: 20,
+                    usuarioId: 1,
+                    maximaEspera: 1,
+                },
+                {
+                    habilitado: true,
+                    nombre: "Verdulería",
+                    descripcion: "La verdulería de elver",
+                    latitud: 10,
+                    longitud: 20,
+                    usuarioId: 1,
+                },
+                {
+                    habilitado: true,
+                    nombre: "Zapatería",
+                    descripcion: "La zapatería de elver",
+                    latitud: 10,
+                    longitud: 20,
+                    usuarioId: 1,
+                },
+                {
+                    habilitado: false,
+                    nombre: "Mercería",
+                    descripcion: "La verdulería de robertrush",
+                    latitud: 16,
+                    longitud: "26",
+                    usuarioId: 2,
+                },
+            ]);
+            await Turno.bulkCreate([
+                { numero: 1, usuarioId: 1, conceptoId: 3, uuid: uuidv4()}, // Elver para la mercería
+            ]);
+        } catch (err) {
+            console.error("ERROR poblando las tablas:", err)
+        }
+    })
+    .catch((err) => console.log("ERROR creando las tablas:", err));
