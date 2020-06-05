@@ -1,15 +1,22 @@
 
 class Usuario {
-  final String email, password;
+  final String email, password, nombre, apellido;
   final int id;
   
-  Usuario(this.id, this.email, this.password);
+  Usuario(this.id, this.email, this.password, this.nombre, this.apellido);
 
   factory Usuario.fromJson(Map<String, dynamic> json) {
     return Usuario(
       json['id'] as int,
       json['email'] as String,
-      json['password'] as String);
+      json['password'] as String,
+      json['nombre'] as String,
+      json['apellido'] as String,
+    );
+  }
+
+  String nombreCompleto() {
+    return "$nombre $apellido";
   }
 }
 

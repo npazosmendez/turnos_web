@@ -6,8 +6,22 @@ const db = new Sequelize("sqlite::memory:", {
 });
 
 export const Usuario = db.define('usuarios', {
-    email: Sequelize.TEXT,
-    password: Sequelize.TEXT
+    email: {
+        type: Sequelize.TEXT,
+        allowNull: false,
+    },
+    password: {
+        type: Sequelize.TEXT,
+        allowNull: false,
+    },
+    nombre: {
+        type: Sequelize.TEXT,
+        allowNull: false,
+    },
+    apellido: {
+        type: Sequelize.TEXT,
+        allowNull: false,
+    },
 });
 
 export class Concepto extends Sequelize.Model {
@@ -118,8 +132,8 @@ db.sync({ force: true })
         console.log(`Base de datos y tablas creadas.`);
         try {
             await Usuario.bulkCreate([
-                { email: "elver@gmail.com", password: "12345"},
-                { email: "robertrush@gmail.com", password: "12345"},
+                { nombre: "Elver", apellido: "Sero", email: "elver@gmail.com", password: "12345"},
+                { nombre: "Roberto", apellido: "Rushero", email: "robertrush@gmail.com", password: "12345"},
             ]);
             await Concepto.bulkCreate([
                 {
@@ -157,7 +171,9 @@ db.sync({ force: true })
                 },
             ]);
             await Turno.bulkCreate([
-                { numero: 1, usuarioId: 1, conceptoId: 3, uuid: uuidv4()}, // Elver para la mercería
+                { numero: 1, usuarioId: 1, conceptoId: 3, uuid: uuidv4()}, // Elver para la zapatería
+                { numero: 1, usuarioId: 2, conceptoId: 3, uuid: uuidv4()}, // Rober para la zapatería
+                { numero: 1, usuarioId: 1, conceptoId: 3, uuid: uuidv4()}, // Elver para la zapatería
             ]);
         } catch (err) {
             console.error("ERROR poblando las tablas:", err)
