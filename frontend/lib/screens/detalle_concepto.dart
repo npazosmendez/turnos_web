@@ -4,6 +4,7 @@ import 'package:frontend/utils/ConceptoService.dart';
 import '../utils/apiclient.dart';
 import '../utils/file_picker.dart';
 import '../model.dart' as model;
+import '../components/Fila.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 class DetalleConcepto extends StatefulWidget {
@@ -140,15 +141,12 @@ class _DetalleConceptoState extends State<DetalleConcepto> {
                   ),
                 ),
 
-                Text( // Lista de clientes
-                  "<Listado de clientes en fila>",
-                  style: TextStyle(color: Colors.black54, fontSize: 20, fontWeight: FontWeight.normal),
+                Fila(
+                  usuario: widget.usuario,
+                  concepto: snapshot.data,
+                  onCancelSiguiente: (turno) => {}, // TODO
+                  onScanQrSiguiente: (turno) => {}, // TODO
                 ),
-                Text(
-                  "<Listado de clientes en fila>",
-                  style: TextStyle(color: Colors.black54, fontSize: 20, fontWeight: FontWeight.normal),
-                ),
-
               ],
             ),
           ),
