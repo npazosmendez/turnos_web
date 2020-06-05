@@ -39,7 +39,7 @@ class _TurnoListState extends State<TurnoList> {
                   child: ListView(
                       padding: EdgeInsets.all(5),
                       children: snapshot.data.map((t) =>
-                          Center(child: TurnoCard(t))).toList()
+                          Center(child: TurnoCard(t, TurnoService(widget.apiClient).personasAdelante(t)))).toList()
                   )
               );
             } else {

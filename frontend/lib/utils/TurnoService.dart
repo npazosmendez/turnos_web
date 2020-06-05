@@ -30,4 +30,13 @@ class TurnoService {
       return Future<Turno>.error(response.body);
     }
   }
+
+  Future<int> personasAdelante(Turno turno) async {
+    var response = await apiClient.get("$baseUrl/${turno.id}/personas_adelante");
+    if(response.statusCode == 200){
+      return int.parse(response.body);
+    } else {
+      return Future<int>.error(response.body);
+    }
+  }
 }

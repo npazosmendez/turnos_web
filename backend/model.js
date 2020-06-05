@@ -94,6 +94,17 @@ export class Turno extends Sequelize.Model {
           uuid: uuidv4()
         }, options);
     }
+
+    async personas_adelante() {
+        return await Turno.count({
+            where : {
+              conceptoId: this.conceptoId,
+              numero: {
+                [Sequelize.Op.lt]: this.numero
+              }
+            }
+        });
+    }
 }
 
 Turno.init({
@@ -172,8 +183,8 @@ db.sync({ force: true })
             ]);
             await Turno.bulkCreate([
                 { numero: 1, usuarioId: 1, conceptoId: 3, uuid: uuidv4()}, // Elver para la zapatería
-                { numero: 1, usuarioId: 2, conceptoId: 3, uuid: uuidv4()}, // Rober para la zapatería
-                { numero: 1, usuarioId: 1, conceptoId: 3, uuid: uuidv4()}, // Elver para la zapatería
+                { numero: 2, usuarioId: 2, conceptoId: 3, uuid: uuidv4()}, // Rober para la zapatería
+                { numero: 3, usuarioId: 1, conceptoId: 3, uuid: uuidv4()}, // Elver para la zapatería
             ]);
         } catch (err) {
             console.error("ERROR poblando las tablas:", err)

@@ -12,6 +12,7 @@ import { basicAuth } from "./auth.js";
 import config from './config.js';
 import nodeMailer from 'nodemailer';
 
+
 const app = express();
 
 // Middlewares
@@ -144,7 +145,7 @@ app.post(
   saveAndSendConcepto
 );
 
-app.get('/turnos/', async function (req, res) {
+app.get('/turnos', async function (req, res) {
   let  filtros = {}
   if (req.query.conceptoId) {
     filtros.conceptoId = req.query.conceptoId;
@@ -176,13 +177,23 @@ app.post('/turnos', async function (req, res) {
     .catch((err) => res.status(500).send(err.message));
 });
 
+app.get('/turnos/:turnoId/personas_adelante', async function (req, res, next) {
+  try {
+    const turno = await Turno.findByPk(req.params.turnoId);
+    const result = await turno.personas_adelante();
+    res.send(result.toString());
+  } catch (err) {
+    next(err);
+  }
+});
+
 // Error handling global
 /* NOTE: los errores de promises no manejados no llegan acá.
 Puede eso puede hacerse dentro del middleware:
   promise.catch(next)
 */
 app.use(function (err, req, res, next) {
-  console.error("ERROR: " + ex);
+  console.error("ERROR: " + err);
   res.status(500).send(err.message);
 });
 
