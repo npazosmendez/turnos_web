@@ -35,6 +35,21 @@ export class Concepto extends Sequelize.Model {
         });
     }
 
+    async siguiente() {
+        const siguiente_numero = await Turno.min("numero", {
+            where: { conceptoId: this.id}
+        });
+        if (isNaN(siguiente_numero)) {
+            return null;
+        }
+        return Turno.findOne({
+            where: {
+                conceptoId: this.id,
+                numero: siguiente_numero,
+            },
+        });
+    }
+
     async filaLlena() {
         return this.maximaEspera && this.maximaEspera <= await Concepto.enFila(this.id);
     }

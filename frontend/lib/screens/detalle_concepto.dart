@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/utils/ConceptoService.dart';
+import 'package:frontend/utils/TurnoService.dart';
 
 import '../utils/apiclient.dart';
 import '../utils/file_picker.dart';
@@ -142,10 +143,27 @@ class _DetalleConceptoState extends State<DetalleConcepto> {
                 ),
 
                 Fila(
-                  usuario: widget.usuario,
-                  concepto: snapshot.data,
-                  onCancelSiguiente: (turno) => {}, // TODO
-                  onScanQrSiguiente: (turno) => {}, // TODO
+                  futureTurnos: TurnoService(widget.apiClient).query({"conceptoId": snapshot.data.id.toString()}),
+                  onCancelSiguiente: (turno) async {
+                    try {
+                      // TODO: usar el turno para algo, habría que incluir verificaicón en el backend
+                      await ConceptoService(widget.apiClient).atenderSiguiente(snapshot.data);
+                    } catch (err) {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text("No se pudo cancelar el turno"),
+                            content: Text(err),
+                          );
+                        }
+                      );
+                    }
+                    setState(() {
+                      futureConcepto = fetchConcepto();
+                    });
+                  },
+                  onScanQrSiguiente: (turno) => Future.value(1), // TODO
                 ),
               ],
             ),

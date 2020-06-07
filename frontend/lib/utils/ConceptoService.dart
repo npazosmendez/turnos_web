@@ -51,4 +51,13 @@ class ConceptoService {
     var conceptosJson = json.decode(await response.stream.bytesToString());
     return Concepto.fromJson(conceptosJson);
   }
+
+  Future atenderSiguiente(Concepto concepto) async {
+    var response = await apiClient.put("$baseUrl/${concepto.id}/atender_siguiente");
+    if(response.statusCode == 200){
+      return;
+    } else {
+      return Future.error(response.body);
+    }
+  }
 }

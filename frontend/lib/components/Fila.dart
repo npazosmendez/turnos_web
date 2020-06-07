@@ -1,31 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/utils/TurnoService.dart';
-
-import '../utils/apiclient.dart';
 import '../model.dart' as model;
 
-class Fila extends StatefulWidget {
-  final model.Usuario usuario;
-  final model.Concepto concepto;
+class Fila extends StatelessWidget {
+  final Future<List<model.Turno>> futureTurnos;
   final Function(model.Turno) onCancelSiguiente;
   final Function(model.Turno) onScanQrSiguiente;
-  final ApiClient apiClient;
 
-  Fila({this.usuario, this.concepto, this.onCancelSiguiente, this.onScanQrSiguiente}) : this.apiClient = ApiClient(usuario.email, usuario.password);
-
-  @override
-  State<StatefulWidget> createState() => _FilaState();
-}
-
-class _FilaState extends State<Fila> {
-
-  Future<List<model.Turno>> futureTurnos;
-
-  @override
-  void initState() {
-    super.initState();
-    futureTurnos = TurnoService(widget.apiClient).query({"conceptoId": widget.concepto.id.toString()});
-  }
+  Fila({this.futureTurnos, this.onCancelSiguiente, this.onScanQrSiguiente});
 
   Widget botonConIcon(Icon icon, Function callback) {
     return SizedBox.fromSize(
@@ -75,12 +56,12 @@ class _FilaState extends State<Fila> {
       columnas.addAll(<Widget>[
         botonConIcon(
           Icon(Icons.camera_alt, size: 50, color: Colors.black54),
-          () => widget.onScanQrSiguiente(turno),
+          () => onScanQrSiguiente(turno),
         ),
         botonConIcon(
           // Otras opciones: delete, block
           Icon(Icons.clear, size: 50, color: Colors.red[900]),
-          () => widget.onCancelSiguiente(turno),
+          () => onCancelSiguiente(turno),
         ),
       ]);
     }

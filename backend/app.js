@@ -145,6 +145,25 @@ app.post(
   saveAndSendConcepto
 );
 
+// NOTE: no diferenciamos (al menos por ahora) cancelar un turno de atenderlo
+app.put(
+  '/conceptos/:id/atender_siguiente',
+  obtenerConcepto,
+  async function (req, res, next) {
+    // TODO: agregar alguna validación, como pedir el uuid del turno en el request
+    var turno = await req.concepto.siguiente();
+    if(!turno) {
+      return res.status(400).send("No hay clientes esperando.");
+    }
+    try {
+      await turno.destroy();
+    } catch (err) {
+      next(err);
+    }
+    return res.status(200).send();
+  }
+);
+
 app.get('/turnos', async function (req, res) {
   let  filtros = {}
   if (req.query.conceptoId) {
