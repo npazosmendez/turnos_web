@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/components/ConceptoCard.dart';
+import 'package:frontend/components/error_dialog.dart';
 import 'package:frontend/utils/TurnoService.dart';
 import 'package:frontend/utils/apiclient.dart';
 import 'package:frontend/screens/home.dart';
@@ -42,14 +43,9 @@ class ConfirmarNuevoTurno extends StatelessWidget {
                           ModalRoute.withName('/home'),
                           arguments: usuario);                        
                       } catch (err) {
-                        showDialog(
+                        showErrorDialog(
                           context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              title: Text("No se pudo sacar el turno"),
-                              content: Text(err),
-                            );
-                          }
+                          error: err,
                         );
                       }
                     },

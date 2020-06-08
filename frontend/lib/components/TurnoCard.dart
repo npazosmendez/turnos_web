@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
 import '../model.dart' as model;
+import 'error_dialog.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 class TurnoCard extends StatelessWidget {
@@ -16,14 +17,9 @@ class TurnoCard extends StatelessWidget {
     try {
       await onDejarPasar(this.turno);
     } catch(err) {
-      showDialog(
+      showErrorDialog(
         context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text("No se pudo dejar pasa al de atrás"),
-            content: Text(err),
-          );
-        }
+        error: err,
       );
     }
   }

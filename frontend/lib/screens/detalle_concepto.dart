@@ -6,6 +6,7 @@ import '../utils/apiclient.dart';
 import '../utils/file_picker.dart';
 import '../model.dart' as model;
 import '../components/Fila.dart';
+import '../components/error_dialog.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 class DetalleConcepto extends StatefulWidget {
@@ -149,14 +150,9 @@ class _DetalleConceptoState extends State<DetalleConcepto> {
                       // TODO: usar el turno para algo, habría que incluir verificaicón en el backend
                       await ConceptoService(widget.apiClient).atenderSiguiente(snapshot.data);
                     } catch (err) {
-                      showDialog(
+                      showErrorDialog(
                         context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: Text("No se pudo cancelar el turno"),
-                            content: Text(err),
-                          );
-                        }
+                        error: err,
                       );
                     }
                     setState(() {
