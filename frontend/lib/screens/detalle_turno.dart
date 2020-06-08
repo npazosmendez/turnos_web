@@ -3,6 +3,7 @@ import 'package:flutter/rendering.dart';
 
 import '../model.dart' as model;
 import 'package:qr_flutter/qr_flutter.dart';
+import '../components/WidgetsTurnos.dart';
 
 class DetalleTurno extends StatelessWidget {
   final model.Turno t;
@@ -23,36 +24,5 @@ class DetalleTurno extends StatelessWidget {
         ]),
         ))
     ;
-  }
-}
-
-class NumeroTurno extends StatelessWidget {
-  final model.Turno t;
-  NumeroTurno(this.t);
-
-  @override
-  Widget build(BuildContext context){
-    return Column(mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        Text('Número de turno',style: TextStyle(color: Colors.grey, fontSize: 14),),
-        Text(t.numeroToDisplay.toString(),style: TextStyle(color: Colors.blue, fontSize: 60, fontWeight: FontWeight.bold)),
-        Text(t.concepto.nombre,style: TextStyle(fontSize: 20)),
-      ]
-    );
-  }
-}
-
-class QRTurno extends StatelessWidget {
-  final model.Turno t;
-  QRTurno(this.t);
-
-  @override
-  Widget build(BuildContext context){
-    return QrImage(
-      data: t.numeroToDisplay.toString()+'+'+t.uuid,
-      version: QrVersions.auto,
-      backgroundColor: Colors.white,
-      errorCorrectionLevel: QrErrorCorrectLevel.H,
-    );
   }
 }
