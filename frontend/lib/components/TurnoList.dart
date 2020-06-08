@@ -43,7 +43,13 @@ class _TurnoListState extends State<TurnoList> {
                             child: TurnoCard(
                               t,
                               TurnoService(widget.apiClient).personasAdelante(t),
-                              onDejarPasar: (turno) => TurnoService(widget.apiClient).dejarPasar(t),
+                              onDejarPasar: (turno) async {
+                                await TurnoService(widget.apiClient).dejarPasar(t);
+                                setState(() {
+                                  // Forzamos la actualización de todos los turnos
+                                  futureTurnos = TurnoService(widget.apiClient).query(widget.filtros);
+                                });
+                              },
                             )
                           )).toList()
                   )
