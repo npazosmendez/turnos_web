@@ -133,9 +133,9 @@ export class Turno extends Sequelize.Model {
         if (isNaN(numero_de_atras)) {
             return null;
         }
-        return Turno.findOne({
+        return await Turno.findOne({
             where: {
-                conceptoId: this.id,
+                conceptoId: this.conceptoId,
                 numero: numero_de_atras,
             },
         });
@@ -181,6 +181,9 @@ db.sync({ force: true })
             await Usuario.bulkCreate([
                 { nombre: "Elver", apellido: "Sero", email: "elver@gmail.com", password: "12345"},
                 { nombre: "Roberto", apellido: "Rushero", email: "robertrush@gmail.com", password: "12345"},
+                { nombre: "Tomás", apellido: "Fanta", email: "tomasfanta@gmail.com", password: "12345"},
+                { nombre: "Armando", apellido: "Paredes", email: "armandoparedes@gmail.com", password: "12345"},
+                { nombre: "Sol", apellido: "Pérez", email: "lasobrideperez@gmail.com", password: "12345"},
             ]);
             await Concepto.bulkCreate([
                 {
@@ -217,11 +220,11 @@ db.sync({ force: true })
                     usuarioId: 2,
                 },
             ]);
-            await Turno.bulkCreate([
-                { numero: 1, usuarioId: 1, conceptoId: 3, uuid: uuidv4()}, // Elver para la zapatería
-                { numero: 2, usuarioId: 2, conceptoId: 3, uuid: uuidv4()}, // Rober para la zapatería
-                { numero: 3, usuarioId: 1, conceptoId: 3, uuid: uuidv4()}, // Elver para la zapatería
-            ]);
+            await Turno.create({conceptoId: 3, usuarioId: 1}); // Elver para la zapatería
+            await Turno.create({conceptoId: 3, usuarioId: 2}); // Rober para la zapatería
+            await Turno.create({conceptoId: 3, usuarioId: 3}); // Tomás para la zapatería
+            await Turno.create({conceptoId: 3, usuarioId: 4}); // Armando para la zapatería
+            await Turno.create({conceptoId: 3, usuarioId: 5}); // Sol para la zapatería
         } catch (err) {
             console.error("ERROR poblando las tablas:", err)
         }
