@@ -18,7 +18,7 @@ class TurnosApp extends StatelessWidget {
         HomePage.routeName: (context) => HomePage(),
         LoginPage.routeName: (context) => LoginPage(),
         //PropietariosHome.routeName: (context) => PropietariosHome(),
-        ClientesHome.routeName:  (context) => ClientesHome()
+        //ClientesHome.routeName:  (context) => ClientesHome()
       },
       theme: ThemeData(
         primarySwatch: Colors.blue,
