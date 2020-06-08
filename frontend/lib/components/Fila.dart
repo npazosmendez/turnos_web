@@ -83,6 +83,7 @@ class Fila extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             if (snapshot.data.length > 0) {
+              snapshot.data.sort((t1,t2) => t1.numero.compareTo(t2.numero));
               // El próximo cliente se muestra distinto
               List<Widget> turnosEnFila = snapshot.data.sublist(1).map((t) => this.turnoEnFila(t, false)).toList();
               turnosEnFila.insert(0, this.turnoEnFila(snapshot.data[0], true));
