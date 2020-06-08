@@ -30,14 +30,18 @@ class _ClientesHomeState extends State<ClientesHome> {
   @override
   void initState(){
     _codigoQR='';
-
+    html.window.console.log(html.window.onMessage);
     html.window.onMessage.listen((e) {
       _codigoQR=e.data;
       api=ApiClient(usuario.email,usuario.password);
       ConceptoService(api).get(int.parse(e.data)).then((value) {
         concepto=value;
-        Navigator.push(context, 
-        MaterialPageRoute(builder: (BuildContext context) => ConfirmarNuevoTurno(usuario, concepto)));
+        Navigator.push(
+          context, 
+          MaterialPageRoute(
+            builder: (BuildContext context) => ConfirmarNuevoTurno(usuario, concepto)
+          )
+        );
       });
       //html.window.console.log(_codigoQR);
       //html.window.console.log(usuario.id);
@@ -87,7 +91,7 @@ class _ClientesHomeState extends State<ClientesHome> {
                           }
                         ),
                       ),
-                      Center(child: Text("Listado de\nConceptos"))
+                      Center(child: Text("Conceptos"))
                     ],
                   ),
                 ),
