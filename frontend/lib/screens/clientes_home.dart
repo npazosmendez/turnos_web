@@ -13,25 +13,19 @@ import '../utils/ConceptoService.dart';
 import '../utils/apiclient.dart';
 
 class ClientesHome extends StatefulWidget {
-  final model.Usuario usuario;
   static const String routeName = '/clientes';
 
-  ClientesHome(this.usuario);
-
   @override
-  _ClientesHomeState createState() => _ClientesHomeState(usuario);
+  _ClientesHomeState createState() => _ClientesHomeState();
 
 }
 
 class _ClientesHomeState extends State<ClientesHome> {
-  final model.Usuario usuario;
-
-  _ClientesHomeState(this.usuario);
-
   String _codigoQR;
   ApiClient api;
   
   model.Concepto concepto;
+  model.Usuario usuario;
 
   @override
   void initState(){
@@ -42,7 +36,8 @@ class _ClientesHomeState extends State<ClientesHome> {
       api=ApiClient(usuario.email,usuario.password);
       ConceptoService(api).get(int.parse(e.data)).then((value) {
         concepto=value;
-        Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => ConfirmarNuevoTurno(usuario, concepto)));
+        Navigator.push(context, 
+        MaterialPageRoute(builder: (BuildContext context) => ConfirmarNuevoTurno(usuario, concepto)));
       });
       //html.window.console.log(_codigoQR);
       //html.window.console.log(usuario.id);
@@ -54,6 +49,7 @@ class _ClientesHomeState extends State<ClientesHome> {
 
   @override
   Widget build(BuildContext context) {
+    usuario=ModalRoute.of(context).settings.arguments;
     //final model.Usuario usuario = ModalRoute.of(context).settings.arguments;
     return Scaffold(
       appBar: AppBar(title: Text("Bienvenide, ${usuario.email}!")),

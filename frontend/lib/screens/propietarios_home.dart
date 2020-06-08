@@ -129,7 +129,7 @@ class _FormNuevoConceptoState extends State<FormNuevoConcepto> {
             } catch (ex) {
               // TODO: handle
             }
-            Navigator.of(context).pop();
+            Navigator.of(context).pop(true);
           },
         ),
       ],
