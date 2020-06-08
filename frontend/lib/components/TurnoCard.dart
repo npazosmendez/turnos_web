@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
 import '../model.dart' as model;
+import '../screens/detalle_turno.dart';
 import 'error_dialog.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
@@ -57,6 +58,28 @@ class TurnoCard extends StatelessWidget {
                   )
                 ),
               ),
+              Tooltip(
+                  message: "Mostrá el código QR a tu comerciante amigo",
+                  child: RaisedButton(
+                    color: Colors.blue,
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (BuildContext context) => DetalleTurno(turno))
+                      );
+                    },
+                    child: Row(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(right: 7),
+                          child: Icon(Icons.access_time, color: Colors.white),
+                        ),
+                        Text("Ver código QR", style: TextStyle(color: Colors.white)),
+                      ],
+                    )
+                  ),
+                ),
             ]),
           ),
           Padding(
@@ -107,13 +130,6 @@ class TurnoCard extends StatelessWidget {
                 }
               },
             ),
-          ),
-          QrImage(
-            data: turno.numeroToDisplay.toString()+'+'+turno.uuid,
-            version: QrVersions.auto,
-            size: 200.0,
-            backgroundColor: Colors.white,
-            errorCorrectionLevel: QrErrorCorrectLevel.H,
           ),
         ]),
       );

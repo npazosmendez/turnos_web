@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/screens/detalle_turno.dart';
 import 'package:frontend/utils/TurnoService.dart';
 
 import '../utils/apiclient.dart';
