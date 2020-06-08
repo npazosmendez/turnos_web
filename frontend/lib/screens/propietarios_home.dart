@@ -9,16 +9,17 @@ import 'detalle_concepto.dart';
 
 class PropietariosHome extends StatelessWidget {
   static const String routeName = '/propietarios';
+  final model.Usuario usuario;
+
+  PropietariosHome(this.usuario);
 
   @override
   Widget build(BuildContext context) {
-    final model.Usuario usuario = ModalRoute.of(context).settings.arguments;
-
     return new Scaffold(
       appBar: AppBar(title: Text("Mis Conceptos"),),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          showDialog(
+        onPressed: () async {
+          var result=await showDialog(
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
@@ -26,6 +27,11 @@ class PropietariosHome extends StatelessWidget {
               );
             }, // TODO
           );
+          if (result!=null){
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (BuildContext context) => PropietariosHome(usuario)));
+          }
         },
         child: Icon(Icons.add),
         tooltip: "Nuevo concepto",
@@ -46,13 +52,16 @@ class PropietariosHome extends StatelessWidget {
             ConceptoList(
               usuario: usuario,
               filtros: {"usuarioId": usuario.id.toString()},
-              onTap: (concepto) {
-                Navigator.push(
+              onTap: (concepto) async {
+                await Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (BuildContext context) => DetalleConcepto(usuario, concepto.id))
                 );
-              }
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (BuildContext context) => PropietariosHome(usuario)));
+                }
             )
           ],
         ),

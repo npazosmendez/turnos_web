@@ -27,8 +27,11 @@ class HomePage extends StatelessWidget {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(18.0)),
               onPressed: () {
-                Navigator.pushNamed(context, PropietariosHome.routeName, arguments: usuario);
-              },
+                //Navigator.pushNamed(context, PropietariosHome.routeName, arguments: usuario);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => PropietariosHome(usuario)));
+                },
               child: Text("Propietarios".toUpperCase(),
                   style: TextStyle(fontSize: 14)),
             ),
