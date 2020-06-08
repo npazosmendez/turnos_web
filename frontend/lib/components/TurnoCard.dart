@@ -6,11 +6,27 @@ import 'package:qr_flutter/qr_flutter.dart';
 
 class TurnoCard extends StatelessWidget {
   final model.Turno turno;
-  final Function(model.Turno) onTap;
+  final Future Function(model.Turno) onDejarPasar;
   // TODO: estaría mejor hacerlo con streams esto. Potencialmente el turno entero?
   final Future<int> personasAdelante;
 
-  const TurnoCard(this.turno, this.personasAdelante, {this.onTap});
+  const TurnoCard(this.turno, this.personasAdelante, {this.onDejarPasar});
+
+  void tryDejarPasar(context) async {
+    try {
+      await onDejarPasar(this.turno);
+    } catch(err) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("No se pudo dejar pasa al de atrás"),
+            content: Text(err),
+          );
+        }
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,14 +81,30 @@ class TurnoCard extends StatelessWidget {
                         ),
                       ),
                       Center(child:
-                        Text(
-                          snapshot.data.toString(),
-                          style: TextStyle(color: Colors.black54, fontSize: 60),
+                      Text(
+                        snapshot.data.toString(),
+                          style: TextStyle(color: Colors.black54, fontSize: 40),
                         )
                       ),
                       Center(
                         child: Icon(Icons.people, size: 35),
-                      )
+                      ),
+                      Tooltip(
+                        message: "Dejá pasar a quien esté detrás tuyo",
+                        child: RaisedButton(
+                          color: Colors.blue,
+                          onPressed: () => this.tryDejarPasar(context),
+                          child: Row(
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.only(right: 7),
+                                child: Icon(Icons.access_time, color: Colors.white),
+                              ),
+                              Text("ESTOY ATRASADO", style: TextStyle(color: Colors.white)),
+                            ],
+                          )
+                        ),
+                      ),
                     ]);
                 } else {
                   return Center(child: CircularProgressIndicator());
@@ -89,12 +121,6 @@ class TurnoCard extends StatelessWidget {
           ),
         ]),
       );
-    if (onTap != null) {
-      return GestureDetector(
-        onTap: () => onTap(turno),
-        child: card
-      );
-    }
     return card;
   }
 }

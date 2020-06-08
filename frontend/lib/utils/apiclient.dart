@@ -39,6 +39,12 @@ class ApiClient {
     final uri = getUri(path, queryParameters: queryParameters);
     return _client.put(uri, headers: headers);
   }
+  Future<http.Response> post(path, {queryParameters}) {
+    Map<String, String> headers = {};
+    headers[HttpHeaders.authorizationHeader] = 'Basic ${this.usuario}:${this.password}';
+    final uri = getUri(path, queryParameters: queryParameters);
+    return _client.post(uri, headers: headers);
+  }
 
   Future<http.Response> postJson(String path, Map<String, dynamic> body) {
     Map<String, String> headers = {};

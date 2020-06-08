@@ -39,4 +39,13 @@ class TurnoService {
       return Future<int>.error(response.body);
     }
   }
+
+  Future dejarPasar(Turno turno) async {
+    var response = await apiClient.post("$baseUrl/${turno.id}/dejar_pasar");
+    if(response.statusCode == 200){
+      return;
+    } else {
+      return Future.error(response.body);
+    }
+  }
 }

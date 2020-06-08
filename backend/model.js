@@ -120,6 +120,27 @@ export class Turno extends Sequelize.Model {
             }
         });
     }
+
+    async turno_de_atras() {
+        const numero_de_atras = await Turno.min("numero", {
+            where : {
+              conceptoId: this.conceptoId,
+              numero: {
+                [Sequelize.Op.gt]: this.numero
+              }
+            }
+        });
+        if (isNaN(numero_de_atras)) {
+            return null;
+        }
+        return Turno.findOne({
+            where: {
+                conceptoId: this.id,
+                numero: numero_de_atras,
+            },
+        });
+
+    }
 }
 
 Turno.init({

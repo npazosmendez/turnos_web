@@ -206,6 +206,28 @@ app.get('/turnos/:turnoId/personas_adelante', async function (req, res, next) {
   }
 });
 
+app.post('/turnos/:turnoId/dejar_pasar', async function (req, res, next) {
+  try {
+    var turno = await Turno.findByPk(req.params.turnoId);
+    var turno_de_atras = await turno.turno_de_atras();
+
+    if(!turno_de_atras) {
+      return res.status(400).send("No hay nadie a quien dejar pasar.");
+    }
+
+    // Known issue: altas race conditions acá compadre
+    let [numero_adelante, numero_atras] = [turno.numero, turno_de_atras.numero];
+    turno.numero = numero_atras;
+    turno_de_atras.numero = numero_adelante;
+    await turno.save();
+    await turno_de_atras.save();
+
+    return res.send(turno);
+  } catch (err) {
+    next(err);
+  }
+});
+
 // Error handling global
 /* NOTE: los errores de promises no manejados no llegan acá.
 Puede eso puede hacerse dentro del middleware:
