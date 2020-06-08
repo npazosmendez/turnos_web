@@ -35,18 +35,26 @@ export class Concepto extends Sequelize.Model {
         });
     }
 
-    async siguiente() {
+    async siguiente(include_usuario=false) {
+        // include_usuario indica si la respuesta contiene el usuario asociado o no
+
         const siguiente_numero = await Turno.min("numero", {
             where: { conceptoId: this.id}
         });
         if (isNaN(siguiente_numero)) {
             return null;
         }
+
+        let included_related_models = [];
+        if (include_usuario) {
+            included_related_models.push({ model: Usuario });
+        }
         return Turno.findOne({
             where: {
                 conceptoId: this.id,
                 numero: siguiente_numero,
             },
+            include: included_related_models
         });
     }
 
@@ -111,12 +119,12 @@ export class Turno extends Sequelize.Model {
     }
 
     async personas_adelante() {
-        return await Turno.count({
-            where : {
-              conceptoId: this.conceptoId,
-              numero: {
-                [Sequelize.Op.lt]: this.numero
-              }
+        return Turno.count({
+            where: {
+                conceptoId: this.conceptoId,
+                numero: {
+                    [Sequelize.Op.lt]: this.numero
+                }
             }
         });
     }
@@ -133,7 +141,7 @@ export class Turno extends Sequelize.Model {
         if (isNaN(numero_de_atras)) {
             return null;
         }
-        return await Turno.findOne({
+        return Turno.findOne({
             where: {
                 conceptoId: this.conceptoId,
                 numero: numero_de_atras,
@@ -184,6 +192,8 @@ db.sync({ force: true })
                 { nombre: "Tomás", apellido: "Fanta", email: "tomasfanta@gmail.com", password: "12345"},
                 { nombre: "Armando", apellido: "Paredes", email: "armandoparedes@gmail.com", password: "12345"},
                 { nombre: "Sol", apellido: "Pérez", email: "lasobrideperez@gmail.com", password: "12345"},
+                { nombre: "Juan", apellido: "Lanuza", email: "juan.lanuza3@gmail.com", password: "12345"},
+                { nombre: "Juan", apellido: "Lanu", email: "juanlanu@hotmail.com", password: "12345"},
             ]);
             await Concepto.bulkCreate([
                 {

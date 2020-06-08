@@ -11,9 +11,12 @@ import { Concepto, Turno, Usuario } from "./model.js";
 import { basicAuth } from "./auth.js";
 import config from './config.js';
 import nodeMailer from 'nodemailer';
+import {TurnosMailer} from "./TurnosMailer.js";
 
 
 const app = express();
+
+const mailer = new TurnosMailer();
 
 // Middlewares
 // ~~~~~~~~~~~
@@ -160,6 +163,8 @@ app.put(
     } catch (err) {
       next(err);
     }
+    mailer.notificar_proximo_en_fila_para(req.concepto);
+
     return res.status(200).send();
   }
 );
@@ -192,8 +197,10 @@ app.post('/turnos', async function (req, res) {
   Turno.create({
     usuarioId: req.usuario.id,
     conceptoId: parseInt(req.body.conceptoId)
-  }).then((turno) => res.send(turno))
-    .catch((err) => res.status(500).send(err.message));
+  }).then(async (turno) => {
+    mailer.notificar_proximo_en_fila_para(await turno.getConcepto(), turno);
+    res.send(turno);
+  }).catch((err) => res.status(500).send(err.message));
 });
 
 app.get('/turnos/:turnoId/personas_adelante', async function (req, res, next) {
@@ -221,6 +228,8 @@ app.post('/turnos/:turnoId/dejar_pasar', async function (req, res, next) {
     turno_de_atras.numero = numero_adelante;
     await turno.save();
     await turno_de_atras.save();
+
+    mailer.notificar_proximo_en_fila_para(await turno_de_atras.getConcepto(), turno_de_atras);
 
     return res.send(turno);
   } catch (err) {
