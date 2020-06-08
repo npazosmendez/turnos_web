@@ -55,7 +55,7 @@ class _ClientesHomeState extends State<ClientesHome> {
       appBar: AppBar(title: Text("Bienvenide, ${usuario.email}!")),
       body: Center(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+          //crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             Padding(
               padding: EdgeInsets.all(16.0),

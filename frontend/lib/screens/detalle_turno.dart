@@ -17,7 +17,8 @@ class DetalleTurno extends StatelessWidget {
         title: Text("Detalle del turno"),
       ),
       body: Center(
-        child: Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             NumeroTurno(t),
             Container(height: 200, width: 200, child: QRTurno(t)),
