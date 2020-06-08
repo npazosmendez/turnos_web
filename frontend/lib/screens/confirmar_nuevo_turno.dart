@@ -36,10 +36,11 @@ class ConfirmarNuevoTurno extends StatelessWidget {
                     onPressed: () async {
                       try {
                         await TurnoService(apiClient).create(concepto);
-                        Navigator.push(
+                        Navigator.pushNamedAndRemoveUntil(
                           context,
-                          MaterialPageRoute(builder: (BuildContext context) => ClientesHome(usuario))
-                        );
+                          ClientesHome.routeName,
+                          ModalRoute.withName('/home'),
+                          arguments: usuario);                        
                       } catch (err) {
                         showDialog(
                           context: context,

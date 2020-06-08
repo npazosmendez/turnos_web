@@ -39,11 +39,11 @@ class HomePage extends StatelessWidget {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(18.0)),
               onPressed: () {
-                //Navigator.pushNamed(context, ClientesHome.routeName, arguments: usuario);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ClientesHome(usuario))
-                );
+                Navigator.pushNamed(context, ClientesHome.routeName, arguments: usuario);
+                //Navigator.push(
+                //  context,
+                //  MaterialPageRoute(builder: (context) => ClientesHome(usuario))
+                //);
               },                
               child: Text("Clientes".toUpperCase(),
                   style: TextStyle(fontSize: 14)),
