@@ -1,4 +1,4 @@
-import { Usuario } from "./models/index.js";
+import { Usuario } from "../models/index.js";
 
 var bypass = false;
 
@@ -14,7 +14,7 @@ function decodeAuthHeader(authHeader) {
     return [email, password];
 }
 
-export async function basicAuth(req, res, next) {
+export async function basicAuthMiddleware(req, res, next) {
     if (bypass) {
         req.usuario = null;
     } else {

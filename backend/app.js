@@ -7,8 +7,11 @@ import fs from 'fs';
 import path from 'path';
 import multer from 'multer';
 
+import { noCacheMiddleware, errorHandlingMiddleware } from "./middlewares/common.js";
+import { basicAuthMiddleware } from "./middlewares/auth.js";
+
+
 import { Concepto, Turno, Usuario } from "./models/index.js";
-import { basicAuth } from "./auth.js";
 import config from './config.js';
 import nodeMailer from 'nodemailer';
 import {TurnosMailer} from "./TurnosMailer.js";
@@ -26,11 +29,8 @@ app.use(bodyParser.json()); // Parsea el body si el content type es json
 // NOTE: ojo que se sirve todo lo de los directorios
 app.use(express.static('../frontend/build/web'));
 app.use(express.static('uploads'));
-app.use(basicAuth);
-app.use((req, res, next) => {
-  res.set('Cache-Control', 'no-store'); // Deshabilita el caché
-  next();
-})
+app.use(basicAuthMiddleware);
+app.use(noCacheMiddleware)
 
 // APIS
 // ~~~~~~~~~~~~~~~
@@ -242,10 +242,7 @@ app.post('/turnos/:turnoId/dejar_pasar', async function (req, res, next) {
 Puede eso puede hacerse dentro del middleware:
   promise.catch(next)
 */
-app.use(function (err, req, res, next) {
-  console.error("ERROR: " + err);
-  res.status(500).send(err.message);
-});
+app.use(errorHandlingMiddleware);
 
 // Corre el server
 // ~~~~~~~~~~~~~~~
