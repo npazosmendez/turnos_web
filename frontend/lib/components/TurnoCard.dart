@@ -5,6 +5,7 @@ import '../model.dart' as model;
 import '../screens/detalle_turno.dart';
 import 'error_dialog.dart';
 import '../components/WidgetsTurnos.dart';
+import 'dart:js' as js;
 
 class TurnoCard extends StatelessWidget {
   final model.Turno turno;
@@ -35,20 +36,38 @@ class TurnoCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               NumeroTurno(turno),
-              Tooltip(
-                  message: "Mostrá el código QR a tu comerciante amigo",
-                  child: RaisedButton(
-                    color: Colors.blue,
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (BuildContext context) => DetalleTurno(turno))
-                      );
-                    },
-                    child: Text("Ver código QR", style: TextStyle(color: Colors.white)),
+              Row(children: <Widget>[
+                Tooltip(
+                    message: "Mostrá el código QR a tu comerciante amigo",
+                    child: RaisedButton(
+                      color: Colors.blue,
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (BuildContext context) => DetalleTurno(turno))
+                        );
+                      },
+                      child: Text("Ver código QR", style: TextStyle(color: Colors.white)),
+                    ),
                   ),
-                ),
+              Tooltip(
+              message: "Compartir por WhatsApp",
+              child: RaisedButton(
+                color: Colors.blue,
+                onPressed: () { js.context.callMethod("whatsapp"); },
+                child: Row(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(right: 7),
+                      child: Icon(Icons.share, color: Colors.white),
+                    ),
+                    Text("WhatsApp", style: TextStyle(color: Colors.white)),
+                  ],
+                )
+              ),
+            ),                  
+              ])
             ]
           ),
           Column(
