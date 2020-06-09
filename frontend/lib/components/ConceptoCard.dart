@@ -26,11 +26,11 @@ class ConceptoCard extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             Container(
-              height: 100,
+              height: 200,
               width: 100,
               child: Image.network(
                 getImageUrl(),
-                fit: BoxFit.contain, // cover
+                fit: BoxFit.cover,
               ),
             ),
             Padding(
