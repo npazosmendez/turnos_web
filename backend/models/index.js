@@ -191,3 +191,5 @@ Concepto.hasMany(Turno, {
   }
 });
 Turno.belongsTo(Concepto);
+
+import './fixtures.js'
