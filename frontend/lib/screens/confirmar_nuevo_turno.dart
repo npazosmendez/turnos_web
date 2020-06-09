@@ -41,7 +41,7 @@ class ConfirmarNuevoTurno extends StatelessWidget {
                           context,
                           ClientesHome.routeName,
                           ModalRoute.withName('/home'),
-                          arguments: usuario);                        
+                        );
                       } catch (err) {
                         showErrorDialog(
                           context: context,

@@ -20,7 +20,8 @@ class _LoginPageState extends State<LoginPage> {
     var password = passwordInputController.text;
     try {
       model.Usuario usuario = await UsuarioService.login(email, password);
-      Navigator.pushNamed(context, HomePage.routeName, arguments: usuario);
+      model.Usuario.setLocalCredentials(usuario);
+      Navigator.pushNamed(context, HomePage.routeName);
       return;
     } catch (ex) {
       print(ex);

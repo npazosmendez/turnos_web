@@ -14,6 +14,8 @@ import '../utils/apiclient.dart';
 
 class ClientesHome extends StatefulWidget {
   static const String routeName = '/clientes';
+  final model.Usuario usuario;
+  ClientesHome(this.usuario);
 
   @override
   _ClientesHomeState createState() => _ClientesHomeState();
@@ -25,7 +27,6 @@ class _ClientesHomeState extends State<ClientesHome> {
   ApiClient api;
   
   model.Concepto concepto;
-  model.Usuario usuario;
 
   @override
   void initState(){
@@ -33,13 +34,13 @@ class _ClientesHomeState extends State<ClientesHome> {
     html.window.console.log(html.window.onMessage);
     html.window.onMessage.listen((e) {
       _codigoQR=e.data;
-      api=ApiClient(usuario.email,usuario.password);
+      api=ApiClient(widget.usuario.email,widget.usuario.password);
       ConceptoService(api).get(int.parse(e.data)).then((value) {
         concepto=value;
         Navigator.push(
           context, 
           MaterialPageRoute(
-            builder: (BuildContext context) => ConfirmarNuevoTurno(usuario, concepto)
+            builder: (BuildContext context) => ConfirmarNuevoTurno(widget.usuario, concepto)
           )
         );
       });
@@ -53,10 +54,9 @@ class _ClientesHomeState extends State<ClientesHome> {
 
   @override
   Widget build(BuildContext context) {
-    usuario=ModalRoute.of(context).settings.arguments;
     //final model.Usuario usuario = ModalRoute.of(context).settings.arguments;
     return Scaffold(
-      appBar: AppBar(title: Text("Bienvenide, ${usuario.email}!")),
+      appBar: AppBar(title: Text("Bienvenide, ${widget.usuario.email}!")),
       body: Center(
         child: Column(
           //crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -87,7 +87,7 @@ class _ClientesHomeState extends State<ClientesHome> {
                           icon: Icon(Icons.list),
                           color: Colors.white,
                           onPressed: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => NuevoTurno(usuario)));
+                            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => NuevoTurno(widget.usuario)));
                           }
                         ),
                       ),
@@ -151,8 +151,8 @@ class _ClientesHomeState extends State<ClientesHome> {
               ),
             ),
             TurnoList(
-                usuario: usuario,
-                filtros: {"usuarioId": usuario.id.toString()},
+                usuario: widget.usuario,
+                filtros: {"usuarioId": widget.usuario.id.toString()},
                 mjeSinResultado: "No tenés turnos pendientes",
                 onTap: (concepto) {
                 }

@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+import 'dart:html';
 
 class Usuario {
   final String email, password, nombre, apellido;
@@ -17,6 +19,31 @@ class Usuario {
 
   String nombreCompleto() {
     return "$nombre $apellido";
+  }
+
+  static Usuario fromLocalCredentials() {
+    var id = int.parse(window.localStorage["usuario.id"]);
+    var email = window.localStorage["usuario.email"];
+    var password = window.localStorage["usuario.password"];
+    var nombre = window.localStorage["usuario.nombre"];
+    var apellido = window.localStorage["usuario.apellido"];
+    return Usuario(id, email, password, nombre, apellido);
+  }
+
+  static localCredentialsExist() {
+    return window.localStorage.containsKey("usuario.id") &&
+      window.localStorage.containsKey("usuario.email") &&
+      window.localStorage.containsKey("usuario.password") &&
+      window.localStorage.containsKey("usuario.nombre") &&
+      window.localStorage.containsKey("usuario.apellido");
+  }
+
+  static setLocalCredentials(Usuario usuario) {
+    window.localStorage["usuario.id"] = usuario.id.toString();
+    window.localStorage["usuario.email"] = usuario.email;
+    window.localStorage["usuario.password"] = usuario.password;
+    window.localStorage["usuario.nombre"] = usuario.nombre;
+    window.localStorage["usuario.apellido"] = usuario.apellido;
   }
 }
 

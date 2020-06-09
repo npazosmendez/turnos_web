@@ -7,10 +7,11 @@ import '../model.dart' as model;
 
 class HomePage extends StatelessWidget {
   static const String routeName = '/home';
+  final model.Usuario usuario;
+  HomePage(this.usuario);
 
   @override
   Widget build(BuildContext context) {
-    final model.Usuario usuario = ModalRoute.of(context).settings.arguments;
     if (usuario == null) {
       return LoginPage();
     }
@@ -26,25 +27,14 @@ class HomePage extends StatelessWidget {
             RaisedButton(
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(18.0)),
-              onPressed: () {
-                //Navigator.pushNamed(context, PropietariosHome.routeName, arguments: usuario);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => PropietariosHome(usuario)));
-                },
+              onPressed: () => Navigator.pushNamed(context, PropietariosHome.routeName),
               child: Text("Propietarios".toUpperCase(),
                   style: TextStyle(fontSize: 14)),
             ),
             RaisedButton(
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(18.0)),
-              onPressed: () {
-                Navigator.pushNamed(context, ClientesHome.routeName, arguments: usuario);
-                //Navigator.push(
-                //  context,
-                //  MaterialPageRoute(builder: (context) => ClientesHome(usuario))
-                //);
-              },                
+              onPressed: () => Navigator.pushNamed(context, ClientesHome.routeName),
               child: Text("Clientes".toUpperCase(),
                   style: TextStyle(fontSize: 14)),
             ),
