@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/utils/ConceptoService.dart';
 import 'package:frontend/utils/TurnoService.dart';
-
+import 'dart:html' as html;
+import 'dart:js' as js;
 import '../utils/apiclient.dart';
 import '../utils/file_picker.dart';
 import '../model.dart' as model;
@@ -159,7 +160,36 @@ class _DetalleConceptoState extends State<DetalleConcepto> {
                       futureConcepto = fetchConcepto();
                     });
                   },
-                  onScanQrSiguiente: (turno) => Future.value(1), // TODO
+                  onScanQrSiguiente: (turno) {
+                    js.context.callMethod("scan");
+                    var procesar=true;
+                    html.window.onMessage.listen((e) {
+                      if (procesar) {
+                        procesar=false;
+                        String codigoQR=e.data;
+                        String dataTurno=turno.numero.toString()+'+'+turno.uuid;
+                        if (codigoQR == dataTurno) {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                content: Text('Turno válido ! Te atiendo amigue')
+                              );
+                            }
+                          );
+                        } else {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                content: Text('Turno NO válido ! Sos un chante !')
+                              );
+                            }
+                          );
+                        }
+                      }
+                    });
+                  },
                 ),
               ],
             ),

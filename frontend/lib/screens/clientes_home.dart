@@ -112,18 +112,22 @@ class _ClientesHomeState extends State<ClientesHome> {
                             color: Colors.white,
                           onPressed: () {
                             js.context.callMethod("scan");
+                            var procesar=true;
                             html.window.onMessage.listen((e) {
-                              _codigoQR=e.data;
-                              api=ApiClient(widget.usuario.email,widget.usuario.password);
-                              ConceptoService(api).get(int.parse(_codigoQR)).then((value) {
-                                concepto=value;
-                                Navigator.push(
-                                  context, 
-                                  MaterialPageRoute(
-                                    builder: (BuildContext context) => ConfirmarNuevoTurno(widget.usuario, concepto)
-                                  )
-                                );
-                              });
+                              if (procesar) {
+                                procesar=false;
+                                _codigoQR=e.data;
+                                api=ApiClient(widget.usuario.email,widget.usuario.password);
+                                ConceptoService(api).get(int.parse(_codigoQR)).then((value) {
+                                  concepto=value;
+                                  Navigator.push(
+                                    context, 
+                                    MaterialPageRoute(
+                                      builder: (BuildContext context) => ConfirmarNuevoTurno(widget.usuario, concepto)
+                                    )
+                                  );
+                                });
+                              }
                           });
                           }
                         ),
