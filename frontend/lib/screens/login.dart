@@ -53,7 +53,7 @@ class _LoginPageState extends State<LoginPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
                     Text(
-                        "Accedé a tu cuenta",
+                        "Accedé a tu cuenta".toUpperCase(),
                         style: TextStyle(color: Colors.blue, fontSize: 30, fontWeight: FontWeight.bold),
                     ),
                     TextField(
@@ -75,13 +75,13 @@ class _LoginPageState extends State<LoginPage> {
                       this.authFailed ? "Falló la autenticación (${this.authResponseStatus})" : "",
                       style: TextStyle( color: Colors.red)),
                     RaisedButton(
-                      hoverElevation: 5,
+                      color: Colors.blue,
                       onPressed: this.login,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0))),
                       child: Text(
-                        'Entrar',
+                        'ENTRAR',
                         style: TextStyle(
-                          fontSize: 20.0,
+                          fontSize: 20,
+                          color: Colors.white
                         ),
                       ),
                     ),

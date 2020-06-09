@@ -10,6 +10,7 @@ class HomePage extends StatelessWidget {
   final model.Usuario usuario;
   HomePage(this.usuario);
 
+
   @override
   Widget build(BuildContext context) {
     if (usuario == null) {
@@ -25,18 +26,16 @@ class HomePage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             RaisedButton(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(18.0)),
+              color: Colors.blue,
               onPressed: () => Navigator.pushNamed(context, PropietariosHome.routeName),
               child: Text("Propietarios".toUpperCase(),
-                  style: TextStyle(fontSize: 14)),
+                  style: TextStyle(fontSize: 20, color: Colors.white)),
             ),
             RaisedButton(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(18.0)),
+              color: Colors.blue,
               onPressed: () => Navigator.pushNamed(context, ClientesHome.routeName),
               child: Text("Clientes".toUpperCase(),
-                  style: TextStyle(fontSize: 14)),
+                  style: TextStyle(fontSize: 20, color: Colors.white)),
             ),
           ],
         ),

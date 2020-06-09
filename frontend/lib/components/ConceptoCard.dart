@@ -36,7 +36,7 @@ class ConceptoCard extends StatelessWidget {
             Padding(
                 padding: EdgeInsets.fromLTRB(5, 10, 5, 5),
                 child: Text(
-                  concepto.nombre,
+                  concepto.nombre.toUpperCase(),
                   style: TextStyle(color: Colors.blue, fontSize: 20, fontWeight: FontWeight.bold),
                 )
             ),
