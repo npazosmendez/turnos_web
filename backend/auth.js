@@ -1,4 +1,4 @@
-import { Usuario } from "./model.js";
+import { Usuario } from "./models/index.js";
 
 var bypass = false;
 

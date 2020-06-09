@@ -7,7 +7,7 @@ import fs from 'fs';
 import path from 'path';
 import multer from 'multer';
 
-import { Concepto, Turno, Usuario } from "./model.js";
+import { Concepto, Turno, Usuario } from "./models/index.js";
 import { basicAuth } from "./auth.js";
 import config from './config.js';
 import nodeMailer from 'nodemailer';
