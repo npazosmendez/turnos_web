@@ -23,43 +23,22 @@ class ClientesHome extends StatefulWidget {
 }
 
 class _ClientesHomeState extends State<ClientesHome> {
-  String _codigoQR;
   ApiClient api;
+  QRStream _qrStream=QRStream();
   
   model.Concepto concepto;
 
   @override
   void initState(){
-    _codigoQR='';
-    html.window.console.log(html.window.onMessage);
-    html.window.onMessage.listen((e) {
-      _codigoQR=e.data;
-      api=ApiClient(widget.usuario.email,widget.usuario.password);
-      ConceptoService(api).get(int.parse(e.data)).then((value) {
-        concepto=value;
-        Navigator.push(
-          context, 
-          MaterialPageRoute(
-            builder: (BuildContext context) => ConfirmarNuevoTurno(widget.usuario, concepto)
-          )
-        );
-      });
-      //html.window.console.log(_codigoQR);
-      //html.window.console.log(usuario.id);
-      //js.context.callMethod("alert", [ _codigoQR ]);
-    });
-
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    //final model.Usuario usuario = ModalRoute.of(context).settings.arguments;
     return Scaffold(
       appBar: AppBar(title: Text("Bienvenide, ${widget.usuario.email}!")),
       body: Center(
         child: Column(
-          //crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             Padding(
               padding: EdgeInsets.all(16.0),
@@ -133,7 +112,20 @@ class _ClientesHomeState extends State<ClientesHome> {
                             icon: Icon(Icons.camera_alt),
                             color: Colors.white,
                           onPressed: () {
-                            js.context.callMethod("scan");                            
+                            js.context.callMethod("scan");
+                            html.window.onMessage.listen((e) {
+                              _codigoQR=e.data;
+                              api=ApiClient(widget.usuario.email,widget.usuario.password);
+                              ConceptoService(api).get(int.parse(_codigoQR)).then((value) {
+                                concepto=value;
+                                Navigator.push(
+                                  context, 
+                                  MaterialPageRoute(
+                                    builder: (BuildContext context) => ConfirmarNuevoTurno(widget.usuario, concepto)
+                                  )
+                                );
+                              });
+                          });
                           }
                         ),
                       ),

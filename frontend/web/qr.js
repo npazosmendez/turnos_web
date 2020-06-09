@@ -2,9 +2,7 @@ var video = document.createElement("video");
 var noTick=true;
 var codigoQR="vacío";
 
-//window.onmessage(m, function() {});
-
-function scan(){
+function scan() {
     noTick=false;
     document.getElementById("lock").className="bkglock";
     document.getElementById("dialogo").className="dialog";
