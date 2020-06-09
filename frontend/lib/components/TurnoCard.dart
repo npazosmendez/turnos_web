@@ -46,8 +46,9 @@ class TurnoCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 100),
-                    child: PersonasAdelante(personasAd),
+                     padding: EdgeInsets.fromLTRB(0, 0, 100, 0),
+                     child: 
+                      PersonasAdelante(personasAd),
                   ),
                   Column(
                     children: [
