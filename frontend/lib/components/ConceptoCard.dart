@@ -30,7 +30,7 @@ class ConceptoCard extends StatelessWidget {
               width: 100,
               child: Image.network(
                 getImageUrl(),
-                fit: BoxFit.cover,
+                fit: BoxFit.contain
               ),
             ),
             Padding(

@@ -23,10 +23,9 @@ class ClientesHome extends StatefulWidget {
 }
 
 class _ClientesHomeState extends State<ClientesHome> {
-  ApiClient api;
-  QRStream _qrStream=QRStream();
-  
+  ApiClient api;  
   model.Concepto concepto;
+  String _codigoQR;
 
   @override
   void initState(){

@@ -85,7 +85,7 @@ class _DetalleConceptoState extends State<DetalleConcepto> {
     Widget imagen = tieneImagen
       ? Image.network(
           ApiClient.getUri(concepto.pathImagen).toString(),
-          fit: BoxFit.cover,
+          fit: BoxFit.contain,
         )
       : Icon(Icons.add_a_photo, size: 50);
 
