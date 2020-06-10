@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/components/ConceptoList.dart';
+import 'package:frontend/screens/seleccionar_ubicacion.dart';
 import 'package:frontend/utils/ConceptoService.dart';
 import 'package:flutter/services.dart';
 
 import '../utils/apiclient.dart';
 import '../model.dart' as model;
 import 'detalle_concepto.dart';
+import 'package:flutter_google_maps/flutter_google_maps.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
 
 class PropietariosHome extends StatelessWidget {
   static const String routeName = '/propietarios';
@@ -87,12 +92,23 @@ class _FormNuevoConceptoState extends State<FormNuevoConcepto> {
   final controllerNombre = TextEditingController();
   final controllerDescripcion = TextEditingController();
   final controllerMaximaEspera = TextEditingController();
+  final _key = GlobalKey<GoogleMapStateBase>();
+  String _searchAddress;
+  GeoCoord _addressCoords;
+  bool _addressConfirmed;
 
   @override
   void dispose() {
     // Clean up the controller when the widget is disposed.
     controllerNombre.dispose();
     super.dispose();
+  }
+
+@override
+  void initState(){
+    super.initState();
+    GoogleMap.init('API_KEY');
+    WidgetsFlutterBinding.ensureInitialized();
   }
 
   @override
@@ -118,21 +134,208 @@ class _FormNuevoConceptoState extends State<FormNuevoConcepto> {
           inputFormatters: <TextInputFormatter>[WhitelistingTextInputFormatter.digitsOnly],
         ),
         RaisedButton(
+          child: Text("Seleccionar Ubicación"),
+          onPressed: () async {
+            _searchAddress = null;
+            _addressCoords = null;   
+            _addressConfirmed = false; 
+            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => 
+              SeleccionarUbicacion(searchCoordinates, onAddressLocationMarkerTap, onChangedAddressValue, onConfirmAddressButtonPressed)));
+          }
+        ),
+        RaisedButton(
           child: Text("Submit"),
           onPressed: () async {
+            if(controllerNombre.text == '') {
+              showDefaultDialog('Por favor ingrese un nombre!');
+              return;
+            }
+            if(controllerDescripcion.text == '') {
+              showDefaultDialog('Por favor ingrese una descripción!');
+              return;
+            }
+
+            if (_addressConfirmed == false || _addressCoords == null) {
+              showDefaultDialog('Por favor confirme una ubicación!');
+              return;
+            }
+
+            print("Adding concept:");
+            print(controllerNombre.text);
+            print(controllerDescripcion.text);
+            print(_addressCoords.latitude);
+            print(_addressCoords.longitude);
             try {
               ConceptoService(widget.apiClient).create(
                 controllerNombre.text,
                 controllerDescripcion.text,
                 int.tryParse(controllerMaximaEspera.text),
+                _addressCoords.latitude,
+                _addressCoords.longitude
               );
+              Navigator.of(context).pop(true);
             } catch (ex) {
               // TODO: handle
             }
-            Navigator.of(context).pop(true);
+
+
           },
         ),
       ],
     );
   }
+
+  Future<GeoCoord> searchCoordinates() async {
+    print("Starting to look up for the address...");
+    // GoogleMap.of(_key).clearMarkers();
+    const _host = 'https://maps.google.com/maps/api/geocode/json';
+    const apiKey = "AIzaSyBU1Lyj4x7qXm6vqcT0aG9OpJ-5zCs_JNM";
+    print("Looking for address of: " + _searchAddress);
+    var encoded = Uri.encodeComponent(_searchAddress);
+    final uri = Uri.parse('$_host?key=$apiKey&address=$encoded');
+
+    http.Response response = await http.get (uri);
+    final responseJson = json.decode(response.body);
+    // final responseJson = json.decode(response.body) as Map;
+
+    if(responseJson.containsKey('results')) {
+      if (responseJson['results'].length > 0) {
+        print(responseJson['results'].length);
+        var lat = responseJson['results'][0]['geometry']['location']['lat'];
+        var lng = responseJson['results'][0]['geometry']['location']['lng'];
+        _addressCoords = GeoCoord(lat, lng);
+        return GeoCoord(lat, lng);
+      }
+    }
+    return null;
+  }
+
+
+  void onAddressLocationMarkerTap(markerId) async {
+    await showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      content: Text(
+        (_searchAddress != null)? _searchAddress :
+        'This dialog was opened by tapping on the marker!\n'
+        'Marker ID is $markerId',
+      ),
+      actions: <Widget>[
+        FlatButton(
+          onPressed: Navigator.of(context).pop,
+          child: Text('Cerrar'),
+        ),
+      ],
+      ),
+    );
+  }
+
+  void onChangedAddressValue(val) {
+    setState(() {
+      _searchAddress = val;
+    });
+  }
+
+  void onConfirmAddressButtonPressed() async {
+    if (_searchAddress != null && _addressCoords != null) {
+      _addressConfirmed = true;
+      // showDefaultDialog('Direccion confirmada correctamente');
+      Navigator.of(context).pop(); 
+      print("Address confirmed correctly");
+    } else {
+      print("Confirmar dirección null! Error");
+      showIngressAddressDialog();
+    }
+  }
+
+  void showDefaultDialog(String text) async {
+    await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        content: Text(text),
+        actions: <Widget>[
+          FlatButton(
+            onPressed: Navigator.of(context).pop,
+            child: Text('Cerrar'),
+          ),
+        ],
+        ),
+      );
+  }
+  
+
+
+  void showIngressAddressDialog() async {
+    showDefaultDialog('Por favor ingrese una ubicación');
+  }
 }
+
+
+
+  // void onRawMarkerTap(markerId) async {
+  //   await showDialog(
+  //     context: context,
+  //     builder: (context) => AlertDialog(
+  //       content: Text(
+  //         (_searchAddress != null)? _searchAddress :
+  //         'This dialog was opened by tapping on the marker!\n'
+  //         'Marker ID is $markerId',
+  //       ),
+  //       actions: <Widget>[
+  //         FlatButton(
+  //           onPressed: Navigator.of(context).pop,
+  //           child: Text('Cerrar'),
+  //         ),
+  //         FlatButton(
+  //           onPressed: () {
+  //             print("Ubicación encontrada");
+  //             // Navigator.push(
+  //             //   context, 
+  //             //   MaterialPageRoute(
+  //             //     builder: (BuildContext context) => ConfirmarNuevoTurno(widget.usuario, concepto)
+  //             //   )
+  //             // );
+  //           },
+  //           child: Text('Confirmar turno'),
+  //         )
+  //       ],
+  //     ),
+  //   );
+  // }
+
+  // void searchAndNavigate() async {
+  //   print("Starting to look up for the address...");
+  //   // GoogleMap.of(_key).clearMarkers();
+  //   const _host = 'https://maps.google.com/maps/api/geocode/json';
+  //   const apiKey = "AIzaSyBU1Lyj4x7qXm6vqcT0aG9OpJ-5zCs_JNM";
+  //   print("Looking for address of: " + _searchAddress);
+  //   var encoded = Uri.encodeComponent(_searchAddress);
+  //   final uri = Uri.parse('$_host?key=$apiKey&address=$encoded');
+
+  //   http.Response response = await http.get (uri);
+  //   final responseJson = json.decode(response.body);
+  //   // final responseJson = json.decode(response.body) as Map;
+
+  //   if(responseJson.containsKey('results')) {
+  //     if (responseJson['results'].length > 0) {
+  //       print(responseJson['results'].length);
+  //       var lat = responseJson['results'][0]['geometry']['location']['lat'];
+  //       var lng = responseJson['results'][0]['geometry']['location']['lng'];
+  //       print(lat);
+  //       print(lng);
+  //       GeoCoord positionFound = GeoCoord(lat, lng);
+  //       GoogleMap.of(_key).addMarkerRaw(
+  //         positionFound,
+          
+  //         onTap: (markerId) async {
+  //           this.onRawMarkerTap(markerId);
+  //           // this.onRawMarkerTapCallback(markerId, text);
+  //         }
+  //       );
+  //       // addRawMarket(positionFound, 'Address found for: ' + _searchAddress);
+  //       // moveCameraToPosition(positionFound);
+  //     }
+  //   } else {
+  //     print("No results found!");
+  //   }  
+  // }
