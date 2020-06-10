@@ -3,8 +3,15 @@ function whatsapp(port,mensaje,htmlFile){
     var host = window.location.hostname;
 
     if (port=="0") {
-        port=window.location.port.toString();
+        port=":"+window.location.port.toString();
+    } else {
+        port=":"+port;
     }
-    var result = prot + "//" + host + ":" + port + "/tmp/" + encodeURIComponent(htmlFile);
+
+    if (port==":"){
+        port="";
+    }
+    
+    var result = prot + "//" + host + port + "/tmp/" + encodeURIComponent(htmlFile);
     window.open("http://web.whatsapp.com/send?text="+mensaje+result,"compartirwhatsapp");
 }
