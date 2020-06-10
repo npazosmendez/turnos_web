@@ -1,5 +1,5 @@
 import nodeMailer from "nodemailer";
-import os from 'os';
+import os from 'os';c
 import config from './config.js';
 
 export class TurnosMailer {
