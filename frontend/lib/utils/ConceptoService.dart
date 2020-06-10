@@ -29,7 +29,7 @@ class ConceptoService {
     return Concepto.fromJson(conceptosJson.first);
   }
 
-  Future<Concepto> create(String nombre, String descripcion, int maximaEspera, {int latitud = 0, int longitud = 0}) async {
+  Future<Concepto> create(String nombre, String descripcion, int maximaEspera, double latitud, double longitud) async {
     var response = await apiClient.postJson(baseUrl, {
       "nombre": nombre,
       "descripcion": descripcion,
