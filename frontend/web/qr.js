@@ -28,10 +28,6 @@ function scan() {
       requestAnimationFrame(tick);
     });
 
-    setTimeout(5000, function(){
-      return codigoQR;
-    });
-
     function tick() {
 
       if (noTick) return "";
@@ -39,8 +35,12 @@ function scan() {
       if (video.readyState === video.HAVE_ENOUGH_DATA) {
         canvasElement.hidden = false;
 
-        canvasElement.height = video.videoHeight;
-        canvasElement.width = video.videoWidth;
+        factor=video.videoHeight/video.videoWidth;
+        canvasElement.width = window.innerWidth/2;
+        canvasElement.height = canvasElement.width*factor;
+        
+        // canvasElement.height = video.videoHeight;
+        // canvasElement.width = video.videoWidth;
         canvas.drawImage(video, 0, 0, canvasElement.width, canvasElement.height);
         var imageData = canvas.getImageData(0, 0, canvasElement.width -1, canvasElement.height -1);
         
