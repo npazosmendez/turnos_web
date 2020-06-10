@@ -72,7 +72,7 @@ class _RegisterFormState extends State<RegisterForm> {
                 labelText: 'Nombre',
               ),
               validator: (value) {
-                if (value.isEmpty || value.length < 3) {
+                if (value.length < 3) {
                   return 'Minimo 3 caracteres';
                 }
                 return null;
@@ -84,7 +84,7 @@ class _RegisterFormState extends State<RegisterForm> {
                 labelText: 'Apellido',
               ),
               validator: (value) {
-                if (value.isEmpty || value.length < 3) {
+                if (value.length < 3) {
                   return 'Minimo 3 caracteres';
                 }
                 return null;
@@ -96,7 +96,7 @@ class _RegisterFormState extends State<RegisterForm> {
                 labelText: 'Email',
               ),
               validator: (value) {
-                if (value.isEmpty || value.length < 3) {
+                if (value.length < 3) {
                   return 'Minimo 3 caracteres';
                 }
                 return null;
@@ -109,8 +109,8 @@ class _RegisterFormState extends State<RegisterForm> {
               ),
               obscureText: true,
               validator: (value) {
-                if (value.isEmpty || value.length < 3) {
-                  return 'Minimo 3 caracteres';
+                if (value.length < 6) {
+                  return 'Minimo 6 caracteres';
                 }
                 return null;
               },
