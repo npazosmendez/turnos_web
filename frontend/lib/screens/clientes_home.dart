@@ -120,6 +120,9 @@ class _ClientesHomeState extends State<ClientesHome> {
                               if (procesar) {
                                 procesar=false;
                                 _codigoQR=e.data;
+                                if (_codigoQR=='-1'){
+                                  return;
+                                }
                                 api=ApiClient(widget.usuario.email,widget.usuario.password);
                                 ConceptoService(api).get(int.parse(_codigoQR)).then((value) {
                                   concepto=value;

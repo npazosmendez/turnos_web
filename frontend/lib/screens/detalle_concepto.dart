@@ -167,7 +167,7 @@ class _DetalleConceptoState extends State<DetalleConcepto> {
                       if (procesar) {
                         procesar=false;
                         String codigoQR=e.data;
-                        if (e.data=='-1'){
+                        if (codigoQR=='-1'){
                           return;
                         }
                         String dataTurno=turno.numero.toString()+'+'+turno.uuid;
