@@ -1,11 +1,12 @@
 import Sequelize from 'sequelize';
 import { db } from './db.js';
 import { v4 as uuidv4 } from 'uuid'; // v4=random uuid
+import QRCode from 'qrcode';
+import * as fs from 'fs';
 
 /*
  * MODELO USUARIO
  */
-
 
 export const Usuario = db.define('usuarios', {
   email: {
@@ -119,12 +120,27 @@ export class Turno extends Sequelize.Model {
   }
 
   static async create({conceptoId, usuarioId}, options) {
+    const uuid=uuidv4();
+    const numero=await this.proximo_numero(conceptoId);
     return super.create({
       conceptoId: conceptoId,
       usuarioId: usuarioId,
-      numero: await this.proximo_numero(conceptoId),
-      uuid: uuidv4()
+      numero: numero,
+      uuid: uuid
     }, options);
+    const qrFileName='tmp/qr+'+numero.toString()+'+'+uuid+'.png';
+    QRCode.toFile(qrFileName,numero.toString()+'+'+uuid, { errorCorrectionLevel: 'H' });
+    const text = `<div style="width: 100%">
+                  <h3>Turno para ${concepto.nombre}</h3>
+                  <div>Tu número</div>
+                  <h1>${numero}</h1>
+                  <br/>
+                  <img src="${qrFileName}"></img>
+                </div>`
+    fs.writeFile("./tmp/koko.html", "hola", function (err) {
+      if (err) return console.log(err);
+      console.log('Hello World > helloworld.txt');
+    });
   }
 
   async personas_adelante() {

@@ -1,4 +1,5 @@
 import nodeMailer from "nodemailer";
+import QRCode from 'qrcode';
 
 export class TurnosMailer {
   constructor() {
@@ -27,14 +28,19 @@ export class TurnosMailer {
     if (candidato_a_proximo && prox_turno.id !== candidato_a_proximo.id) return;
 
     const prox_usuario = prox_turno.usuario;
+    const qrFileName='tmp/qr+'+prox_turno.numero.toString()+'+'+prox_turno.uuid+'.png';
+    QRCode.toFile(qrFileName,prox_turno.numero.toString()+'+'+prox_turno.uuid, { errorCorrectionLevel: 'H' });
     const subject = `[TurnosWeb-${concepto.nombre}] Sos el proximo en la fila!`;
     const text = `<div style="width: 100%">
-                    <h3>Sos el próximo en la fila de ${concepto.nombre}</h3>
-                    <div>Tu número</div>
-                    <h1>${prox_turno.numero}</h1>
-                  </div>`
+                  <h3>Sos el próximo en la fila de ${concepto.nombre}</h3>
+                  <div>Tu número</div>
+                  <h1>${prox_turno.numero}</h1>
+                  <br/>
+                  <img src="http://localhost:3000/${qrFileName}"></img>
+                </div>`
     return this.enviar_mail(prox_usuario.email, subject, text).then((info) => {
       console.log('Message %s sent: %s', info.messageId, info.response);
+      console.log(text);
       return info;
     }).catch((err) => {
       console.error(err);

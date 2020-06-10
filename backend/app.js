@@ -27,8 +27,10 @@ app.use(cors()); // Habilita CORS
 app.use(morgan('dev')); // Loggea requests
 app.use(bodyParser.json()); // Parsea el body si el content type es json
 // NOTE: ojo que se sirve todo lo de los directorios
+app.use('/tmp',express.static('tmp'));
 app.use(express.static('../frontend/build/web'));
 app.use(express.static('uploads'));
+
 app.use(basicAuthMiddleware);
 app.use(noCacheMiddleware)
 
