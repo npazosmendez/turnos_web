@@ -120,6 +120,7 @@ export class Turno extends Sequelize.Model {
   }
 
   static async create({conceptoId, usuarioId}, options) {
+    const concepto=await Concepto.findByPk(conceptoId);
     const uuid=uuidv4();
     const numero=await this.proximo_numero(conceptoId);
     const idTurno=numero.toString()+'+'+uuid;
@@ -131,7 +132,7 @@ export class Turno extends Sequelize.Model {
     );
     const text = `<html>
                   <body>
-                  <h3>Turno</h3>
+                  <h3>Turno para ${concepto.nombre}</h3>
                   <div>Tu número</div>
                   <h1>${numero}</h1>
                   <div>Código QR</div>

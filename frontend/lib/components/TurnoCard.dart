@@ -77,6 +77,9 @@ class TurnoCard extends StatelessWidget {
                         onPressed: () { js.context.callMethod(
                           "whatsapp",[
                             ApiClient.getUri("").port.toString(),
+                            "Te compartieron el turno número "+turno.numero.toString()+
+                            " para "+turno.concepto.nombre+
+                            ". Podés ver los detalles en la siguiente URL: ",
                              "t+"+turno.numero.toString()+"+"+turno.uuid+".html"
                           ]
                           );
