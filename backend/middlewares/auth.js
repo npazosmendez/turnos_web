@@ -1,7 +1,5 @@
 import { Usuario } from "../models/index.js";
 
-var bypass = false;
-
 function decodeAuthHeader(authHeader) {
     if (authHeader.indexOf('Basic ') === -1) {
         throw new Error('Solo se soporta Basic authorization');
@@ -15,7 +13,7 @@ function decodeAuthHeader(authHeader) {
 }
 
 export async function basicAuthMiddleware(req, res, next) {
-    if (bypass) {
+    if (req.url === '/usuarios/' && req.method === 'POST') {
         req.usuario = null;
     } else {
         if (!req.headers.authorization) {
