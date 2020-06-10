@@ -65,6 +65,7 @@ function scanoff(data) {
   postMessage(data,'*');
   document.getElementById("dialogo").className="dialoginv";
   document.getElementById("lock").className="bkg";
+  canvas.width+=0;
   document.getElementById("canvas").hidden=true;
   if (video) {
     video.srcObject.getTracks().forEach(function(track) {
