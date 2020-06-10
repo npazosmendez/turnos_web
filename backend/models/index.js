@@ -120,27 +120,34 @@ export class Turno extends Sequelize.Model {
   }
 
   static async create({conceptoId, usuarioId}, options) {
+    const concepto=await Concepto.findByPk(conceptoId);
     const uuid=uuidv4();
     const numero=await this.proximo_numero(conceptoId);
+    const idTurno=numero.toString()+'+'+uuid;
+    const htmlFileName='t+'+idTurno+'.html';
+    const qrFileName='qr+'+idTurno+'.png';
+    QRCode.toFile(
+      'tmp/'+qrFileName,
+      idTurno, { errorCorrectionLevel: 'H' }
+    );
+    const text = `<html>
+                  <body>
+                  <h3>Turno para ${concepto.nombre}</h3>
+                  <div>Tu número</div>
+                  <h1>${numero}</h1>
+                  <div>Código QR</div>
+                  <img src="${qrFileName}"></img>
+                </div></body></html>`;
+    fs.writeFileSync('tmp/'+htmlFileName, text, function (err) {
+      if (err) return console.log(err);
+      console.log('Error al escribir html');
+    });
     return super.create({
       conceptoId: conceptoId,
       usuarioId: usuarioId,
       numero: numero,
       uuid: uuid
     }, options);
-    const qrFileName='tmp/qr+'+numero.toString()+'+'+uuid+'.png';
-    QRCode.toFile(qrFileName,numero.toString()+'+'+uuid, { errorCorrectionLevel: 'H' });
-    const text = `<div style="width: 100%">
-                  <h3>Turno para ${concepto.nombre}</h3>
-                  <div>Tu número</div>
-                  <h1>${numero}</h1>
-                  <br/>
-                  <img src="${qrFileName}"></img>
-                </div>`
-    fs.writeFile("./tmp/koko.html", "hola", function (err) {
-      if (err) return console.log(err);
-      console.log('Hello World > helloworld.txt');
-    });
   }
 
   async personas_adelante() {

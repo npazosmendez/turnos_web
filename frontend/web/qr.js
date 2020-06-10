@@ -1,6 +1,5 @@
 var video = document.createElement("video");
 var noTick=true;
-var codigoQR="vacío";
 
 function scan() {
     noTick=false;
@@ -9,7 +8,6 @@ function scan() {
     
     var canvasElement = document.getElementById("canvas");
     var canvas = canvasElement.getContext("2d");
-    var codigoQR="ninguno";
     
     function drawLine(begin, end, color) {
       canvas.beginPath();
@@ -28,10 +26,6 @@ function scan() {
       requestAnimationFrame(tick);
     });
 
-    setTimeout(5000, function(){
-      return codigoQR;
-    });
-
     function tick() {
 
       if (noTick) return "";
@@ -39,8 +33,12 @@ function scan() {
       if (video.readyState === video.HAVE_ENOUGH_DATA) {
         canvasElement.hidden = false;
 
-        canvasElement.height = video.videoHeight;
-        canvasElement.width = video.videoWidth;
+        factor=video.videoHeight/video.videoWidth;
+        canvasElement.width = window.innerWidth/2;
+        canvasElement.height = canvasElement.width*factor;
+        
+        // canvasElement.height = video.videoHeight;
+        // canvasElement.width = video.videoWidth;
         canvas.drawImage(video, 0, 0, canvasElement.width, canvasElement.height);
         var imageData = canvas.getImageData(0, 0, canvasElement.width -1, canvasElement.height -1);
         
@@ -54,9 +52,7 @@ function scan() {
           drawLine(code.location.bottomRightCorner, code.location.bottomLeftCorner, "#FF3B58");
           drawLine(code.location.bottomLeftCorner, code.location.topLeftCorner, "#FF3B58");
          
-          scanoff();
-          postMessage(code.data,'*');
-          codigoQR=code.data;
+          scanoff(code.data);
           return;
         } 
       }
@@ -64,8 +60,9 @@ function scan() {
     }
 }
 
-function scanoff() {
+function scanoff(data) {
   noTick=true;
+  postMessage(data,'*');
   document.getElementById("dialogo").className="dialoginv";
   document.getElementById("lock").className="bkg";
   document.getElementById("canvas").hidden=true;
