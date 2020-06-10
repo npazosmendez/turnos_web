@@ -6,6 +6,7 @@ import 'package:frontend/components/TurnoList.dart';
 import 'package:frontend/utils/apiclient.dart';
 import '../model.dart' as model;
 import 'nuevo_turno.dart';
+import 'mapas.dart';
 import 'dart:html' as html;
 import 'dart:js' as js;
 import 'confirmar_nuevo_turno.dart';
@@ -88,7 +89,9 @@ class _ClientesHomeState extends State<ClientesHome> {
                         child: IconButton(
                             icon: Icon(Icons.map),
                             color: Colors.white,
-                          onPressed: () {}
+                          onPressed: () {
+                            Navigator.pushNamed(context, MapasPage.routeName);
+                          }
                         ),
                       ),
                       Center(child: Text("Mapa"))
