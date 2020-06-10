@@ -12,8 +12,6 @@ db.sync({ force: true })
         { nombre: "Tomás", apellido: "Fanta", email: "tomasfanta@gmail.com", password: "12345"},
         { nombre: "Armando", apellido: "Paredes", email: "armandoparedes@gmail.com", password: "12345"},
         { nombre: "Sol", apellido: "Pérez", email: "lasobrideperez@gmail.com", password: "12345"},
-        { nombre: "Juan", apellido: "Lanuza", email: "juan.lanuza3@gmail.com", password: "12345"},
-        { nombre: "Juan", apellido: "Lanu", email: "juanlanu@hotmail.com", password: "12345"},
         { nombre: "Martin", apellido: "Rados", email: "radosm@gmail.com", password: "12345"},
       ]);
       await Concepto.bulkCreate([
