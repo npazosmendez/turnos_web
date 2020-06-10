@@ -6,12 +6,14 @@ import 'package:frontend/components/TurnoList.dart';
 import 'package:frontend/utils/apiclient.dart';
 import '../model.dart' as model;
 import 'nuevo_turno.dart';
-import 'mapas.dart';
+import 'conceptos_mapa.dart';
 import 'dart:html' as html;
 import 'dart:js' as js;
 import 'confirmar_nuevo_turno.dart';
 import '../utils/ConceptoService.dart';
 import '../utils/apiclient.dart';
+
+import 'package:flutter_google_maps/flutter_google_maps.dart';
 
 class ClientesHome extends StatefulWidget {
   static const String routeName = '/clientes';
@@ -31,6 +33,8 @@ class _ClientesHomeState extends State<ClientesHome> {
   @override
   void initState(){
     super.initState();
+    GoogleMap.init('API_KEY');
+    WidgetsFlutterBinding.ensureInitialized();
   }
 
   @override
@@ -66,6 +70,7 @@ class _ClientesHomeState extends State<ClientesHome> {
                           icon: Icon(Icons.list),
                           color: Colors.white,
                           onPressed: () {
+                            
                             Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => NuevoTurno(widget.usuario)));
                           }
                         ),
@@ -89,8 +94,10 @@ class _ClientesHomeState extends State<ClientesHome> {
                         child: IconButton(
                             icon: Icon(Icons.map),
                             color: Colors.white,
-                          onPressed: () {
-                            Navigator.pushNamed(context, MapasPage.routeName);
+                          onPressed: () async {
+                            api=ApiClient(widget.usuario.email,widget.usuario.password);
+                            List<model.Concepto> conceptos = await ConceptoService(api).query(null);                            
+                            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => ConceptosMapa(conceptos, onConceptoMarkerTap, onRawMarkerTap)));
                           }
                         ),
                       ),
@@ -160,4 +167,58 @@ class _ClientesHomeState extends State<ClientesHome> {
       ),
     );
   }
+
+  void onConceptoMarkerTap(markerId, model.Concepto concepto, [String text]) async {
+
+    await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        content: Text(
+          (concepto != null)? concepto.descripcion :
+          'This dialog was opened by tapping on the marker!\n'
+          'Marker ID is $markerId',
+        ),
+        actions: <Widget>[
+          FlatButton(
+            onPressed: Navigator.of(context).pop,
+            child: Text('Cerrar'),
+          ),
+          FlatButton(
+            onPressed: () {
+              print("Navigatin to confirm turn");
+              Navigator.push(
+                context, 
+                MaterialPageRoute(
+                  builder: (BuildContext context) => ConfirmarNuevoTurno(widget.usuario, concepto)
+                )
+              );
+            },
+            child: Text('Confirmar turno'),
+          )
+        ],
+      ),
+    );
+  }
+
+  void onRawMarkerTap(markerId, [String text]) async {
+
+    await showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      content: Text(
+        (text != null)? text :
+        'This dialog was opened by tapping on the marker!\n'
+        'Marker ID is $markerId',
+      ),
+      actions: <Widget>[
+        FlatButton(
+          onPressed: Navigator.of(context).pop,
+          child: Text('Close'),
+        ),
+      ],
+    ),
+  );
+  }  
+  
+ 
 }

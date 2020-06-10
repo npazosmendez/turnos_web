@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:frontend/screens/clientes_home.dart';
 import 'package:frontend/screens/login.dart';
 import 'package:frontend/screens/propietarios_home.dart';
-import 'package:frontend/screens/mapas.dart';
 import 'screens/home.dart';
 import './model.dart';
 
@@ -28,7 +27,6 @@ class TurnosApp extends StatelessWidget {
           HomePage.routeName: (context) => HomePage(usuario),
           PropietariosHome.routeName: (context) => PropietariosHome(usuario),
           ClientesHome.routeName: (context) => ClientesHome(usuario),
-          MapasPage.routeName: (context) => MapasPage()
         };
         WidgetBuilder builder = routes[settings.name];
         return MaterialPageRoute(
