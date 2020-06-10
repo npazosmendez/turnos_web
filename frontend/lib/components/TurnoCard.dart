@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:frontend/utils/apiclient.dart';
 
 import '../model.dart' as model;
 import 'error_dialog.dart';
@@ -73,7 +74,13 @@ class TurnoCard extends StatelessWidget {
                         icon: FaIcon(FontAwesomeIcons.whatsapp, color: Colors.white),
                         text: "COMPARTIR",
                         tooltip: "Compartí el turno por Whatsapp",
-                        onPressed: () { js.context.callMethod("whatsapp"); },
+                        onPressed: () { js.context.callMethod(
+                          "whatsapp",[
+                            ApiClient.getUri("").port.toString(),
+                             "t+"+turno.numero.toString()+"+"+turno.uuid+".html"
+                          ]
+                          );
+                        },
                       ),
                     ],
                   ),

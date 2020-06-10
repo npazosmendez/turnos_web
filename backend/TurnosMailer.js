@@ -29,7 +29,7 @@ export class TurnosMailer {
 
     const prox_usuario = prox_turno.usuario;
     const qrFileName='tmp/qr+'+prox_turno.numero.toString()+'+'+prox_turno.uuid+'.png';
-    QRCode.toFile(qrFileName,prox_turno.numero.toString()+'+'+prox_turno.uuid, { errorCorrectionLevel: 'H' });
+    //QRCode.toFile(qrFileName,prox_turno.numero.toString()+'+'+prox_turno.uuid, { errorCorrectionLevel: 'H' });
     const subject = `[TurnosWeb-${concepto.nombre}] Sos el proximo en la fila!`;
     const text = `<div style="width: 100%">
                   <h3>Sos el próximo en la fila de ${concepto.nombre}</h3>
