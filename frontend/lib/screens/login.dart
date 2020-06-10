@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/screens/home.dart';
+import 'package:frontend/screens/register.dart';
 import 'package:frontend/utils/UsuarioService.dart';
 import '../model.dart' as model;
 
@@ -12,8 +13,8 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   bool authFailed = false;
   int authResponseStatus = -1;
-  final emailInputController = TextEditingController(text: "elver@gmail.com");
-  final passwordInputController = TextEditingController(text: "12345");
+  final emailInputController = TextEditingController(text: "");
+  final passwordInputController = TextEditingController(text: "");
 
   void login() async {
     var email = emailInputController.text;
@@ -85,6 +86,11 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                     ),
+                    FlatButton(
+                      onPressed: () => Navigator.pushNamed(context, RegisterPage.routeName),
+                      textColor: Colors.blue,
+                      child: Text('CREAR CUENTA')
+                    )
                   ],
                 ),
               ),

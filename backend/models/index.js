@@ -12,18 +12,32 @@ export const Usuario = db.define('usuarios', {
   email: {
     type: Sequelize.TEXT,
     allowNull: false,
+    unique: true,
+    validate: {
+      len: [3,50],
+      isEmail: true
+    }
   },
   password: {
     type: Sequelize.TEXT,
     allowNull: false,
+    validate: {
+      len: [6, 50]
+    }
   },
   nombre: {
     type: Sequelize.TEXT,
     allowNull: false,
+    validate: {
+      len: [3, 50]
+    }
   },
   apellido: {
     type: Sequelize.TEXT,
     allowNull: false,
+    validate: {
+      len: [3, 50]
+    }
   },
 });
 

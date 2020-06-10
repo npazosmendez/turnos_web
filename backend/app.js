@@ -68,6 +68,19 @@ app.get('/usuarios/login', function (req, res) {
   res.send(req.usuario)
 })
 
+app.post('/usuarios/', async function (req, res) {
+  let user_data = {
+    email: req.body.email,
+    password: req.body.password,
+    nombre: req.body.nombre,
+    apellido: req.body.apellido
+  }
+  Usuario.create(user_data).then((usuario) => res.status(201).send(usuario))
+    .catch((err) => {
+        res.status(400).send(err.errors.length > 0 ? err.errors[0].message : err.message);
+    });
+});
+
 app.post('/conceptos/', async function (req, res) {
   // TODO/NOTE: el create parece devolver el objeto con los fields de los mismos tipos que
   // se pusieron en .create(...), todavía sin haber sido casteados por el engine.

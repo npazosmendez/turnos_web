@@ -11,4 +11,18 @@ class UsuarioService {
     var usuarioJson = json.decode(response.body);
     return Usuario.fromJson(usuarioJson);
   }
+
+  static Future<Usuario> register(nombre, apellido, email, password) async {
+    ApiClient apiClient = ApiClient(null, null);
+    var response = await apiClient.postJson("/usuarios/", {
+      "email": email,
+      "password": password,
+      "nombre": nombre,
+      "apellido": apellido
+    });
+    if(response.statusCode == 201){
+      return Usuario.fromJson(json.decode(response.body));
+    }
+    return Future.error(response.body);
+  }
 }
