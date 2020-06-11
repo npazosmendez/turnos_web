@@ -40,6 +40,7 @@ jobs:
 
     - name: Build Flutter
       run: |
+        flutter config --enable-web
         cd frontend && flutter build web
 
     - name: Install node packages
