@@ -17,9 +17,9 @@ on:
     branches:
       - release
 env:
-  AZURE_WEBAPP_NAME: TurnosWebApp    # set this to your application's name
-  AZURE_WEBAPP_PACKAGE_PATH: '.'      # set this to the path to your web app project, defaults to the repository root
-  NODE_VERSION: '12.x'                # set this to the node version to use
+  AZURE_WEBAPP_NAME: TurnosWebApp
+  AZURE_WEBAPP_PACKAGE_PATH: 'dist'
+  NODE_VERSION: '12.13'
 
 jobs:
   build-and-deploy:
@@ -38,14 +38,15 @@ jobs:
       with:
         channel: beta
 
+    - name: Build Node.js
+      run: |
+        cd backend && npm install && npm run dist
+
     - name: Build Flutter
       run: |
         flutter config --enable-web
-        cd frontend && flutter build web
+        cd frontend && flutter build web && cp -r build/web ../dist/static
 
-    - name: Install node packages
-      run: |
-        cd backend && npm install
 
     - name: 'Deploy to Azure WebApp'
       uses: azure/webapps-deploy@v2
