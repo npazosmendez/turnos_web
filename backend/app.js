@@ -6,6 +6,7 @@ import https from 'https';
 import fs from 'fs';
 import path from 'path';
 import multer from 'multer';
+import compression from 'compression';
 
 import { noCacheMiddleware, errorHandlingMiddleware } from "./middlewares/common.js";
 import { basicAuthMiddleware } from "./middlewares/auth.js";
@@ -26,6 +27,7 @@ const mailer = new TurnosMailer();
 app.use(cors()); // Habilita CORS
 app.use(morgan('dev')); // Loggea requests
 app.use(bodyParser.json()); // Parsea el body si el content type es json
+app.use(compression()) // Comprime los requests, los estáticos de flutter son enormes
 // NOTE: ojo que se sirve todo lo de los directorios
 app.use('/tmp',express.static('tmp'));
 app.use(express.static('static'));
