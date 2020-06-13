@@ -22,28 +22,28 @@ class Usuario {
   }
 
   static Usuario fromLocalCredentials() {
-    var id = int.parse(window.localStorage["usuario.id"]);
-    var email = window.localStorage["usuario.email"];
-    var password = window.localStorage["usuario.password"];
-    var nombre = window.localStorage["usuario.nombre"];
-    var apellido = window.localStorage["usuario.apellido"];
+    var id = int.parse(window.sessionStorage["usuario.id"]);
+    var email = window.sessionStorage["usuario.email"];
+    var password = window.sessionStorage["usuario.password"];
+    var nombre = window.sessionStorage["usuario.nombre"];
+    var apellido = window.sessionStorage["usuario.apellido"];
     return Usuario(id, email, password, nombre, apellido);
   }
 
   static localCredentialsExist() {
-    return window.localStorage.containsKey("usuario.id") &&
-      window.localStorage.containsKey("usuario.email") &&
-      window.localStorage.containsKey("usuario.password") &&
-      window.localStorage.containsKey("usuario.nombre") &&
-      window.localStorage.containsKey("usuario.apellido");
+    return window.sessionStorage.containsKey("usuario.id") &&
+      window.sessionStorage.containsKey("usuario.email") &&
+      window.sessionStorage.containsKey("usuario.password") &&
+      window.sessionStorage.containsKey("usuario.nombre") &&
+      window.sessionStorage.containsKey("usuario.apellido");
   }
 
   static setLocalCredentials(Usuario usuario) {
-    window.localStorage["usuario.id"] = usuario.id.toString();
-    window.localStorage["usuario.email"] = usuario.email;
-    window.localStorage["usuario.password"] = usuario.password;
-    window.localStorage["usuario.nombre"] = usuario.nombre;
-    window.localStorage["usuario.apellido"] = usuario.apellido;
+    window.sessionStorage["usuario.id"] = usuario.id.toString();
+    window.sessionStorage["usuario.email"] = usuario.email;
+    window.sessionStorage["usuario.password"] = usuario.password;
+    window.sessionStorage["usuario.nombre"] = usuario.nombre;
+    window.sessionStorage["usuario.apellido"] = usuario.apellido;
   }
 }
 
