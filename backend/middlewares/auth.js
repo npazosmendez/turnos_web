@@ -30,7 +30,7 @@ export async function basicAuthMiddleware(req, res, next) {
         
         var result = await Usuario.findAll({
             where: {
-                email: email,
+                email: email.toLowerCase(),
                 password: password,
             }
         });
