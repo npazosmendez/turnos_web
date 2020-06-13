@@ -9,9 +9,8 @@ export class TurnosMailer {
       port: 465,
       secure: true,
       auth: {
-        // TODO: move to config
-        user: 'turnoslocos@gmail.com',
-        pass: 'tparqweb'
+        user: config.mail_user,
+        pass: config.mail_password
       }
     });
   }
