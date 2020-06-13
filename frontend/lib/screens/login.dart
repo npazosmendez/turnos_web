@@ -11,8 +11,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  bool authFailed = false;
-  int authResponseStatus = -1;
+  String authError;
   final emailInputController = TextEditingController(text: "");
   final passwordInputController = TextEditingController(text: "");
 
@@ -24,17 +23,14 @@ class _LoginPageState extends State<LoginPage> {
       model.Usuario.setLocalCredentials(usuario);
       Navigator.pushNamed(context, HomePage.routeName);
       return;
-    } catch (ex) {
-      print(ex);
-      // TODO: probablemente un error de conexión o que el backend no responde.
-      // No termino de entender las excepciones del paquete http.
+    } catch (err) {
+      setAuthError(err.toString());
     }
-    setAuthFailed();
   }
 
-  void setAuthFailed() {
+  void setAuthError(String err) {
     setState(() {
-      this.authFailed = true;
+      this.authError = err;
     });
   }
 
@@ -73,7 +69,7 @@ class _LoginPageState extends State<LoginPage> {
                       obscureText: true,
                     ),
                     Text(
-                      this.authFailed ? "Falló la autenticación (${this.authResponseStatus})" : "",
+                      this.authError == null ? "" : "Falló la autenticación ($authError)",
                       style: TextStyle( color: Colors.red)),
                     RaisedButton(
                       color: Colors.blue,

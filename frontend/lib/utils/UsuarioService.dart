@@ -7,9 +7,11 @@ class UsuarioService {
   static Future<Usuario> login(email, password) async {
     ApiClient apiClient = ApiClient(email, password);
     var response = await apiClient.get("/usuarios/login");
-
-    var usuarioJson = json.decode(response.body);
-    return Usuario.fromJson(usuarioJson);
+    if(response.statusCode == 200) {
+      var usuarioJson = json.decode(response.body);
+      return Usuario.fromJson(usuarioJson);
+    }
+    return Future.error(response.statusCode.toString());
   }
 
   static Future<Usuario> register(nombre, apellido, email, password) async {
