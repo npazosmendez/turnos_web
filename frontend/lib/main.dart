@@ -5,9 +5,25 @@ import 'package:frontend/screens/propietarios_home.dart';
 import 'package:frontend/screens/register.dart';
 import 'screens/home.dart';
 import './model.dart';
+import 'dart:html';
 
 void main() {
+  initDom();
+  print(const String.fromEnvironment("ASD"));
   runApp(TurnosApp());
+}
+
+void initDom() {
+  // Workaround cochino para templatear el index.html
+  if(querySelector("#google_maps_api") == null) {
+    // Evita agregarlo más de una vez
+    var script = new ScriptElement();
+    script.id = "google_maps_api";
+    // flutter run -d chrome --dart-define=GOOGLE_MAPS_API_KEY=mi_api_key
+    const String apiKey = String.fromEnvironment("GOOGLE_MAPS_API_KEY", defaultValue: "AIzaSyBU1Lyj4x7qXm6vqcT0aG9OpJ-5zCs_JNM");
+    script.src = 'https://maps.googleapis.com/maps/api/js?key=$apiKey&callback=initMap';
+    document.body.append(script);
+  }
 }
 
 class TurnosApp extends StatelessWidget {
