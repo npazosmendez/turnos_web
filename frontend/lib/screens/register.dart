@@ -91,6 +91,7 @@ class _RegisterFormState extends State<RegisterForm> {
               },
             ),
             TextFormField(
+              keyboardType: TextInputType.emailAddress,
               onSaved: (val) => { email = val },
               decoration: const InputDecoration(
                 labelText: 'Email',

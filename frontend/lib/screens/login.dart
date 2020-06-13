@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:frontend/screens/home.dart';
 import 'package:frontend/screens/register.dart';
 import 'package:frontend/utils/UsuarioService.dart';
@@ -55,6 +56,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     TextField(
                       controller: emailInputController,
+                      keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(
                         hintText: 'email',
                         icon: Icon(Icons.email),
