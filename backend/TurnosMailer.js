@@ -2,7 +2,7 @@ import nodeMailer from "nodemailer";
 import os from 'os';
 import config from './config.js';
 
-export class TurnosMailer {
+class TurnosMailer {
   constructor() {
     this.transporter = nodeMailer.createTransport({
       host: 'smtp.gmail.com',
@@ -51,3 +51,7 @@ export class TurnosMailer {
     });
   }
 }
+
+const mailer = new TurnosMailer();
+
+export default mailer;
