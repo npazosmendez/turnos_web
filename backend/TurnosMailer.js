@@ -32,7 +32,7 @@ export class TurnosMailer {
     const subject = `[TurnosWeb-${concepto.nombre}] Sos el proximo en la fila!`;
     var prot;
     if (config.https){prot="https://";} else {prot="http://";}
-    const host="linux-facu.brazilsouth.cloudapp.azure.com";
+    const host=config.host;
     const port=config.port;
     const url=prot+host+":"+port+"/tmp/"+htmlFileName;
     const text = `<div style="width: 100%">

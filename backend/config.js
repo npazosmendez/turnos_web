@@ -1,6 +1,7 @@
 var config = {};
 
 config.port = process.env.PORT || 3000;
+config.host = process.env.HOST || 'localhost';
 config.https = Boolean(process.env.HTTPS) || false;
 config.ssl_cert = process.env.SSL_CERT;
 config.ssl_private = process.env.SSL_PRIVATE;

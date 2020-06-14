@@ -39,33 +39,6 @@ app.use(noCacheMiddleware)
 // APIS
 // ~~~~~~~~~~~~~~~
 
-app.get('/send-email', function (req, res) {
-  let transporter = nodeMailer.createTransport({
-      host: 'smtp.gmail.com',
-      port: 465,
-      secure: true,
-      auth: {
-          // should be replaced with real sender's account
-          user: 'turnoslocos@gmail.com',
-          pass: 'tparqweb'
-      }
-  });
-  let mailOptions = {
-      // should be replaced with real recipient's account
-      to: 'radosm@gmail.com',
-      subject: 'Prueba desde node', //req.body.subject,
-      text: 'Hola!' //req.body.message
-  };
-  transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-          return console.log(error);
-      }
-      console.log('Message %s sent: %s', info.messageId, info.response);
-  });
-  res.status(200);
-  res.end();
-});
-
 app.get('/usuarios/login', function (req, res) {
   res.send(req.usuario)
 })
