@@ -43,7 +43,7 @@ db.sync({ force: true })
         {
           habilitado: false,
           nombre: "Mercería",
-          descripcion: "La verdulería de robertrush",
+          descripcion: "La mercería de robertrush",
           latitud: 16,
           longitud: "26",
           usuarioId: 2,

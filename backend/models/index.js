@@ -137,7 +137,7 @@ export class Turno extends Sequelize.Model {
     const concepto=await Concepto.findByPk(conceptoId);
     const uuid=uuidv4();
     const numero=await this.proximo_numero(conceptoId);
-    const idTurno=numero.toString()+'+'+uuid;
+    const idTurno=uuid;
     const htmlFileName='t+'+idTurno+'.html';
     const qrFileName='qr+'+idTurno+'.png';
     QRCode.toFile(

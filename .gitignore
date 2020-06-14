@@ -4,3 +4,4 @@ backend/uploads/
 backend/tmp/*
 !backend/tmp/.gitkeep
 dist/
+backend/static

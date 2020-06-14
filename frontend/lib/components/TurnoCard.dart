@@ -80,7 +80,8 @@ class TurnoCard extends StatelessWidget {
                             "Te compartieron el turno número "+turno.numero.toString()+
                             " para "+turno.concepto.nombre+
                             ". Podés ver los detalles en la siguiente URL: ",
-                             "t+"+turno.numero.toString()+"+"+turno.uuid+".html"
+                            "t+"+turno.uuid+".html"
+                            // "t+"+turno.numero.toString()+"+"+turno.uuid+".html"
                           ]
                           );
                         },

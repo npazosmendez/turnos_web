@@ -170,7 +170,8 @@ class _DetalleConceptoState extends State<DetalleConcepto> {
                         if (codigoQR=='-1'){
                           return;
                         }
-                        String dataTurno=turno.numero.toString()+'+'+turno.uuid;
+                        //String dataTurno=turno.numero.toString()+'+'+turno.uuid;
+                        String dataTurno=turno.uuid;
                         if (codigoQR == dataTurno) {
                           showDialog(
                             context: context,

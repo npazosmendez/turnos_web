@@ -28,8 +28,7 @@ export class TurnosMailer {
     if (candidato_a_proximo && prox_turno.id !== candidato_a_proximo.id) return;
 
     const prox_usuario = prox_turno.usuario;
-    const htmlFileName='t+'+prox_turno.numero.toString()+'+'+prox_turno.uuid+'.html';
-    //QRCode.toFile(qrFileName,prox_turno.numero.toString()+'+'+prox_turno.uuid, { errorCorrectionLevel: 'H' });
+    const htmlFileName='t+'+prox_turno.uuid+'.html';
     const subject = `[TurnosWeb-${concepto.nombre}] Sos el proximo en la fila!`;
     var prot;
     if (config.https){prot="https://";} else {prot="http://";}

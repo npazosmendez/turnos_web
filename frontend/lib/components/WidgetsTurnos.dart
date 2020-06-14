@@ -66,7 +66,8 @@ class QRTurno extends StatelessWidget {
   @override
   Widget build(BuildContext context){
     return QrImage(
-      data: t.numeroToDisplay.toString()+'+'+t.uuid,
+      //data: t.numeroToDisplay.toString()+'+'+t.uuid,
+      data: t.uuid,
       version: QrVersions.auto,
       backgroundColor: Colors.white,
       errorCorrectionLevel: QrErrorCorrectLevel.H,
