@@ -133,35 +133,48 @@ export class Turno extends Sequelize.Model {
     return isNaN(maximo) ? 1 : maximo + 1;
   }
 
-  static async create({conceptoId, usuarioId}, options) {
+  static async genera_html(numero,conceptoId,uuid) {
     const concepto=await Concepto.findByPk(conceptoId);
-    const uuid=uuidv4();
-    const numero=await this.proximo_numero(conceptoId);
-    const idTurno=uuid;
-    const htmlFileName='t+'+idTurno+'.html';
-    const qrFileName='qr+'+idTurno+'.png';
+    const htmlFileName='t+'+uuid+'.html';
+    const qrFileName='qr+'+uuid+'.png';
     QRCode.toFile(
       'tmp/'+qrFileName,
-      idTurno, { errorCorrectionLevel: 'H' }
+      uuid, { errorCorrectionLevel: 'H' }
     );
-    const text = `<html>
-                  <body>
-                  <h3>Turno para ${concepto.nombre}</h3>
-                  <div>Tu número</div>
-                  <h1>${numero}</h1>
-                  <div>Código QR</div>
-                  <img src="${qrFileName}"></img>
-                </div></body></html>`;
+    const text = `
+      <html>
+        <body>
+          <h3>Turno para ${concepto.nombre}</h3>
+          <div>Tu número</div>
+          <h1>${numero}</h1>
+          <div>Código QR</div>
+          <img src="${qrFileName}"></img>
+          </div>
+        </body>
+      </html>`;
     fs.writeFileSync('tmp/'+htmlFileName, text, function (err) {
       if (err) return console.log(err);
       console.log('Error al escribir html');
     });
+  }
+
+  static async create({conceptoId, usuarioId}, options) {
+
+    const uuid=uuidv4();
+    const numero=await this.proximo_numero(conceptoId);
+    await this.genera_html(numero,conceptoId,uuid);
+
     return super.create({
       conceptoId: conceptoId,
       usuarioId: usuarioId,
       numero: numero,
       uuid: uuid
     }, options);
+  }
+
+  async save() {
+    await Turno.genera_html(this.numero,this.conceptoId,this.uuid);
+    return super.save();
   }
 
   async personas_adelante() {
