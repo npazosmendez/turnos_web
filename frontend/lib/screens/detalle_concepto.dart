@@ -9,6 +9,7 @@ import '../model.dart' as model;
 import '../components/Fila.dart';
 import '../components/error_dialog.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'dart:async';
 
 class DetalleConcepto extends StatefulWidget {
   final model.Usuario usuario;
@@ -25,12 +26,28 @@ class _DetalleConceptoState extends State<DetalleConcepto> {
 
   Future<model.Concepto> futureConcepto;
 
+  Timer _timer;
+
+  void _refreshList(Timer t) {
+    setState(() {
+      futureConcepto = fetchConcepto();
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     futureConcepto = fetchConcepto();
+    _timer=Timer.periodic(
+      new Duration(seconds: 2), _refreshList);
   }
 
+  @override
+  void dispose(){
+    _timer.cancel();
+    super.dispose();
+  }
+  
   Future<model.Concepto> fetchConcepto() async {
     return ConceptoService(widget.apiClient).get(widget.idConcepto);
   }

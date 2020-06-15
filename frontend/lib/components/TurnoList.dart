@@ -1,9 +1,12 @@
+import 'dart:html';
+
 import 'package:flutter/material.dart';
 import 'package:frontend/utils/TurnoService.dart';
 
 import '../utils/apiclient.dart';
 import '../model.dart' as model;
 import 'TurnoCard.dart';
+import 'dart:async';
 
 class TurnoList extends StatefulWidget {
   final model.Usuario usuario;
@@ -22,10 +25,25 @@ class _TurnoListState extends State<TurnoList> {
 
   Future<List<model.Turno>> futureTurnos;
 
+  void _refreshList(Timer t) {
+    setState(() {
+      futureTurnos = TurnoService(widget.apiClient).query(widget.filtros);
+    });
+  }
+
+  Timer _timer;
   @override
   void initState() {
     super.initState();
     futureTurnos = TurnoService(widget.apiClient).query(widget.filtros);
+    _timer=Timer.periodic(
+      new Duration(seconds: 2), _refreshList);
+  }
+
+  @override
+  void dispose(){
+    _timer.cancel();
+    super.dispose();
   }
 
   @override
