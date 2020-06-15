@@ -30,7 +30,8 @@
     "start": "node -r dotenv/config app.js",
     "mkdirs": "mkdir -p ../dist/tmp ../dist/uploads",
     "build": "npx babel . --out-dir ../dist --ignore node_modules",
-    "dist": "npm run mkdirs && npm run build && cp -R node_modules ../dist"
+    "copy_fixture": "cp -R uploads/imagenes_conceptos ../dist/uploads",
+    "dist": "npm run mkdirs && npm run copy_fixture && npm run build && cp -R node_modules ../dist"
   },
   "author": "grupo 4",
   "license": "ISC"
