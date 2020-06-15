@@ -26,7 +26,6 @@ app.use(compression()) // Comprime los requests, los estáticos de flutter son e
 app.use('/tmp',express.static('tmp')); // NOTE: ojo que se sirve todo lo de los directorios
 app.use(express.static('static'));
 app.use(express.static('uploads'));
-app.use(basicAuthMiddleware);
 app.use(noCacheMiddleware)
 
 // APIS

@@ -4,13 +4,14 @@ import multer from "multer";
 import fs from "fs";
 import path from "path";
 import mailer from "../TurnosMailer.js";
+import {basicAuthMiddleware} from "../middlewares/auth.js";
 
 class ConceptosApi {
   constructor() {
     this.router = express.Router();
+    this.router.use(basicAuthMiddleware);
     this.router.post('/', ConceptosApi.create);
     this.router.get('/', ConceptosApi.query);
-    this.router.put('/:id', ConceptosApi.getConceptoOr404, ConceptosApi.update);
     this.router.put('/:id/atender_siguiente', ConceptosApi.getConceptoOr404, ConceptosApi.atender_siguiente);
     this.router.post('/:id/asociar_imagen',
       ConceptosApi.getConceptoOr404,
@@ -23,6 +24,7 @@ class ConceptosApi {
     Concepto.create({
       nombre: req.body.nombre,
       descripcion: req.body.descripcion,
+      maximaEspera: req.body.maximaEspera,
       latitud: req.body.latitud,
       longitud: req.body.longitud,
       usuarioId: req.usuario.id
@@ -34,12 +36,6 @@ class ConceptosApi {
     let conceptos = await Concepto.findAll({ where : req.query });
     conceptos = await Promise.all(conceptos.map(ConceptosApi._serialize_concepto));
     res.json(conceptos);
-  }
-
-  static async update (req, res) {
-    req.concepto.habilitado = req.body.habilitado;
-    const concepto = await req.concepto.save();
-    return res.status(200).send(concepto);
   }
 
   static async uploadImagen(req, res) {

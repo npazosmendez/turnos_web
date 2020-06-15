@@ -1,8 +1,9 @@
 import express from 'express';
 import {Usuario} from "../models/index.js";
+import {basicAuthMiddleware} from "../middlewares/auth.js";
 
 let router = express.Router();
-router.get('/login', login);
+router.get('/login', basicAuthMiddleware, login);
 router.post('/', create_user);
 
 function login(req, res) {

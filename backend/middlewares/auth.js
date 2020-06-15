@@ -13,32 +13,28 @@ function decodeAuthHeader(authHeader) {
 }
 
 export async function basicAuthMiddleware(req, res, next) {
-    if (req.url === '/usuarios/' && req.method === 'POST') {
-        req.usuario = null;
-    } else {
-        if (!req.headers.authorization) {
-            console.log("Header 'Authorization' no presente.")
-            return res.status(401).json({ message: "Header 'Authorization' no presente." });
-        }
-        
-        let email, password;
-        try {
-            [email, password] = decodeAuthHeader(req.headers.authorization);
-        } catch (err) {
-            return res.status(401).json({ message: err.message });
-        }
-        
-        var result = await Usuario.findAll({
-            where: {
-                email: email.toLowerCase(),
-                password: password,
-            }
-        });
-        if(result.length == 0 ) {
-            console.log("Falló la autenticación de " + email + " " + password)
-            return res.status(401).json({ message: 'Usuario o password incorrectas.' });
-        }
-        req.usuario = result[0];
+    if (!req.headers.authorization) {
+        console.log("Header 'Authorization' no presente.")
+        return res.status(401).json({ message: "Header 'Authorization' no presente." });
     }
+
+    let email, password;
+    try {
+        [email, password] = decodeAuthHeader(req.headers.authorization);
+    } catch (err) {
+        return res.status(401).json({ message: err.message });
+    }
+
+    var result = await Usuario.findAll({
+        where: {
+            email: email.toLowerCase(),
+            password: password,
+        }
+    });
+    if(result.length == 0 ) {
+        console.log("Falló la autenticación de " + email + " " + password)
+        return res.status(401).json({ message: 'Usuario o password incorrectas.' });
+    }
+    req.usuario = result[0];
     next();
 }

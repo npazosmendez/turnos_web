@@ -1,10 +1,12 @@
 import express from 'express';
 import { Concepto, Turno, Usuario } from "../models/index.js";
 import mailer from "../TurnosMailer.js";
+import {basicAuthMiddleware} from "../middlewares/auth.js";
 
 class TurnosApi {
   constructor() {
     this.router = express.Router();
+    this.router.use(basicAuthMiddleware);
     this.router.get('/', TurnosApi.query);
     this.router.post('/', TurnosApi.create);
     this.router.get('/:id/personas_adelante', TurnosApi.personas_adelante);
