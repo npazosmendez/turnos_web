@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:frontend/utils/WhatsApp.dart';
 import 'package:frontend/utils/apiclient.dart';
 
 import '../model.dart' as model;
@@ -25,6 +26,16 @@ class TurnoCard extends StatelessWidget {
         error: err,
       );
     }
+  }
+
+  void compartirPorWpp() {
+    return WhatsappService().compartir(
+        ApiClient.getUri("").port.toString(),
+        "Te compartieron el turno número "+turno.numero.toString()+
+            " para "+turno.concepto.nombre+
+            ". Podés ver los detalles en la siguiente URL: ",
+        "t+"+turno.uuid+".html"
+    );
   }
 
   @override
@@ -74,17 +85,7 @@ class TurnoCard extends StatelessWidget {
                         icon: FaIcon(FontAwesomeIcons.whatsapp, color: Colors.white),
                         text: "COMPARTIR",
                         tooltip: "Compartí el turno por Whatsapp",
-                        onPressed: () { js.context.callMethod(
-                          "whatsapp",[
-                            ApiClient.getUri("").port.toString(),
-                            "Te compartieron el turno número "+turno.numero.toString()+
-                            " para "+turno.concepto.nombre+
-                            ". Podés ver los detalles en la siguiente URL: ",
-                            "t+"+turno.uuid+".html"
-                            // "t+"+turno.numero.toString()+"+"+turno.uuid+".html"
-                          ]
-                          );
-                        },
+                        onPressed: compartirPorWpp
                       ),
                     ],
                   ),
