@@ -8,10 +8,10 @@ class WhatsappService {
     var host = window.location.hostname;
     Uri shareurl;
 
-    if (kIsWeb){
-      shareurl = Uri.parse("http://web.whatsapp.com/send");
-    } else {
+    if (window.navigator.userAgent.contains('Mobi')){
       shareurl = Uri.parse("whatsapp://send");
+    } else {
+      shareurl = Uri.parse("http://web.whatsapp.com/send");
     }
 
     if (port == "0") {
@@ -25,7 +25,7 @@ class WhatsappService {
     var mensaje_completo = mensaje +
         protocolo + "//" + host + port + "/tmp/" + Uri.encodeComponent(htmlFile);
     shareurl = shareurl.replace(queryParameters: {"text": mensaje_completo});
-    
+ 
     AnchorElement a=document.getElementById("whatsapp");
     a.href=shareurl.toString();
     a.click();
