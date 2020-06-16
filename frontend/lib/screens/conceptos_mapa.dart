@@ -56,7 +56,7 @@ class ConceptosMapa extends StatelessWidget {
               },
             )
           ),
-          _buildContainer()
+          // _buildContainer()
         ]
       )
     );
