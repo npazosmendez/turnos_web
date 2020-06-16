@@ -1,12 +1,19 @@
 import 'dart:html';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class WhatsappService {
-  Uri shareurl = Uri.parse("http://web.whatsapp.com/send");
-
 
   void compartir(String port, String mensaje, String htmlFile){
     var protocolo = window.location.protocol;
     var host = window.location.hostname;
+    Uri shareurl;
+
+    if (kIsWeb){
+      shareurl = Uri.parse("http://web.whatsapp.com/send");
+    } else {
+      shareurl = Uri.parse("whatsapp://send");
+    }
+
     if (port == "0") {
       port=":" + window.location.port.toString();
     } else if (port != "") {
@@ -18,6 +25,10 @@ class WhatsappService {
     var mensaje_completo = mensaje +
         protocolo + "//" + host + port + "/tmp/" + Uri.encodeComponent(htmlFile);
     shareurl = shareurl.replace(queryParameters: {"text": mensaje_completo});
-    window.open(shareurl.toString(),"compartirwhatsapp");
+    
+    AnchorElement a=document.getElementById("whatsapp");
+    a.href=shareurl.toString();
+    a.click();
+    
   }
 }

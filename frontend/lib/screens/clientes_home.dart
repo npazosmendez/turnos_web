@@ -172,12 +172,11 @@ class _ClientesHomeState extends State<ClientesHome> {
   }
 
   void onConceptoMarkerTap(markerId, model.Concepto concepto, [String text]) async {
-
     await showDialog(
       context: context,
       builder: (context) => AlertDialog(
         content: Text(
-          (concepto != null)? concepto.descripcion :
+          (concepto != null)? concepto.nombre + "\n" + concepto.descripcion :
           'This dialog was opened by tapping on the marker!\n'
           'Marker ID is $markerId',
         ),
