@@ -28,9 +28,10 @@ dependencies:
   font_awesome_flutter: ^8.8.1
 
   # Dependencies used for Google Maps and Location of the user
-  flutter_google_maps: ^3.7.0
+  flutter_google_maps: ^3.7.1
   location: ^3.0.0
   geocoder:
+  
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
