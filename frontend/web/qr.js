@@ -34,11 +34,13 @@ function scan() {
         canvasElement.hidden = false;
 
         factor=video.videoHeight/video.videoWidth;
+        if (factor>1) {
+          factor = 1/factor;
+        }
+
         canvasElement.width = window.innerWidth/2;
         canvasElement.height = canvasElement.width*factor;
-        
-        // canvasElement.height = video.videoHeight;
-        // canvasElement.width = video.videoWidth;
+
         canvas.drawImage(video, 0, 0, canvasElement.width, canvasElement.height);
         var imageData = canvas.getImageData(0, 0, canvasElement.width -1, canvasElement.height -1);
         

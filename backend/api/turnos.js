@@ -21,9 +21,20 @@ class TurnosApi {
     if (req.query.usuarioId) {
       filtros.usuarioId = req.query.usuarioId;
     }
-    const turnos = await Turno.findAll({
+    const json = await Turno.findAll({
       where : filtros,
       include: [{ model: Concepto }, { model: Usuario }]
+    });
+    var salida=[];
+    for(var i=0;i<json.length;i++) {
+        var turno=json[i];
+        var siguiente=await turno.dataValues.concepto.siguiente();
+        var pa=parseInt(turno.numero)-parseInt(siguiente.numero);
+        salida.push({pa: pa, t:json[i] });
+    }
+    var turnos=[];
+    salida.sort(function(a,b){return a.pa-b.pa}).forEach(e => {
+        turnos.push(e.t);
     });
     res.send(turnos);
   }
