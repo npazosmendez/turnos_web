@@ -25,14 +25,15 @@ class HomePage extends StatelessWidget {
             Padding(
               padding: EdgeInsets.symmetric(vertical: 40),
               child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
                       "TuTurno",
                       style: TextStyle(color: Colors.blue, fontSize: 40, fontWeight: FontWeight.bold),
                   ),
-                  Padding(
-                    padding: EdgeInsets.all(15),
-                    child: Flexible(
+                  Flexible(
+                    child: Padding(
+                      padding: EdgeInsets.all(15),
                       child: Text(
                         "Para nosotros, siempre estás primero".toUpperCase(),
                         textAlign: TextAlign.center,
