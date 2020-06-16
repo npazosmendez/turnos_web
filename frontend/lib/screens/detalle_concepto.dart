@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/utils/ConceptoService.dart';
 import 'package:frontend/utils/TurnoService.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'dart:html' as html;
 import 'dart:js' as js;
 import '../utils/apiclient.dart';
@@ -47,7 +48,7 @@ class _DetalleConceptoState extends State<DetalleConcepto> {
     _timer.cancel();
     super.dispose();
   }
-  
+
   Future<model.Concepto> fetchConcepto() async {
     return ConceptoService(widget.apiClient).get(widget.idConcepto);
   }
@@ -66,44 +67,12 @@ class _DetalleConceptoState extends State<DetalleConcepto> {
     }
   }
 
-  Widget configuracionConcepto(model.Concepto concepto) {
-    // TODO: llenar con info real y rediseñar
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Padding(
-          padding: EdgeInsets.all(16),
-          child: Text(
-            concepto.nombre,
-            style: TextStyle(color: Colors.blue, fontSize: 30, fontWeight: FontWeight.bold),
-          ),
-        ),
-        Padding(
-          padding: EdgeInsets.only(left: 16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Text(
-                "Dirección: Pueyrredón 1204 - C.A.B.A",
-                style: TextStyle(color: Colors.black54, fontSize: 14, fontWeight: FontWeight.normal),
-              ),
-              Text(
-                "Espera máxima: ${concepto.maximaEspera != null ? concepto.maximaEspera : "-"}",
-                style: TextStyle(color: Colors.black54, fontSize: 14, fontWeight: FontWeight.normal),
-              ),
-            ]
-          ),
-        ),
-      ],
-    );
-  }
-
   Widget imagenConcepto(model.Concepto concepto) {
     var tieneImagen = concepto.pathImagen != null;
     Widget imagen = tieneImagen
       ? Image.network(
           ApiClient.getUri(concepto.pathImagen).toString(),
-          fit: BoxFit.contain,
+          fit: BoxFit.cover,
         )
       : Icon(Icons.add_a_photo, size: 50);
 
@@ -118,6 +87,59 @@ class _DetalleConceptoState extends State<DetalleConcepto> {
     );
   }
 
+  void showQrConceptoDialog(BuildContext context, model.Concepto concepto) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+          double totalWidth = MediaQuery.of(context).size.width*0.7;
+          return AlertDialog(
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 10),
+                child: Text(
+                  "${concepto.nombre.toUpperCase()}",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.blue),
+                ),
+              ),
+              Container(
+                height: totalWidth,
+                width: totalWidth,
+                child: QrImage(
+                  data: concepto.id.toString(),
+                  version: QrVersions.auto,
+                  backgroundColor: Colors.white,
+                  errorCorrectionLevel: QrErrorCorrectLevel.H,
+                ),
+              ),
+              SizedBox(
+                width: totalWidth/2,
+                child: RaisedButton(
+                  color: Colors.blue,
+                  onPressed:() => showErrorDialog(
+                    context: context,
+                    error: "Funcionalidad no disponible en la versión gratuita."
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(right: 7),
+                        child: Icon(Icons.print, color: Colors.white),
+                      ),
+                      Text("IMPRIMIR", style: TextStyle(color: Colors.white)),
+                    ],
+                  )
+                ),
+              ),
+            ],
+          ),
+        );
+      }
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<model.Concepto>(
@@ -128,55 +150,73 @@ class _DetalleConceptoState extends State<DetalleConcepto> {
             // TODO
             return Center(child: CircularProgressIndicator());
         }
-
+        var concepto = snapshot.data;
+        var tryAtenderSiguiente = (turno) async {
+          try {
+            // TODO: usar el turno para algo, habría que incluir verificaicón en el backend
+            await ConceptoService(widget.apiClient).atenderSiguiente(concepto);
+          } catch (err) {
+            showErrorDialog(
+              context: context,
+              error: err,
+            );
+          }
+          setState(() {
+            futureConcepto = fetchConcepto();
+          });
+        };
         return new Scaffold(
           appBar: AppBar(title: Text("Mis conceptos")),
           body: Center(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
-
-                Padding( // La configuración y la imagen
-                  padding: EdgeInsets.all(16),
+                Padding(
+                  padding: EdgeInsets.all(15),
                   child: Row(
-                    children: [
-                      Flexible(child: configuracionConcepto(snapshot.data)),
-                      imagenConcepto(snapshot.data),
-                      QrImage(
-                        data: snapshot.data.id.toString(),
-                        version: QrVersions.auto,
-                        size: 200.0,
-                        backgroundColor: Colors.white,
-                        errorCorrectionLevel: QrErrorCorrectLevel.H,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Flexible(
+                        child: Padding(
+                          padding: EdgeInsets.only(right: 15),
+                          child: Text(
+                            concepto.nombre,
+                            style: TextStyle(color: Colors.blue, fontSize: 30, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                      IconButton(
+                        icon: FaIcon(FontAwesomeIcons.qrcode, color: Colors.black),
+                        iconSize: 50,
+                        onPressed: () => showQrConceptoDialog(context, concepto),
+                      ),
+                    ]
+                  ),
+                ),
+                Center(
+                  child: imagenConcepto(concepto),
+                ),
+                Padding( // Línea divisora
+                  padding: EdgeInsets.all(16.0),
+                  child: Column(
+                    children: <Widget> [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: <Widget> [
+                          Text(concepto.maximaEspera != null ? "${concepto.enFila}/${concepto.maximaEspera}" : concepto.enFila.toString()),
+                          Icon(Icons.person)
+                        ],
+                      ),
+                      Divider(
+                        thickness: 1,
+                        color: Colors.black54,
                       ),
                     ],
                   ),
                 ),
-
-                Padding( // Línea divisora
-                  padding: EdgeInsets.all(16.0),
-                  child: Divider(
-                    thickness: 1,
-                    color: Colors.black54,
-                  ),
-                ),
-
                 Fila(
-                  futureTurnos: TurnoService(widget.apiClient).query({"conceptoId": snapshot.data.id.toString()}),
-                  onCancelSiguiente: (turno) async {
-                    try {
-                      // TODO: usar el turno para algo, habría que incluir verificaicón en el backend
-                      await ConceptoService(widget.apiClient).atenderSiguiente(snapshot.data);
-                    } catch (err) {
-                      showErrorDialog(
-                        context: context,
-                        error: err,
-                      );
-                    }
-                    setState(() {
-                      futureConcepto = fetchConcepto();
-                    });
-                  },
+                  futureTurnos: TurnoService(widget.apiClient).query({"conceptoId": concepto.id.toString()}),
+                  onAtenderSiguiente: tryAtenderSiguiente,
                   onScanQrSiguiente: (turno) {
                     js.context.callMethod("scan");
                     var procesar=true;
@@ -187,23 +227,23 @@ class _DetalleConceptoState extends State<DetalleConcepto> {
                         if (codigoQR=='-1'){
                           return;
                         }
-                        //String dataTurno=turno.numero.toString()+'+'+turno.uuid;
                         String dataTurno=turno.uuid;
                         if (codigoQR == dataTurno) {
                           showDialog(
                             context: context,
                             builder: (BuildContext context) {
                               return AlertDialog(
-                                content: Text('Turno válido ! Te atiendo amigue')
+                                content: Text('¡Turno válido! Te atiendo, amigue.')
                               );
                             }
                           );
+                          tryAtenderSiguiente(turno);
                         } else {
                           showDialog(
                             context: context,
                             builder: (BuildContext context) {
                               return AlertDialog(
-                                content: Text('Turno NO válido ! Sos un chante !')
+                                content: Text('¡Turno NO válido! ¡Sos un chante!')
                               );
                             }
                           );
