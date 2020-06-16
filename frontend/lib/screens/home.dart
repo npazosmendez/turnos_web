@@ -30,15 +30,21 @@ class HomePage extends StatelessWidget {
                       "TuTurno",
                       style: TextStyle(color: Colors.blue, fontSize: 40, fontWeight: FontWeight.bold),
                   ),
-                  Text(
-                      "Para nosotros, siempre estás primero".toUpperCase(),
-                      style: TextStyle(color: Colors.black54, fontSize: 18),
+                  Padding(
+                    padding: EdgeInsets.all(15),
+                    child: Flexible(
+                      child: Text(
+                        "Para nosotros, siempre estás primero".toUpperCase(),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Colors.black54, fontSize: 18),
+                      ),
+                    ),
                   ),
                 ],
               )
             ),
             ButtonTheme(
-              minWidth: MediaQuery.of(context).size.width*0.3,
+              minWidth: 180,
               child: Column(
                 children: [
                   RaisedButton(

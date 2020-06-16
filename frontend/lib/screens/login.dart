@@ -4,6 +4,7 @@ import 'package:frontend/screens/home.dart';
 import 'package:frontend/screens/register.dart';
 import 'package:frontend/utils/UsuarioService.dart';
 import '../model.dart' as model;
+import 'dart:math';
 
 class LoginPage extends StatefulWidget {
   static const String routeName = '/login';
@@ -45,14 +46,15 @@ class _LoginPageState extends State<LoginPage> {
           children: <Widget>[
             Center(
               child: Container(
-                width: 400,
-                height: 400,
+                width: min(400, MediaQuery.of(context).size.width*0.8),
+                height: min(400, MediaQuery.of(context).size.height*0.8),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
                     Text(
                         "Accedé a tu cuenta".toUpperCase(),
-                        style: TextStyle(color: Colors.blue, fontSize: 30, fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Colors.blue, fontSize: 25, fontWeight: FontWeight.bold),
                     ),
                     TextField(
                       controller: emailInputController,
