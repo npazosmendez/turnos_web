@@ -40,7 +40,7 @@ class _ClientesHomeState extends State<ClientesHome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Bienvenide, ${widget.usuario.email}!")),
+      appBar: AppBar(title: Text("¡Bienvenide, ${widget.usuario.nombreCompleto()}!")),
       body: Center(
         child: Column(
           children: <Widget>[

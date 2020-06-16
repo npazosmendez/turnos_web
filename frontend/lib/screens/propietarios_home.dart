@@ -21,7 +21,7 @@ class PropietariosHome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      appBar: AppBar(title: Text("Mis Conceptos"),),
+      appBar: AppBar(title: Text("¡Bienvenide, ${usuario.nombreCompleto()}!")),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           var result=await showDialog(
@@ -43,15 +43,13 @@ class PropietariosHome extends StatelessWidget {
       ),
       body: Center(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Padding(
               padding: EdgeInsets.all(16.0),
               child: Text(
-                "Bienvenide, ${usuario.email}!",
-                style: TextStyle(
-                    fontSize: 20.0
-                ),
+                "Mis conceptos",
+                style: TextStyle( color: Colors.black54, fontSize: 25, fontWeight: FontWeight.bold),
               ),
             ),
             ConceptoList(

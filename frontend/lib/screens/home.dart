@@ -18,24 +18,43 @@ class HomePage extends StatelessWidget {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Turnos"),
-      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            RaisedButton(
-              color: Colors.blue,
-              onPressed: () => Navigator.pushNamed(context, PropietariosHome.routeName),
-              child: Text("Propietarios".toUpperCase(),
-                  style: TextStyle(fontSize: 20, color: Colors.white)),
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 40),
+              child: Column(
+                children: [
+                  Text(
+                      "TuTurno",
+                      style: TextStyle(color: Colors.blue, fontSize: 40, fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                      "Para nosotros, siempre estás primero".toUpperCase(),
+                      style: TextStyle(color: Colors.black54, fontSize: 18),
+                  ),
+                ],
+              )
             ),
-            RaisedButton(
-              color: Colors.blue,
-              onPressed: () => Navigator.pushNamed(context, ClientesHome.routeName),
-              child: Text("Clientes".toUpperCase(),
-                  style: TextStyle(fontSize: 20, color: Colors.white)),
+            ButtonTheme(
+              minWidth: MediaQuery.of(context).size.width*0.3,
+              child: Column(
+                children: [
+                  RaisedButton(
+                    color: Colors.blue,
+                    onPressed: () => Navigator.pushNamed(context, PropietariosHome.routeName),
+                    child: Text("PROPIETARIOS".toUpperCase(),
+                        style: TextStyle(fontSize: 20, color: Colors.white)),
+                  ),
+                  RaisedButton(
+                    color: Colors.blue,
+                    onPressed: () => Navigator.pushNamed(context, ClientesHome.routeName),
+                    child: Text("CLIENTES".toUpperCase(),
+                        style: TextStyle(fontSize: 20, color: Colors.white)),
+                  ),
+                ],
+              )
             ),
           ],
         ),
