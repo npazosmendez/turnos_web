@@ -3,14 +3,14 @@ import '../model.dart' as model;
 
 class Fila extends StatelessWidget {
   final Future<List<model.Turno>> futureTurnos;
-  final Function(model.Turno) onCancelSiguiente;
+  final Function(model.Turno) onAtenderSiguiente;
   final Function(model.Turno) onScanQrSiguiente;
 
-  Fila({this.futureTurnos, this.onCancelSiguiente, this.onScanQrSiguiente});
+  Fila({this.futureTurnos, this.onAtenderSiguiente, this.onScanQrSiguiente});
 
   Widget botonConIcon(Icon icon, Function callback) {
     return SizedBox.fromSize(
-      size: Size(100, 100),
+      size: Size(40, 40),
       child: ClipOval(
         child: Material(
           child: InkWell(
@@ -25,6 +25,7 @@ class Fila extends StatelessWidget {
 
   Widget turnoEnFila(model.Turno turno, bool siguiente) {
     // Si siguiente=true, se muestran más opciones y cambian algunos estilos
+    Color mainColor = siguiente ? Colors.black : Colors.black54;
     var columnas = <Widget>[
       Expanded(
         child: Column(
@@ -34,8 +35,8 @@ class Fila extends StatelessWidget {
             Text(
               turno.usuario.nombreCompleto(),
               style: TextStyle(
-                color: siguiente ? Colors.black : Colors.black54,
-                fontSize: siguiente ? 30 : 18,
+                color: mainColor,
+                fontSize: 18,
                 fontWeight: FontWeight.bold
               ),
             ),
@@ -47,21 +48,21 @@ class Fila extends StatelessWidget {
         ),
       ),
       Padding(
-        padding: EdgeInsets.symmetric(horizontal: 30),
-        child: Text(turno.numero.toString(), style: TextStyle(fontSize: siguiente ? 40 : 25, fontWeight: FontWeight.bold)),
-      ),
+        padding: EdgeInsets.symmetric(horizontal: 10),
+        child: Text(turno.numero.toString(), style: TextStyle(fontSize: 25, color: mainColor, fontWeight: FontWeight.bold)),
+      )
+
     ];
 
     if(siguiente) {
       columnas.addAll(<Widget>[
         botonConIcon(
-          Icon(Icons.camera_alt, size: 50, color: Colors.black54),
+          Icon(Icons.camera_alt, size: 30, color: Colors.black54),
           () => onScanQrSiguiente(turno),
         ),
         botonConIcon(
-          // Otras opciones: delete, block
-          Icon(Icons.clear, size: 50, color: Colors.red[900]),
-          () => onCancelSiguiente(turno),
+          Icon(Icons.navigate_next, size: 30, color: Colors.blue),
+          () => onAtenderSiguiente(turno),
         ),
       ]);
     }
@@ -70,6 +71,7 @@ class Fila extends StatelessWidget {
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: columnas,
         ),
       ),
