@@ -3,6 +3,7 @@ import 'package:frontend/utils/ConceptoService.dart';
 import 'package:frontend/utils/TurnoService.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'dart:html' as html;
+import 'dart:math';
 import 'dart:js' as js;
 import '../utils/apiclient.dart';
 import '../utils/file_picker.dart';
@@ -91,7 +92,7 @@ class _DetalleConceptoState extends State<DetalleConcepto> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-          double totalWidth = MediaQuery.of(context).size.width*0.7;
+          double size = min(MediaQuery.of(context).size.width, MediaQuery.of(context).size.height)*0.7;
           return AlertDialog(
           content: Column(
             mainAxisSize: MainAxisSize.min,
@@ -104,8 +105,8 @@ class _DetalleConceptoState extends State<DetalleConcepto> {
                 ),
               ),
               Container(
-                height: totalWidth,
-                width: totalWidth,
+                height: size,
+                width: size,
                 child: QrImage(
                   data: concepto.id.toString(),
                   version: QrVersions.auto,
@@ -114,7 +115,7 @@ class _DetalleConceptoState extends State<DetalleConcepto> {
                 ),
               ),
               SizedBox(
-                width: totalWidth/2,
+                width: size/2,
                 child: RaisedButton(
                   color: Colors.blue,
                   onPressed:() => showErrorDialog(
