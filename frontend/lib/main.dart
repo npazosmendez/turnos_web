@@ -63,7 +63,7 @@ class TurnosApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Turnos y más turnos',
+      title: 'TuTurno',
       initialRoute: '/login',
       onGenerateRoute: (RouteSettings settings) {
         WidgetBuilder builder = routeFor(settings.name);

@@ -21,7 +21,7 @@ class PropietariosHome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      appBar: AppBar(title: Text("Mis Conceptos"),),
+      appBar: AppBar(title: Text("¡Bienvenide, ${usuario.nombreCompleto()}!")),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           var result=await showDialog(
@@ -43,15 +43,13 @@ class PropietariosHome extends StatelessWidget {
       ),
       body: Center(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Padding(
               padding: EdgeInsets.all(16.0),
               child: Text(
-                "Bienvenide, ${usuario.email}!",
-                style: TextStyle(
-                    fontSize: 20.0
-                ),
+                "Mis conceptos",
+                style: TextStyle( color: Colors.black54, fontSize: 25, fontWeight: FontWeight.bold),
               ),
             ),
             ConceptoList(
@@ -114,7 +112,12 @@ class _FormNuevoConceptoState extends State<FormNuevoConcepto> {
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: <Widget>[
+        Padding(
+          padding: EdgeInsets.only(bottom: 15),
+          child: Text("Nuevo concepto".toUpperCase(), style: TextStyle(color: Colors.blue, fontSize: 20, fontWeight: FontWeight.bold))
+        ),
         TextField(
           controller: controllerNombre,
           decoration: InputDecoration(
@@ -133,24 +136,34 @@ class _FormNuevoConceptoState extends State<FormNuevoConcepto> {
           keyboardType: TextInputType.number,
           inputFormatters: <TextInputFormatter>[WhitelistingTextInputFormatter.digitsOnly],
         ),
-        RaisedButton(
-          child: Text("Seleccionar Ubicación"),
-          onPressed: () async {
-            _searchAddress = null;
-            _addressCoords = null;   
-            _addressConfirmed = false; 
-            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => 
-              SeleccionarUbicacion(
-                searchCoordinates, 
-                onAddressLocationMarkerTap, 
-                onChangedAddressValue, 
-                onConfirmAddressButtonPressed,
-                onMapTap,
-                showDefaultDialog)));
-          }
+        Padding(
+          padding: EdgeInsets.symmetric(vertical: 15),
+          child: FlatButton(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.location_on),
+                Text("Seleccionar ubicación".toUpperCase()),
+              ]
+            ),
+            onPressed: () async {
+              _searchAddress = null;
+              _addressCoords = null;
+              _addressConfirmed = false;
+              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) =>
+                SeleccionarUbicacion(
+                  searchCoordinates,
+                  onAddressLocationMarkerTap,
+                  onChangedAddressValue,
+                  onConfirmAddressButtonPressed,
+                  onMapTap,
+                  showDefaultDialog)));
+            }
+          ),
         ),
         RaisedButton(
-          child: Text("Submit"),
+          color: Colors.blue,
+          child: Text("Enviar".toUpperCase(), style: TextStyle(color: Colors.white)),
           onPressed: () async {
             if(controllerNombre.text == '') {
               showDefaultDialog('Por favor ingrese un nombre!');
@@ -250,7 +263,7 @@ class _FormNuevoConceptoState extends State<FormNuevoConcepto> {
   void onConfirmAddressButtonPressed() async {
     if (_searchAddress != null || _addressCoords != null) {
       _addressConfirmed = true;
-      Navigator.of(context).pop(); 
+      Navigator.of(context).pop();
       print("Address confirmed correctly");
     } else {
       print("Confirmar dirección null! Error");
@@ -272,7 +285,7 @@ class _FormNuevoConceptoState extends State<FormNuevoConcepto> {
         ),
       );
   }
-  
+
   void showIngressAddressDialog() async {
     showDefaultDialog('Por favor ingrese una ubicación');
   }
