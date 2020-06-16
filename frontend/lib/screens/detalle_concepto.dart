@@ -151,6 +151,20 @@ class _DetalleConceptoState extends State<DetalleConcepto> {
             return Center(child: CircularProgressIndicator());
         }
         var concepto = snapshot.data;
+        var tryAtenderSiguiente = (turno) async {
+          try {
+            // TODO: usar el turno para algo, habría que incluir verificaicón en el backend
+            await ConceptoService(widget.apiClient).atenderSiguiente(concepto);
+          } catch (err) {
+            showErrorDialog(
+              context: context,
+              error: err,
+            );
+          }
+          setState(() {
+            futureConcepto = fetchConcepto();
+          });
+        };
         return new Scaffold(
           appBar: AppBar(title: Text("Mis conceptos")),
           body: Center(
@@ -202,20 +216,7 @@ class _DetalleConceptoState extends State<DetalleConcepto> {
                 ),
                 Fila(
                   futureTurnos: TurnoService(widget.apiClient).query({"conceptoId": concepto.id.toString()}),
-                  onAtenderSiguiente: (turno) async {
-                    try {
-                      // TODO: usar el turno para algo, habría que incluir verificaicón en el backend
-                      await ConceptoService(widget.apiClient).atenderSiguiente(concepto);
-                    } catch (err) {
-                      showErrorDialog(
-                        context: context,
-                        error: err,
-                      );
-                    }
-                    setState(() {
-                      futureConcepto = fetchConcepto();
-                    });
-                  },
+                  onAtenderSiguiente: tryAtenderSiguiente,
                   onScanQrSiguiente: (turno) {
                     js.context.callMethod("scan");
                     var procesar=true;
@@ -236,6 +237,7 @@ class _DetalleConceptoState extends State<DetalleConcepto> {
                               );
                             }
                           );
+                          tryAtenderSiguiente(turno);
                         } else {
                           showDialog(
                             context: context,
