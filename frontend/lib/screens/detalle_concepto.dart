@@ -67,34 +67,6 @@ class _DetalleConceptoState extends State<DetalleConcepto> {
     }
   }
 
-  Widget configuracionConcepto(model.Concepto concepto) {
-    // TODO: llenar con info real y rediseñar
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Padding(
-          padding: EdgeInsets.all(16),
-          child: Text(
-            concepto.nombre,
-            style: TextStyle(color: Colors.blue, fontSize: 30, fontWeight: FontWeight.bold),
-          ),
-        ),
-        Padding(
-          padding: EdgeInsets.only(left: 16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Text(
-                "Espera máxima: ${concepto.maximaEspera != null ? concepto.maximaEspera : "-"}",
-                style: TextStyle(color: Colors.black54, fontSize: 14, fontWeight: FontWeight.normal),
-              ),
-            ]
-          ),
-        ),
-      ],
-    );
-  }
-
   Widget imagenConcepto(model.Concepto concepto) {
     var tieneImagen = concepto.pathImagen != null;
     Widget imagen = tieneImagen
@@ -254,14 +226,13 @@ class _DetalleConceptoState extends State<DetalleConcepto> {
                         if (codigoQR=='-1'){
                           return;
                         }
-                        //String dataTurno=turno.numero.toString()+'+'+turno.uuid;
                         String dataTurno=turno.uuid;
                         if (codigoQR == dataTurno) {
                           showDialog(
                             context: context,
                             builder: (BuildContext context) {
                               return AlertDialog(
-                                content: Text('Turno válido ! Te atiendo amigue')
+                                content: Text('¡Turno válido! Te atiendo, amigue.')
                               );
                             }
                           );
@@ -270,7 +241,7 @@ class _DetalleConceptoState extends State<DetalleConcepto> {
                             context: context,
                             builder: (BuildContext context) {
                               return AlertDialog(
-                                content: Text('Turno NO válido ! Sos un chante !')
+                                content: Text('¡Turno NO válido! ¡Sos un chante!')
                               );
                             }
                           );
