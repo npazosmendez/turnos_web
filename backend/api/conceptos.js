@@ -5,6 +5,8 @@ import fs from "fs";
 import path from "path";
 import mailer from "../TurnosMailer.js";
 import {basicAuthMiddleware} from "../middlewares/auth.js";
+import pkg from 'geolib';
+const {getDistance} = pkg;
 
 class ConceptosApi {
   constructor() {
@@ -32,11 +34,43 @@ class ConceptosApi {
       .catch((err) => res.status(400).send(err.message));
   }
 
-  static async query(req, res) {
+  static async query(req, res) {   
+    let nearbyConceptsQueryKeys = ['latitud', 'longitud', 'radio'];
+    let isNearbyConceptsQuery = nearbyConceptsQueryKeys.every(key => Object.keys(req.query).includes(key));
+
+    try {
+      if (isNearbyConceptsQuery){
+        console.log("Handling nearby concepts query");
+        await ConceptosApi._nearbyQuery(req, res);
+      } else {
+        console.log("Handling regular concepts query");
+        await ConceptosApi._query(req, res);
+      }
+    } catch (err) {
+        console.log("Error hadling request:", req.query, ", error:", err);
+        res.json("{error: malformed query}");      
+    }
+  }
+
+  static async _query(req, res) {
     let conceptos = await Concepto.findAll({ where : req.query });
-    conceptos = await Promise.all(conceptos.map(ConceptosApi._serialize_concepto));
+    conceptos = await Promise.all(conceptos.map(ConceptosApi._serialize_concepto));    
     res.json(conceptos);
   }
+
+  static async _nearbyQuery(req, res) {
+    let lat = req.query["latitud"];
+    let lng = req.query["longitud"];
+    let radius = req.query["radio"];
+    let conceptos = await Concepto.findAll({});
+    conceptos = await Promise.all(conceptos.map(ConceptosApi._serialize_concepto));
+    var pointToFindConcepts = {latitude: lat, longitude: lng};
+    var nearbyConcepts = conceptos.filter(concepto => 
+      getDistance(pointToFindConcepts, {latitude: concepto['latitud'], longitude: concepto['longitud']}) <= radius);
+    res.json(nearbyConcepts);  
+  }
+
+
 
   static async uploadImagen(req, res) {
     if(req.concepto.pathImagen) {
