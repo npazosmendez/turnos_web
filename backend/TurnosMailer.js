@@ -29,7 +29,7 @@ class TurnosMailer {
 
     const prox_usuario = prox_turno.usuario;
     const htmlFileName='t+'+prox_turno.uuid+'.html';
-    const subject = `[TurnosWeb-${concepto.nombre}] Sos el proximo en la fila!`;
+    const subject = `Sos el próximo en la fila!`;
     var prot;
     if (config.https){prot="https://";} else {prot="http://";}
     const host=config.host;
