@@ -135,9 +135,6 @@ db.sync({ force: true })
 
       var zapateria = await Concepto.findOne({ where: {nombre: "La zapatería del Elver"} });
       await Turno.create({conceptoId: zapateria.id, usuarioId: tomas.id});
-      await Turno.create({conceptoId: zapateria.id, usuarioId: armando.id});
-      await Turno.create({conceptoId: zapateria.id, usuarioId: sol.id});
-      await Turno.create({conceptoId: zapateria.id, usuarioId: martin.id});
 
     } catch (err) {
       console.error("ERROR poblando las tablas:", err)
