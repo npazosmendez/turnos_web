@@ -5,7 +5,7 @@ import fs from "fs";
 import path from "path";
 import mailer from "../TurnosMailer.js";
 import {basicAuthMiddleware} from "../middlewares/auth.js";
-import geolib from 'geolib';
+import {cos, asin, sqrt} from 'mathjs';
 
 class ConceptosApi {
   constructor() {
@@ -33,7 +33,7 @@ class ConceptosApi {
       .catch((err) => res.status(400).send(err.message));
   }
 
-  static async query(req, res) {   
+  static async query(req, res, next) {
     let nearbyConceptsQueryKeys = ['latitud', 'longitud', 'radio'];
     let isNearbyConceptsQuery = nearbyConceptsQueryKeys.every(key => Object.keys(req.query).includes(key));
 
@@ -46,14 +46,13 @@ class ConceptosApi {
         await ConceptosApi._query(req, res);
       }
     } catch (err) {
-        console.log("Error hadling request:", req.query, ", error:", err);
-        res.json("{error: malformed query}");      
+        next(err);
     }
   }
 
   static async _query(req, res) {
     let conceptos = await Concepto.findAll({ where : req.query });
-    conceptos = await Promise.all(conceptos.map(ConceptosApi._serialize_concepto));    
+    conceptos = await Promise.all(conceptos.map(ConceptosApi._serialize_concepto));
     res.json(conceptos);
   }
 
@@ -64,9 +63,9 @@ class ConceptosApi {
     let conceptos = await Concepto.findAll({});
     conceptos = await Promise.all(conceptos.map(ConceptosApi._serialize_concepto));
     var pointToFindConcepts = {latitude: lat, longitude: lng};
-    var nearbyConcepts = conceptos.filter(concepto => 
-      geolib.getDistance(pointToFindConcepts, {latitude: concepto['latitud'], longitude: concepto['longitud']}) <= radius);
-    res.json(nearbyConcepts);  
+    var nearbyConcepts = conceptos.filter(concepto =>
+      ConceptosApi._getDistanceInMeters(pointToFindConcepts, {latitude: concepto['latitud'], longitude: concepto['longitud']}) <= radius);
+    res.json(nearbyConcepts);
   }
 
 
@@ -118,6 +117,18 @@ class ConceptosApi {
     let serialized = concepto.get({plain: true});
     serialized.enFila = await Concepto.enFila(concepto.id);
     return serialized;
+  }
+
+  // https://stackoverflow.com/a/21623206/6843675
+  static _getDistanceInMeters(coor1, coor2){
+    var [lat1, lon1] = [coor1.latitude, coor1.longitude]
+    var [lat2, lon2] = [coor2.latitude, coor2.longitude]
+    var p = 0.017453292519943295;
+    var c = cos;
+    var a = 0.5 - c((lat2 - lat1) * p)/2 +
+          c(lat1 * p) * c(lat2 * p) *
+          (1 - c((lon2 - lon1) * p))/2;
+    return 12742 * asin(sqrt(a))*1000;
   }
 }
 
