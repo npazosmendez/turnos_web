@@ -5,8 +5,7 @@ import fs from "fs";
 import path from "path";
 import mailer from "../TurnosMailer.js";
 import {basicAuthMiddleware} from "../middlewares/auth.js";
-import pkg from 'geolib';
-const {getDistance} = pkg;
+import geolib from 'geolib';
 
 class ConceptosApi {
   constructor() {
@@ -66,7 +65,7 @@ class ConceptosApi {
     conceptos = await Promise.all(conceptos.map(ConceptosApi._serialize_concepto));
     var pointToFindConcepts = {latitude: lat, longitude: lng};
     var nearbyConcepts = conceptos.filter(concepto => 
-      getDistance(pointToFindConcepts, {latitude: concepto['latitud'], longitude: concepto['longitud']}) <= radius);
+      geolib.getDistance(pointToFindConcepts, {latitude: concepto['latitud'], longitude: concepto['longitud']}) <= radius);
     res.json(nearbyConcepts);  
   }
 
