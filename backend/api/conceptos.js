@@ -5,7 +5,6 @@ import fs from "fs";
 import path from "path";
 import mailer from "../TurnosMailer.js";
 import {basicAuthMiddleware} from "../middlewares/auth.js";
-import {cos, asin, sqrt} from 'mathjs';
 
 class ConceptosApi {
   constructor() {
@@ -124,11 +123,11 @@ class ConceptosApi {
     var [lat1, lon1] = [coor1.latitude, coor1.longitude]
     var [lat2, lon2] = [coor2.latitude, coor2.longitude]
     var p = 0.017453292519943295;
-    var c = cos;
+    var c = Math.cos;
     var a = 0.5 - c((lat2 - lat1) * p)/2 +
           c(lat1 * p) * c(lat2 * p) *
           (1 - c((lon2 - lon1) * p))/2;
-    return 12742 * asin(sqrt(a))*1000;
+    return 12742 * Math.asin(Math.sqrt(a))*1000;
   }
 }
 
