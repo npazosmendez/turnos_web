@@ -1,0 +1,41 @@
+on:
+  push:
+    branches:
+      - container_release
+
+name: Container_Build_Push_Deploy
+
+env:
+  AZURE_WEBAPP_NAME: TuTurno
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    # checkout the repo
+    - name: 'Checkout Github Action' 
+      uses: actions/checkout@master
+
+    - name: 'Login via Azure CLI'
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: 'Docker Login' 
+    - uses: azure/docker-login@v1
+      with:
+        login-server: ${{ secrets.REGISTRY_SERVER }}
+        username: ${{ secrets.REGISTRY_USERNAME }}
+        password: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: 'Docker Build & Push' 
+    - run: |
+        docker build . -t ${{ secrets.REGISTRY_SERVER }}/tuturno:${{ github.sha }}
+        docker push ${{ secrets.REGISTRY_SERVER }}/tuturno:${{ github.sha }}
+      
+    - name: 'Deploy container'
+    - uses: azure/webapps-container-deploy@v1
+      with:
+        app-name: $${ env.AZURE_WEBAPP_NAME }}
+        images: '${{ secrets.REGISTRY_SERVER }}/tuturno:${{ github.sha }}'
+    
