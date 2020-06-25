@@ -3,13 +3,10 @@ on:
     branches:
       - container_release
 
-name: Container_Build_Push_Deploy
-
-env:
-  AZURE_WEBAPP_NAME: TuTurno
+name: Container_Build_Push
 
 jobs:
-  build-and-deploy:
+  build-and-push:
     runs-on: ubuntu-latest
     steps:
     # checkout the repo
@@ -32,10 +29,3 @@ jobs:
       run: |
         docker build . -t ${{ secrets.REGISTRY_SERVER }}/tuturno:${{ github.sha }}
         docker push ${{ secrets.REGISTRY_SERVER }}/tuturno:${{ github.sha }}
-      
-    - name: 'Deploy container'
-      uses: azure/webapps-container-deploy@v1
-      with:
-        app-name: ${{ env.AZURE_WEBAPP_NAME }}
-        images: '${{ secrets.REGISTRY_SERVER }}/tuturno:${{ github.sha }}'
-    
