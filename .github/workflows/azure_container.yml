@@ -27,5 +27,5 @@ jobs:
 
     - name: 'Docker Build & Push' 
       run: |
-        docker build . -t ${{ secrets.REGISTRY_SERVER }}/tuturno:${{ github.sha }}
-        docker push ${{ secrets.REGISTRY_SERVER }}/tuturno:${{ github.sha }}
+        docker build . -t ${{ secrets.REGISTRY_SERVER }}/tuturno:latest
+        docker push ${{ secrets.REGISTRY_SERVER }}/tuturno:latest
