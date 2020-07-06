@@ -1,7 +1,7 @@
 # -- Build Flutter --
 # ~~~~~~~~~~~~~~~~~~~
 FROM cirrusci/flutter:beta AS flutter_builder
-ADD frontend /usr/frontend
+COPY frontend /usr/frontend
 WORKDIR /usr/frontend
 USER root
 RUN flutter config --enable-web && flutter pub get && flutter build web
