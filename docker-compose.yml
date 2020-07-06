@@ -1,0 +1,29 @@
+version: "3.5"
+
+services:
+  front:
+    build:
+      context: ./frontend/
+      target: dev
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./backend/api:/usr/app/api
+      - ./backend/middlewares:/usr/app/middlewares
+      - ./backend/models:/usr/app/models
+    container_name: turnos_front
+
+  back:
+    build:
+      context: ./backend/
+      target: dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./backend/api:/usr/app/api
+      - ./backend/middlewares:/usr/app/middlewares
+      - ./backend/models:/usr/app/models
+      - ./backend/app.js:/usr/app/app.js
+      - ./backend/config.js:/usr/app/config.js
+      - ./backend/TurnosMailer.js:/usr/app/TurnosMailer.js
+    container_name: turnos_back
