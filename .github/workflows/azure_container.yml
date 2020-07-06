@@ -1,22 +1,16 @@
+name: Container_Build_Push
+
 on:
   push:
     branches:
       - container_release
 
-name: Container_Build_Push
-
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
     steps:
-    # checkout the repo
     - name: 'Checkout Github Action'
       uses: actions/checkout@master
-
-    - name: 'Login via Azure CLI'
-      uses: azure/login@v1
-      with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
 
     - name: 'Docker Login'
       uses: azure/docker-login@v1
