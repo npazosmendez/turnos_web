@@ -11,6 +11,6 @@ VOLUME ${APPPATH}/api ${APPPATH}/middlewares ${APPPATH}/models
 CMD ["node", "app.js"]
 
 FROM dev as prod
-COPY --from=frontend_build /usr/app/build/web ${APPPATH}/static
+COPY --from=frontend_build /usr/app/build/web /usr/app/static
 CMD ["node", "app.js"]
 
