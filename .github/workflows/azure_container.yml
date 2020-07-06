@@ -27,5 +27,6 @@ jobs:
 
     - name: 'Docker Build & Push' 
       run: |
-        docker build . -t ${{ secrets.REGISTRY_SERVER }}/tuturno:latest
+        docker build frontend/ -t frontend_build -target build
+        docker build backend/ -t ${{ secrets.REGISTRY_SERVER }}/tuturno:latest
         docker push ${{ secrets.REGISTRY_SERVER }}/tuturno:latest
