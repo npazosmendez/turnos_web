@@ -8,9 +8,8 @@ services:
     ports:
       - "3001:3001"
     volumes:
-      - ./backend/api:/usr/app/api
-      - ./backend/middlewares:/usr/app/middlewares
-      - ./backend/models:/usr/app/models
+      - ./frontend/web:/usr/app/web
+      - ./frontend/lib:/usr/app/lib
     container_name: turnos_front
 
   back:
